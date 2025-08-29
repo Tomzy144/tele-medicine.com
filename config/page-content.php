@@ -28,10 +28,10 @@
                 <input class="input-field" type="password" id="password" name="password" placeholder="Password"><br><br>
                 <input name="action" value="login_api" type="hidden" />
                 <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
-                <p class="reset" onclick="_next_page('next_2');">Forgot Password? </p>
+                <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
 
                 <div class="notification-div">
-                    <span>New to Us?</span> <span class="in"  onclick="_next_page('next_1');">SIGN UP </span>
+                    <span>New to Us?</span> <span class="in"  onclick="_next_page('next_5');">SIGN UP </span>
                 </div>
                 <!-- <div class="under-div" onclick="_next_page('next_3');">
                     Create New Account <i class="bi-arrow-right"></i>
@@ -50,9 +50,9 @@
                 <input class="input-field" type="password" id="password" name="password" placeholder="Password"><br><br>
                 <input name="action" value="login_api" type="hidden" />
                 <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
-                <p class="reset" onclick="_next_page('next_2');">Forgot Password? </p>
+                <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
                 <div class="notification-div">
-                    <span>New to Us?</span> <span class="in"  onclick="_next_page('next_1');">SIGN UP </span>
+                    <span>New to Us?</span> <span class="in"  onclick="_next_page('next_6');">SIGN UP </span>
                 </div>
 <!-- 
                 <div class="under-div" onclick="_next_page('next_3');">
@@ -61,6 +61,55 @@
             </form>
         </div> 
     </div>
+
+
+
+
+    <!-- sign-up section -->
+    <div class="fill-form-div login-div" id="next_6">
+        <div class="input-div">
+            <h2>Member Sign-Up</h2>
+            <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
+                <label><i class="bi-user-o"></i> Create Username</label><br><br>
+                <input class="input-field" id="fullname" type="text" name="fullname" placeholder="Create Username" /><br><br>
+
+                <label><i class="bi-mobile-phone"></i> Enter Phone Number</label><br><br>
+                <input class="input-field" id="phonenumber" type="tel" name="phonenumber" placeholder="Enter Phone Number" /><br><br>
+
+                <label><i class="bi-envelope"></i> Enter Email</label><br><br>
+                <input class="input-field" type="email" id="semail" name="semail" placeholder="Enter Email" /><br><br>
+
+                <label><i class="bi-lock"></i> Create Password</label><br><br>
+                <input class="input-field" type="password" id="password" name="password" placeholder="Create Password" onkeyup="_check_password()" /><br><br>
+
+                <label><i class="bi-lock"></i> Confirm Password</label><br><br>
+                <input class="input-field" type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
+
+                <div class="pswd_info">At least 8 characters required including upper & lower cases, special characters, and numbers</div>
+                <div id="pswd_info"><span>password not accepted</span></div>
+
+                <input name="action" value="sign_up" type="hidden" />
+                <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up</button>
+
+            
+
+            </form>
+            <hr>
+            <p>Or sign up with</p>
+            <div class="social-signup">
+                <button class="social-btn google-btn" type="button">
+                    <i class="bi-google"></i>
+                </button>
+                <button class="social-btn facebook-btn" type="button">
+                    <i class="bi-facebook"></i>
+                </button>
+            </div>
+
+           
+        </div>
+    </div>
+
+
 
 <!-- proceed reset password section -->
 
