@@ -72,6 +72,61 @@ function checkPasswordStrength() {
     }
 }
 
+function checkDocPasswordStrength() {
+    let password = $('#sign-D-password').val();
+    let strengthBar = $('.pswd_info2 .strength-bar2');
+    let strengthText = $('.pswd_info2 .strength-text2');
+    let requirements = $('.pswd_info2 .strength-requirements2');
+
+    if (password.length === 0) {
+        $('.pswd_info2').fadeOut(300);
+        strengthBar.css('width', '0%');
+        strengthText.text('');
+        requirements.fadeIn(300); // show again when empty
+        return;
+    }
+
+    $('.pswd_info2').fadeIn(300);
+
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+
+    strengthBar.css('width', strength + '%');
+
+    if (strength <= 25) {
+        strengthBar.css('background', 'red');
+        strengthText.text('Password strength: Very Weak');
+        requirements.fadeIn(300);
+    } else if (strength <= 50) {
+        strengthBar.css('background', 'orange');
+        strengthText.text('Password strength: Weak');
+        requirements.fadeIn(300);
+    } else if (strength <= 75) {
+        strengthBar.css('background', 'yellowgreen');
+        strengthText.text('Password strength: Good');
+        requirements.fadeIn(300);
+    } else {
+        strengthBar.css('background', 'green');
+        strengthText.text('Password strength: Strong');
+        requirements.fadeOut(300); // fade away smoothly when password is strong
+    }
+}
+
+function toggleOtherSpeciality() {
+    let select = document.getElementById("doctor_speciality");
+    let otherDiv = document.getElementById("other_speciality_div");
+
+    if (select.value === "other") {
+        otherDiv.style.display = "block";
+    } else {
+        otherDiv.style.display = "none";
+    }
+}
+
+
 
 
 function _sign_in(){ 

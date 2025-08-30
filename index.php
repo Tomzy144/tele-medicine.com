@@ -41,7 +41,7 @@ if($s_staff_id!=''){
                     and the exchange of medical data and images. This approach enhances access to healthcare, particularly for individuals in
                     remote or underserved areas, and can improve the efficiency and convenience of medical care.
                 </p>
-                <div class="doctor-prompt" id="doctor_prompt" >
+                <div class="doctor-prompt fadeIn animated" id="doctor_prompt" >
                     <h3>Our Other Product:</h3>
                     <h2>Hospital Management System</h2>
                     <p>The Hospital Management System (HMS) is a comprehensive software solution designed to streamline and automate various

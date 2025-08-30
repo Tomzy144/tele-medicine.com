@@ -199,7 +199,7 @@ h1, h2, h3, h4, h5, h6 {
     color: #ffffff;
 }
 
-#country {
+#country, #doctor_country, #speciality, #doctor_speciality {
   width: 100%;
   padding: 15px 15px;
   font-size: 15px;
@@ -212,7 +212,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-#country:focus {
+#country:focus, #doctor_country:focus {
   border-color: #4285F4; 
   box-shadow: 0 0 6px rgba(66,133,244,0.4);
 }
@@ -220,7 +220,7 @@ h1, h2, h3, h4, h5, h6 {
 
 
 .right-div .div-in .fill-form-div .input-div .btn {
-    padding: 15px 12.5%;
+    padding: 15px;
     border-radius: 25px;
     background: linear-gradient(90deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%);
     border:#fff 1px solid ;
@@ -233,7 +233,7 @@ h1, h2, h3, h4, h5, h6 {
     justify-content: center;
     width: 40%;
     margin-bottom: 4%;
-    transition: background 0.4s ease-in-out, transform 0.3s ease;
+    transition: 0.5;
 }
 
 .right-div .div-in .fill-form-div .input-div .btn:hover {
@@ -311,6 +311,7 @@ h1, h2, h3, h4, h5, h6 {
  
 .right-div .div-in{
     padding: 20px;
+    padding-bottom: 70px;
 }
 
 .social-signup {

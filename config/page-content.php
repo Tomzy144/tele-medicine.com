@@ -69,25 +69,69 @@
                     <input class="input-field half" id="doctor_last_name" type="text" name="lastname" placeholder="Last Name" />
                 </div><br><br>
 
-                <label><i class="bi-envelope"></i> Enter Email</label><br><br>
-                <input class="input-field" type="email" id="doctor_sign_up_email" name="semail" placeholder="Enter Email" /><br><br>
+                <label><i class="bi-envelope"></i>  Email Address</label><br><br>
+                <input class="input-field" type="email" id="doctor_sign_up_email" name="semail" placeholder="Enter Your Email Address" /><br><br>
 
-                <label><i class="bi-flag"></i> Select Country</label><br><br>
+                <label><i class="bi-phone"></i> Phone Number </label><br><br>
+                <input class="input-field" type="text" id="doctor_sign_up_phone" name="sphone" placeholder=" Enter Your Phone Number" /><br><br>
+
+                <label><i class="bi-doc"></i> Primary Medical Speciality </label><br><br>
+                <select id="doctor_speciality" name="speciality" onchange="toggleOtherSpeciality()">
+                    <option value="" disabled selected>Select Your Speciality</option>
+                    <option value="cardiology">Cardiology</option>
+                    <option value="dermatology">Dermatology</option>
+                    <option value="endocrinology">Endocrinology</option>
+                    <option value="family medicine">Family Medicine</option>
+                    <option value="gastroenterology">Gastroenterology</option>
+                    <option value="internal medicine">Internal Medicine</option>
+                    <option value="neurology">Neurology</option>
+                    <option value="obstetrics and gynecology">Obstetrics/Gynecology</option>
+                    <option value="oncology">Oncology</option>
+                    <option value="ophthalmology">Ophthalmology</option>
+                    <option value="orthopedics">Orthopedics</option>
+                    <option value="pediatrics">Pediatrics</option>
+                    <option value="psychiatry">Psychiatry</option>
+                    <option value="radiology">Radiology</option>
+                    <option value="surgery">Surgery</option>
+                    <option value="urology">Urology</option>
+                    <option value="other">Other</option>
+                </select><br><br>
+
+                <!-- Hidden input initially -->
+                <div id="other_speciality_div" style="display:none;">
+                    <input type="text" id="other_speciality" name="other_speciality" placeholder="Please specify your speciality" class="input-field"/><br><br>
+                </div>
+
+                
+                <label><i class="bi-person"></i> Sub-Speciality(ies) </label><br><br>
+                <input class="input-field" type="text" id="doctor_sub_speciality" name="sub_speciality" placeholder="Sub-Speciality(ies) if any" /><br><br>
+
+                  <label><i class="bi-person"></i> Years of Experience </label><br><br>
+                <input class="input-field" type="text" id="doctor_years_experience" name="years_experience" placeholder="Years of Experience" /><br><br>
+
+                  <label><i class="bi-person"></i> Medical License Number </label><br><br>
+                <input class="input-field" type="text" id="doctor_medical_license" name="medical_license" placeholder="Medical License Number" /><br><br>
+
+                  <label><i class="bi-person"></i> License Issuing State/Country </label><br><br>
+                <input class="input-field" type="text" id="doctor_license_issuing_state" name="license_issuing_state" placeholder="License Issuing State/Country" /><br><br>
+
+
+                <label><i class="bi-flag"></i> Select Your Current Country</label><br><br>
                  <select id="doctor_country" name="country">
                     <option disabled selected>Detecting your country...</option>
                 </select><br><br>
 
                 <label><i class="bi-lock"></i> Create Password</label><br><br>
-                <input class="input-field" type="password" id="sign-D-password" name="password" placeholder="Create Password" onkeyup="checkPasswordStrength()" /><br><br>
+                <input class="input-field" type="password" id="sign-D-password" name="password" placeholder="Create Password" onkeyup="checkDocPasswordStrength()" /><br><br>
 
-                <div class="pswd_info" style="display:none;">
-                    <div class="strength-bar-container" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
-                        <div class="strength-bar" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
+                <div class="pswd_info2" style="display:none;">
+                    <div class="strength-bar-container2" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
+                        <div class="strength-bar2" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
                     </div>
-                    <p class="strength-text" style="font-size:12px; margin-top:6px; color:#fff;">
+                    <p class="strength-text2" style="font-size:12px; margin-top:6px; color:#fff;">
                         Password strength: Weak
                     </p>
-                    <small class="strength-requirements" style="font-size:11px; color:#fff; display:block;">
+                    <small class="strength-requirements2" style="font-size:11px; color:#fff; display:block;">
                         At least 8 characters required including upper & lower cases, numbers, and special characters
                     </small>
                 </div>
@@ -175,8 +219,8 @@
                     <input class="input-field half" id="patient_last_name" type="text" name="lastname" placeholder="Last Name" />
                 </div><br><br>
 
-                <label><i class="bi-envelope"></i> Enter Email</label><br><br>
-                <input class="input-field" type="email" id="patient_sign_up_email" name="semail" placeholder="Enter Email" /><br><br>
+                <label><i class="bi-envelope"></i> Email Address</label><br><br>
+                <input class="input-field" type="email" id="patient_sign_up_email" name="semail" placeholder="Enter Your Email Address" /><br><br>
 
                 <label><i class="bi-flag"></i> Select Country</label><br><br>
                  <select id="country" name="country">
@@ -291,6 +335,7 @@
             .then(data => {
                 let countryName = data.country_name;
                 let countrySelect = document.getElementById("country");
+                let doctorCountrySelect = document.getElementById("doctor_country");
 
                 // List of all countries
                 let countries = [
@@ -321,6 +366,7 @@
 
                 // Clear previous options
                 countrySelect.innerHTML = "";
+                doctorCountrySelect.innerHTML = "";
 
                 // Populate countries
                 countries.forEach(country => {
@@ -332,11 +378,27 @@
                     }
                     countrySelect.appendChild(option);
                 });
+
+                // Populate doctor countries
+                countries.forEach(country => {
+                    let option = document.createElement("option");
+                    option.value = country;
+                    option.textContent = country;
+                    if (country === countryName) {
+                        option.selected = true;
+                    }
+                    doctorCountrySelect.appendChild(option);
+                });
             })
             .catch(error => {
                 console.error("IP detection failed:", error);
                 let countrySelect = document.getElementById("country");
                 countrySelect.innerHTML = "<option disabled selected>Select a Country</option>";
+            })
+            .catch(error => {
+                console.error("IP detection failed:", error);
+                let doctorCountrySelect = document.getElementById("doctor_country");
+                doctorCountrySelect.innerHTML = "<option disabled selected>Select a Country</option>";
             });
     </script>
 
