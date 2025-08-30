@@ -21,11 +21,21 @@
     <!-- doctor login section  -->
     <div class="fill-form-div login-div" id="next_2">
         <div class="input-div animated fadeIn"> <h2>Doctor Log-In </h2>
+           <div class="social-signup">
+                <button class="social-btn google-btn" type="button">
+                    <i class="bi-google"></i> Login with Google
+                </button>
+            </div>
+              <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
             <form action='<script>endPoint</script>' id="loginform" enctype="multipart/form-data" method="post">
                 <label><i class="bi-key"></i> Please Enter Your Email Address</label><br><br>
-                <input class="input-field" type="email" id="email_address" name="member_id" placeholder="Membership Number"><br><br>
+                <input class="input-field" type="email" id="doctor_login_email_address" name="doctor_login_email_address" placeholder="Email Address"><br><br>
                 <label><i class="bi-lock"></i> Please Enter Your Password</label><br><br>
-                <input class="input-field" type="password" id="password" name="password" placeholder="Password"><br><br>
+                <input class="input-field" type="password" id="doctor_login_password" name="doctor_login_password" placeholder="Password"><br><br>
                 <input name="action" value="login_api" type="hidden" />
                 <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
                 <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
@@ -33,42 +43,15 @@
                 <div class="notification-div">
                     <span>New to Us?</span> <span class="in"  onclick="_next_page('next_5');">SIGN UP </span>
                 </div>
-                <!-- <div class="under-div" onclick="_next_page('next_3');">
-                    Create New Account <i class="bi-arrow-right"></i>
-                </div> -->
             </form>
         </div> 
     </div>
 
-        <!-- patient login section  -->
-    <div class="fill-form-div login-div" id="next_3">
-        <div class="input-div animated fadeIn"> <h2>Patient Log-In </h2>
-            <form action='<script>endPoint</script>' id="loginform" enctype="multipart/form-data" method="post">
-                <label><i class="bi-key"></i> Enter Your Email Address</label><br><br>
-                <input class="input-field" type="email" id="email_address" name="member_id" placeholder="Membership Number"><br><br>
-                <label><i class="bi-lock"></i> Enter Password</label><br><br>
-                <input class="input-field" type="password" id="password" name="password" placeholder="Password"><br><br>
-                <input name="action" value="login_api" type="hidden" />
-                <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
-                <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
-                <div class="notification-div">
-                    <span>New to Us?</span> <span class="in"  onclick="_next_page('next_6');">SIGN UP </span>
-                </div>
-<!-- 
-                <div class="under-div" onclick="_next_page('next_3');">
-                    Create New Account <i class="bi-arrow-right"></i>
-                </div> -->
-            </form>
-        </div> 
-    </div>
+         <!-- doctor sign up section  -->
 
-
-
-
-    <!-- pateint-sign-up section -->
-    <div class="fill-form-div login-div" id="next_6">
+     <div class="fill-form-div login-div" id="next_5">
         <div class="input-div">
-            <h2>Patient Sign-Up</h2>
+            <h2>Doctor Sign-Up</h2>
             <div class="social-signup">
                 <button class="social-btn google-btn" type="button">
                     <i class="bi-google"></i> Sign up with Google
@@ -80,14 +63,14 @@
             </div>
 
             <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
-               <label><i class="bi-user-o"></i> Create Username</label><br><br>
+               <label><i class="bi-user-o"></i> Your Name</label><br><br>
                 <div class="name-fields">
-                    <input class="input-field half" id="firstname" type="text" name="firstname" placeholder="First Name" />
-                    <input class="input-field half" id="lastname" type="text" name="lastname" placeholder="Last Name" />
+                    <input class="input-field half" id="doctor_first_name" type="text" name="firstname" placeholder="First Name" />
+                    <input class="input-field half" id="doctor_last_name" type="text" name="lastname" placeholder="Last Name" />
                 </div><br><br>
 
                 <label><i class="bi-envelope"></i> Enter Email</label><br><br>
-                <input class="input-field" type="email" id="semail" name="semail" placeholder="Enter Email" /><br><br>
+                <input class="input-field" type="email" id="doctor_sign_up_email" name="semail" placeholder="Enter Email" /><br><br>
 
                 <label><i class="bi-flag"></i> Select Country</label><br><br>
                  <select id="country" name="country">
@@ -124,7 +107,113 @@
 
 
                 <input name="action" value="sign_up" type="hidden" />
-                <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up</button>
+                <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up As a Doctor</button>
+
+            
+
+            </form>
+          
+
+           
+        </div>
+    </div>
+
+
+        <!-- patient login section  -->
+    <div class="fill-form-div login-div" id="next_3">
+        <div class="input-div animated fadeIn"> <h2>Patient Log-In </h2>
+         <div class="social-signup">
+                <button class="social-btn google-btn" type="button">
+                    <i class="bi-google"></i> Login with Google
+                </button>
+            </div>
+              <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <form action='<script>endPoint</script>' id="loginform" enctype="multipart/form-data" method="post">
+                <label><i class="bi-key"></i> Enter Your Email Address</label><br><br>
+                <input class="input-field" type="email" id="patient_email_address" name="member_id" placeholder="Email Address"><br><br>
+                <label><i class="bi-lock"></i> Enter Password</label><br><br>
+                <input class="input-field" type="password" id="patient_login_password" name="password" placeholder="Password"><br><br>
+                <input name="action" value="login_api" type="hidden" />
+                <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
+                <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
+                <div class="notification-div">
+                    <span>New to Us?</span> <span class="in"  onclick="_next_page('next_6');">SIGN UP </span>
+                </div>
+<!-- 
+                <div class="under-div" onclick="_next_page('next_3');">
+                    Create New Account <i class="bi-arrow-right"></i>
+                </div> -->
+            </form>
+        </div> 
+    </div>
+
+
+
+
+    <!-- pateint-sign-up section -->
+    <div class="fill-form-div login-div" id="next_6">
+        <div class="input-div">
+            <h2>Patient Sign-Up</h2>
+            <div class="social-signup">
+                <button class="social-btn google-btn" type="button">
+                    <i class="bi-google"></i> Sign up with Google
+                </button>
+            </div>
+              <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
+            <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
+               <label><i class="bi-user-o"></i> Your Name</label><br><br>
+                <div class="name-fields">
+                    <input class="input-field half" id="patient_first_name" type="text" name="firstname" placeholder="First Name" />
+                    <input class="input-field half" id="patient_last_name" type="text" name="lastname" placeholder="Last Name" />
+                </div><br><br>
+
+                <label><i class="bi-envelope"></i> Enter Email</label><br><br>
+                <input class="input-field" type="email" id="patient_sign_up_email" name="semail" placeholder="Enter Email" /><br><br>
+
+                <label><i class="bi-flag"></i> Select Country</label><br><br>
+                 <select id="country" name="country">
+                    <option disabled selected>Detecting your country...</option>
+                </select><br><br>
+
+                <label><i class="bi-lock"></i> Create Password</label><br><br>
+                <input class="input-field" type="password" id="sign-p-password" name="password" placeholder="Create Password" onkeyup="checkPasswordStrength()" /><br><br>
+
+                <div class="pswd_info" style="display:none;">
+                    <div class="strength-bar-container" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
+                        <div class="strength-bar" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
+                    </div>
+                    <p class="strength-text" style="font-size:12px; margin-top:6px; color:#fff;">
+                        Password strength: Weak
+                    </p>
+                    <small class="strength-requirements" style="font-size:11px; color:#fff; display:block;">
+                        At least 8 characters required including upper & lower cases, numbers, and special characters
+                    </small>
+                </div>
+
+
+                <!-- <div id="password-strength" style="width:100%; height:5px; background:#eee; border-radius:5px; margin:8px 0;">
+                    <div id="strength-bar" style="width:0%; height:100%; border-radius:5px;"></div>
+                </div>
+                <p id="strength-text" style="font-size:12px; margin-top:4px; color:#fff;">Password strength: Weak</p> -->
+
+
+                <label><i class="bi-lock"></i> Confirm Password</label><br><br>
+                <input class="input-field" type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
+
+          
+
+
+
+                <input name="action" value="sign_up" type="hidden" />
+                <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up as a Patient</button>
 
             
 
