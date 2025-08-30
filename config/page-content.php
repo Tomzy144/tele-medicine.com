@@ -73,12 +73,12 @@
                 <input class="input-field" type="email" id="doctor_sign_up_email" name="semail" placeholder="Enter Email" /><br><br>
 
                 <label><i class="bi-flag"></i> Select Country</label><br><br>
-                 <select id="country" name="country">
+                 <select id="doctor_country" name="country">
                     <option disabled selected>Detecting your country...</option>
                 </select><br><br>
 
                 <label><i class="bi-lock"></i> Create Password</label><br><br>
-                <input class="input-field" type="password" id="sign-p-password" name="password" placeholder="Create Password" onkeyup="checkPasswordStrength()" /><br><br>
+                <input class="input-field" type="password" id="sign-D-password" name="password" placeholder="Create Password" onkeyup="checkPasswordStrength()" /><br><br>
 
                 <div class="pswd_info" style="display:none;">
                     <div class="strength-bar-container" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
