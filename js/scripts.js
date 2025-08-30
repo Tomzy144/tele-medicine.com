@@ -29,6 +29,51 @@ function show_patient_sign_in(){
 }
 
 
+function checkPasswordStrength() {
+    let password = $('#sign-p-password').val();
+    let strengthBar = $('.pswd_info .strength-bar');
+    let strengthText = $('.pswd_info .strength-text');
+    let requirements = $('.pswd_info .strength-requirements');
+
+    if (password.length === 0) {
+        $('.pswd_info').fadeOut(300);
+        strengthBar.css('width', '0%');
+        strengthText.text('');
+        requirements.fadeIn(300); // show again when empty
+        return;
+    }
+
+    $('.pswd_info').fadeIn(300);
+
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+
+    strengthBar.css('width', strength + '%');
+
+    if (strength <= 25) {
+        strengthBar.css('background', 'red');
+        strengthText.text('Password strength: Very Weak');
+        requirements.fadeIn(300);
+    } else if (strength <= 50) {
+        strengthBar.css('background', 'orange');
+        strengthText.text('Password strength: Weak');
+        requirements.fadeIn(300);
+    } else if (strength <= 75) {
+        strengthBar.css('background', 'yellowgreen');
+        strengthText.text('Password strength: Good');
+        requirements.fadeIn(300);
+    } else {
+        strengthBar.css('background', 'green');
+        strengthText.text('Password strength: Strong');
+        requirements.fadeOut(300); // fade away smoothly when password is strong
+    }
+}
+
+
+
 function _sign_in(){ 
     var member_id = $('#email_address').val();
     var password = $('#password').val();

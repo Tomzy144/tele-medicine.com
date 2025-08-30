@@ -11,8 +11,8 @@
     <div class="input-div animated fadeIn">
         <h2>Select Your Role</h2>
         <p>Please choose the option that best describes what you want to do:</p>
-        <button class="patient-btn" id="patient_btn" onclick="show_patient_sign_in();">Find a Doctor</button>
-        <button class="patient-btn" id="doctor_btn" onclick="show_caption();">Find Patients</button>
+        <button class="patient-btn" id="patient_btn" onclick="show_patient_sign_in();">I am patient looking for a Doctor</button>
+        <button class="patient-btn" id="doctor_btn" onclick="show_caption();">I am Doctor looking for Patients</button>
     </div>
 </div>
 
@@ -65,28 +65,56 @@
 
 
 
-    <!-- sign-up section -->
+    <!-- pateint-sign-up section -->
     <div class="fill-form-div login-div" id="next_6">
         <div class="input-div">
-            <h2>Member Sign-Up</h2>
+            <h2>Patient Sign-Up</h2>
             <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
                 <label><i class="bi-user-o"></i> Create Username</label><br><br>
-                <input class="input-field" id="fullname" type="text" name="fullname" placeholder="Create Username" /><br><br>
+                <input class="input-field" id="fullname" type="text" name="fullname" placeholder="Kindly Enter the name you will like to be called" /><br><br>
 
-                <label><i class="bi-mobile-phone"></i> Enter Phone Number</label><br><br>
-                <input class="input-field" id="phonenumber" type="tel" name="phonenumber" placeholder="Enter Phone Number" /><br><br>
+                <!-- <label><i class="bi-mobile-phone"></i> Enter Phone Number</label><br><br>
+                <input class="input-field" id="phonenumber" type="tel" name="phonenumber" placeholder="Enter Phone Number" /><br><br> -->
 
                 <label><i class="bi-envelope"></i> Enter Email</label><br><br>
                 <input class="input-field" type="email" id="semail" name="semail" placeholder="Enter Email" /><br><br>
 
+                <label><i class="bi-envelope"></i> Select Country Email</label><br><br>
+               <select>
+                <option disabled> Select a Country</option>
+               </select>
+
+                <!-- <label><i class="bi-lock"></i> Create Password</label><br><br>
+                <input class="input-field" type="password" id="password" name="password" placeholder="Create Password" onkeyup="_check_password()" /><br><br> -->
+
                 <label><i class="bi-lock"></i> Create Password</label><br><br>
-                <input class="input-field" type="password" id="password" name="password" placeholder="Create Password" onkeyup="_check_password()" /><br><br>
+                <input class="input-field" type="password" id="sign-p-password" name="password" placeholder="Create Password" onkeyup="checkPasswordStrength()" /><br><br>
+
+                <div class="pswd_info" style="display:none;">
+                    <div class="strength-bar-container" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
+                        <div class="strength-bar" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
+                    </div>
+                    <p class="strength-text" style="font-size:12px; margin-top:6px; color:#fff;">
+                        Password strength: Weak
+                    </p>
+                    <small class="strength-requirements" style="font-size:11px; color:#fff; display:block;">
+                        At least 8 characters required including upper & lower cases, numbers, and special characters
+                    </small>
+                </div>
+
+
+                <!-- <div id="password-strength" style="width:100%; height:5px; background:#eee; border-radius:5px; margin:8px 0;">
+                    <div id="strength-bar" style="width:0%; height:100%; border-radius:5px;"></div>
+                </div>
+                <p id="strength-text" style="font-size:12px; margin-top:4px; color:#fff;">Password strength: Weak</p> -->
+
 
                 <label><i class="bi-lock"></i> Confirm Password</label><br><br>
                 <input class="input-field" type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
 
-                <div class="pswd_info">At least 8 characters required including upper & lower cases, special characters, and numbers</div>
-                <div id="pswd_info"><span>password not accepted</span></div>
+          
+
+
 
                 <input name="action" value="sign_up" type="hidden" />
                 <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up</button>
@@ -99,9 +127,6 @@
             <div class="social-signup">
                 <button class="social-btn google-btn" type="button">
                     <i class="bi-google"></i>
-                </button>
-                <button class="social-btn facebook-btn" type="button">
-                    <i class="bi-facebook"></i>
                 </button>
             </div>
 
@@ -154,8 +179,8 @@
                 <input class="input-field" type="password" placeholder="Confirm New Password" id="r_cpassword" name="confirmpassword" title="Confirm Password"/><br><br>
 
 
-            <div class="pswd_info">At least 8 charaters required including upper & lower cases and special characters and numbers</div>
-            <div id="pswd_info"><span>password not accepted</span></div>
+            <!-- <div class="pswd_info">At least 8 charaters required including upper & lower cases and special characters and numbers</div>
+            <div id="pswd_info"><span>password not accepted</span></div> -->
             <button class="btn" type="button"  title="Reset" id="finish-reset-btn" onclick="_finish_reset_password()"><i class="bi-check2"></i> Reset Password </button>
         </div>
     </div>
