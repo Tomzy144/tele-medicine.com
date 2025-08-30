@@ -69,23 +69,30 @@
     <div class="fill-form-div login-div" id="next_6">
         <div class="input-div">
             <h2>Patient Sign-Up</h2>
-            <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
-                <label><i class="bi-user-o"></i> Create Username</label><br><br>
-                <input class="input-field" id="fullname" type="text" name="fullname" placeholder="Kindly Enter the name you will like to be called" /><br><br>
+            <div class="social-signup">
+                <button class="social-btn google-btn" type="button">
+                    <i class="bi-google"></i> Sign up with Google
+                </button>
+            </div>
+              <!-- Divider -->
+            <div class="divider">
+                <span>OR</span>
+            </div>
 
-                <!-- <label><i class="bi-mobile-phone"></i> Enter Phone Number</label><br><br>
-                <input class="input-field" id="phonenumber" type="tel" name="phonenumber" placeholder="Enter Phone Number" /><br><br> -->
+            <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
+               <label><i class="bi-user-o"></i> Create Username</label><br><br>
+                <div class="name-fields">
+                    <input class="input-field half" id="firstname" type="text" name="firstname" placeholder="First Name" />
+                    <input class="input-field half" id="lastname" type="text" name="lastname" placeholder="Last Name" />
+                </div><br><br>
 
                 <label><i class="bi-envelope"></i> Enter Email</label><br><br>
                 <input class="input-field" type="email" id="semail" name="semail" placeholder="Enter Email" /><br><br>
 
-                <label><i class="bi-envelope"></i> Select Country Email</label><br><br>
-               <select>
-                <option disabled> Select a Country</option>
-               </select>
-
-                <!-- <label><i class="bi-lock"></i> Create Password</label><br><br>
-                <input class="input-field" type="password" id="password" name="password" placeholder="Create Password" onkeyup="_check_password()" /><br><br> -->
+                <label><i class="bi-flag"></i> Select Country</label><br><br>
+                 <select id="country" name="country">
+                    <option disabled selected>Detecting your country...</option>
+                </select><br><br>
 
                 <label><i class="bi-lock"></i> Create Password</label><br><br>
                 <input class="input-field" type="password" id="sign-p-password" name="password" placeholder="Create Password" onkeyup="checkPasswordStrength()" /><br><br>
@@ -122,13 +129,7 @@
             
 
             </form>
-            <hr>
-            <p>Or sign up with</p>
-            <div class="social-signup">
-                <button class="social-btn google-btn" type="button">
-                    <i class="bi-google"></i>
-                </button>
-            </div>
+          
 
            
         </div>
@@ -194,7 +195,61 @@
         
     </div>
 
+    <script>
+                    // Fetch user's country from IP API
+        fetch("https://ipapi.co/json/")
+            .then(response => response.json())
+            .then(data => {
+                let countryName = data.country_name;
+                let countrySelect = document.getElementById("country");
 
+                // List of all countries
+                let countries = [
+                    "Afghanistan","Albania","Algeria","Andorra","Angola","Argentina","Armenia","Australia","Austria",
+                    "Bahamas","Bahrain","Bangladesh","Barbados","Belgium","Belize","Benin","Bhutan","Bolivia","Botswana","Brazil","Bulgaria","Burkina Faso","Burundi",
+                    "Cambodia","Cameroon","Canada","Cape Verde","Chad","Chile","China","Colombia","Costa Rica","Croatia","Cuba","Cyprus","Czech Republic",
+                    "Denmark","Dominica","Dominican Republic",
+                    "Ecuador","Egypt","El Salvador","Estonia","Eswatini","Ethiopia",
+                    "Fiji","Finland","France",
+                    "Gabon","Gambia","Georgia","Germany","Ghana","Greece","Grenada","Guatemala","Guinea","Guyana",
+                    "Haiti","Honduras","Hungary",
+                    "Iceland","India","Indonesia","Iran","Iraq","Ireland","Israel","Italy",
+                    "Jamaica","Japan","Jordan",
+                    "Kazakhstan","Kenya","Kuwait","Kyrgyzstan",
+                    "Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Lithuania","Luxembourg",
+                    "Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Mauritania","Mauritius","Mexico","Moldova","Monaco","Mongolia","Montenegro","Morocco","Mozambique","Myanmar",
+                    "Namibia","Nepal","Netherlands","New Zealand","Nicaragua","Niger","Nigeria","North Korea","North Macedonia","Norway",
+                    "Oman",
+                    "Pakistan","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal",
+                    "Qatar",
+                    "Romania","Russia","Rwanda",
+                    "Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Somalia","South Africa","South Korea","Spain","Sri Lanka","Sudan","Suriname","Sweden","Switzerland","Syria",
+                    "Taiwan","Tajikistan","Tanzania","Thailand","Togo","Trinidad and Tobago","Tunisia","Turkey","Turkmenistan","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States","Uruguay","Uzbekistan",
+                    "Vatican City","Venezuela","Vietnam",
+                    "Yemen",
+                    "Zambia","Zimbabwe"
+                ];
+
+                // Clear previous options
+                countrySelect.innerHTML = "";
+
+                // Populate countries
+                countries.forEach(country => {
+                    let option = document.createElement("option");
+                    option.value = country;
+                    option.textContent = country;
+                    if (country === countryName) {
+                        option.selected = true;
+                    }
+                    countrySelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error("IP detection failed:", error);
+                let countrySelect = document.getElementById("country");
+                countrySelect.innerHTML = "<option disabled selected>Select a Country</option>";
+            });
+    </script>
 
 
 
