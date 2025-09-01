@@ -124,7 +124,81 @@ function toggleOtherSpeciality() {
     } else {
         otherDiv.style.display = "none";
     }
+
 }
+
+
+function patient_google_sign() {
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: 'google_patient_signup_api' },
+        dataType: "json",
+        cache: false,
+        success: function(response) {
+            if (response.status === "redirect" && response.url) {
+                // Popup dimensions
+                let width = 600;
+                let height = 700;
+                let left = (screen.width / 2) - (width / 2);
+                let top = (screen.height / 2) - (height / 2);
+
+                // Open centered popup
+                let popup = window.open(
+                    response.url,
+                    "googleLogin",
+                    `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
+                );
+
+                // Handle message from popup
+                const handleGoogleMessage = (event) => {
+                    if (event.origin !== window.location.origin) return;
+
+                    const data = event.data;
+
+                    if (data.status === "success") {
+                        $.ajax({
+                            type: "POST",
+                            url: endPoint,
+                            data: {
+                                action: 'patient_signup_with_google',
+                                email: data.email,
+                                name: data.name,
+                                picture: data.picture
+                            },
+                            dataType: "json",
+                            cache: false,
+                            success: (res) => {
+                                if (res.status === "success") {
+                                    alert(res.message || "Signup/Login successful!");
+                                    if (res.redirect_url) window.location.href = res.redirect_url;
+                                } else {
+                                    alert(res.message || "Signup/Login failed.");
+                                }
+                            },
+                            error: () => alert("Error while signing up with Google.")
+                        });
+                    } else {
+                        alert(data.message || "Google authentication failed.");
+                    }
+
+                    // Cleanup listener
+                    window.removeEventListener("message", handleGoogleMessage);
+                };
+
+                window.addEventListener("message", handleGoogleMessage);
+            } else {
+                alert(response.message || "Unable to start Google signup.");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", status, error);
+            console.error("Response Text:", xhr.responseText);
+            alert("Error occurred: " + error + "\nCheck console for details.");
+        }
+    });
+}
+
 
 
 

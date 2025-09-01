@@ -53,9 +53,11 @@
         <div class="input-div">
             <h2>Doctor Sign-Up</h2>
             <div class="social-signup">
-                <button class="social-btn google-btn" type="button">
+              <button class="social-btn google-btn" type="button" 
+                        onclick="window.location.href='http://localhost/tele-medicine-base-api?action=google_patient_signup_api'">
                     <i class="bi-google"></i> Sign up with Google
                 </button>
+
             </div>
               <!-- Divider -->
             <div class="divider">
@@ -203,7 +205,8 @@
         <div class="input-div">
             <h2>Patient Sign-Up</h2>
             <div class="social-signup">
-                <button class="social-btn google-btn" type="button">
+                <button class="social-btn google-btn" type="button" 
+                        onclick="patient_google_sign();">
                     <i class="bi-google"></i> Sign up with Google
                 </button>
             </div>
