@@ -136,28 +136,63 @@ function patient_google_sign() {
         cache: false,
         success: function(response) {
             if (response.status === "redirect" && response.url) {
-                // Open Google login in a popup window
-                const popupWidth = 600;
-                const popupHeight = 700;
-                const left = (screen.width / 2) - (popupWidth / 2);
-                const top = (screen.height / 2) - (popupHeight / 2);
-
-                window.open(
-                    response.url,
-                    "GoogleLogin",
-                    `width=${popupWidth},height=${popupHeight},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
-                );
+                // Redirect to Google login page
+                window.location.href = response.url;
+              
             } else {
                 alert(response.message || "Unable to start Google signup.");
             }
         },
         error: function(xhr, status, error) {
-            console.error("AJAX Error:", status, error);
+            console.error("AJAX Error (init):", status, error);
             console.error("Response Text:", xhr.responseText);
             alert("Error occurred: " + error + "\nCheck console for details.");
         }
     });
 }
+
+
+// function patient_google_sign_callback() {
+//     $.ajax({
+//         type: "GET",
+//         url: endPoint, // e.g., "http://localhost/tele-medicine-base-api/"
+//         data: { action: 'google_patient_signup_api' }, // send any other params if needed
+//         dataType: "json",
+//         cache: false,
+//         success: function(payload) {
+//             if (payload.status === "success") {
+//                 // Show success message
+//                 $('#success-div').html('<div><i class="bi-check"></i></div> SIGNUP SUCCESSFUL!')
+//                     .fadeIn(500)
+//                     .delay(2000)
+//                     .fadeOut(100, function() {
+//                         if (payload.login_url) {
+//                             // Redirect to dashboard
+//                             window.location.href = payload.login_url;
+//                         } else {
+//                             alert("No dashboard URL provided.");
+//                         }
+//                     });
+//             } else {
+//                 alert(payload.message || "Google signup failed.");
+//             }
+//         },
+//         error: function(xhr, status, error) {
+//             console.error("AJAX Error:", status, error);
+//             console.error("Response Text:", xhr.responseText);
+//             alert("Error occurred: " + error + "\nCheck console for details.");
+//         }
+//     });
+// }
+//   patient_google_sign_callback();
+// // Call the function after Google OAuth redirect
+
+
+
+
+
+
+
 
 
 
