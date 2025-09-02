@@ -1,0 +1,17 @@
+{
+    "name": "tomzy/tele-medicine.com",
+    "autoload": {
+        "psr-4": {
+            "Tomzy\\TeleMedicineCom\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tomzy.cs,Vb",
+            "email": "oyemadetomiwa@gmail.com"
+        }
+    ],
+    "require": {
+        "google/apiclient": "2.0"
+    }
+}

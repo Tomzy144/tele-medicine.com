@@ -127,66 +127,26 @@ function toggleOtherSpeciality() {
 
 }
 
-
 function patient_google_sign() {
     $.ajax({
         type: "POST",
         url: endPoint,
-        data: { action: 'google_patient_signup_api' },
+        data: { action: 'google_patient_signup_api_init' },
         dataType: "json",
         cache: false,
         success: function(response) {
             if (response.status === "redirect" && response.url) {
-                // Popup dimensions
-                let width = 600;
-                let height = 700;
-                let left = (screen.width / 2) - (width / 2);
-                let top = (screen.height / 2) - (height / 2);
+                // Open Google login in a popup window
+                const popupWidth = 600;
+                const popupHeight = 700;
+                const left = (screen.width / 2) - (popupWidth / 2);
+                const top = (screen.height / 2) - (popupHeight / 2);
 
-                // Open centered popup
-                let popup = window.open(
+                window.open(
                     response.url,
-                    "googleLogin",
-                    `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
+                    "GoogleLogin",
+                    `width=${popupWidth},height=${popupHeight},top=${top},left=${left},resizable=yes,scrollbars=yes,status=yes`
                 );
-
-                // Handle message from popup
-                const handleGoogleMessage = (event) => {
-                    if (event.origin !== window.location.origin) return;
-
-                    const data = event.data;
-
-                    if (data.status === "success") {
-                        $.ajax({
-                            type: "POST",
-                            url: endPoint,
-                            data: {
-                                action: 'patient_signup_with_google',
-                                email: data.email,
-                                name: data.name,
-                                picture: data.picture
-                            },
-                            dataType: "json",
-                            cache: false,
-                            success: (res) => {
-                                if (res.status === "success") {
-                                    alert(res.message || "Signup/Login successful!");
-                                    if (res.redirect_url) window.location.href = res.redirect_url;
-                                } else {
-                                    alert(res.message || "Signup/Login failed.");
-                                }
-                            },
-                            error: () => alert("Error while signing up with Google.")
-                        });
-                    } else {
-                        alert(data.message || "Google authentication failed.");
-                    }
-
-                    // Cleanup listener
-                    window.removeEventListener("message", handleGoogleMessage);
-                };
-
-                window.addEventListener("message", handleGoogleMessage);
             } else {
                 alert(response.message || "Unable to start Google signup.");
             }
@@ -198,7 +158,6 @@ function patient_google_sign() {
         }
     });
 }
-
 
 
 
