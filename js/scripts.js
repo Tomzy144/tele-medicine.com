@@ -152,6 +152,33 @@ function patient_google_sign() {
 }
 
 
+
+function patient_google_login() {
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: 'patient_google_login_init' },
+        dataType: "json",
+        cache: false,
+        success: function(response) {
+            if (response.status === "redirect" && response.url) {
+                // Redirect to Google login page
+                window.location.href = response.url;
+              
+            } else {
+                alert(response.message || "Unable to start Google signup.");
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error (init):", status, error);
+            console.error("Response Text:", xhr.responseText);
+            alert("Error occurred: " + error + "\nCheck console for details.");
+        }
+    });
+}
+
+
+
 // function patient_google_sign_callback() {
 //     $.ajax({
 //         type: "GET",

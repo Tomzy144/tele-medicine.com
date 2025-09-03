@@ -169,7 +169,7 @@
     <div class="fill-form-div login-div" id="next_3">
         <div class="input-div animated fadeIn"> <h2>Patient Log-In </h2>
          <div class="social-signup">
-                <button class="social-btn google-btn" type="button">
+                <button class="social-btn google-btn" type="button" onclick="patient_google_login();">
                     <i class="bi-google"></i> Login with Google
                 </button>
             </div>
