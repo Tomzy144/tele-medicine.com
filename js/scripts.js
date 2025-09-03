@@ -177,42 +177,140 @@ function patient_google_login() {
     });
 }
 
+function validateEmail() {
+  var email = $('#patient_sign_up_email').val().trim();
+  var email_error = $('#email_error');
+
+  // Simple regex for email format
+  var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (email === "") {
+    email_error.text("Email is required").show();
+  } else if (!regex.test(email)) {
+    email_error.text("Invalid email format").show();
+  } else {
+    email_error.hide();
+  }
+}
 
 
-// function patient_google_sign_callback() {
-//     $.ajax({
-//         type: "GET",
-//         url: endPoint, // e.g., "http://localhost/tele-medicine-base-api/"
-//         data: { action: 'google_patient_signup_api' }, // send any other params if needed
-//         dataType: "json",
-//         cache: false,
-//         success: function(payload) {
-//             if (payload.status === "success") {
-//                 // Show success message
-//                 $('#success-div').html('<div><i class="bi-check"></i></div> SIGNUP SUCCESSFUL!')
-//                     .fadeIn(500)
-//                     .delay(2000)
-//                     .fadeOut(100, function() {
-//                         if (payload.login_url) {
-//                             // Redirect to dashboard
-//                             window.location.href = payload.login_url;
-//                         } else {
-//                             alert("No dashboard URL provided.");
-//                         }
-//                     });
-//             } else {
-//                 alert(payload.message || "Google signup failed.");
-//             }
-//         },
-//         error: function(xhr, status, error) {
-//             console.error("AJAX Error:", status, error);
-//             console.error("Response Text:", xhr.responseText);
-//             alert("Error occurred: " + error + "\nCheck console for details.");
-//         }
-//     });
-// }
-//   patient_google_sign_callback();
-// // Call the function after Google OAuth redirect
+
+
+function patient_sign_up_() {
+  var action = 'patient_sign_up';
+  var btn_text = $('#sign_up_btn').html();
+  $('#sign_up_btn').html('Processing...');
+  document.getElementById('sign_up_btn').disabled = true;
+
+  // Collect inputs
+  var patient_firstname = $('#patient_first_name').val().trim();
+  var patient_lastname  = $('#patient_last_name').val().trim();
+  var patient_email     = $('#patient_sign_up_email').val().trim();
+  var patient_phone     = $('#patient_phone').val().trim();
+  var patient_dob       = $('#patient_dob').val();
+  var patient_gender    = $('#patient_gender').val();
+  var patient_country   = $('#country').val();
+  var patient_password  = $('#sign-p-password').val().trim();
+  var patient_cpassword = $('#patient_cpassword').val().trim();
+
+  // Required fields check
+  if (
+    patient_firstname == "" ||
+    patient_lastname == "" ||
+    patient_email == "" ||
+    patient_phone == "" ||
+    patient_dob == "" ||
+    patient_gender == "" ||
+    patient_country == ""  ||
+    patient_password == "" ||
+    patient_cpassword == ""
+  ) {
+    
+    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> All fields are required!')
+      .fadeIn(500).delay(5000).fadeOut(100);
+     
+
+    
+    resetBtn(btn_text);
+    return;
+  }
+
+  // Email validation
+  var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!regex.test(patient_email)) {
+    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Enter a valid email address!')
+      .fadeIn(500).delay(5000).fadeOut(100);
+    resetBtn(btn_text);
+    return;
+  }
+
+  // Phone validation (basic — Nigerian 11 digits or general international format)
+  var phoneRegex = /^[0-9\-\+\s]{7,15}$/;
+  if (!phoneRegex.test(patient_phone)) {
+    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Enter a valid phone number!')
+      .fadeIn(500).delay(5000).fadeOut(100);
+    resetBtn(btn_text);
+    return;
+  }
+
+  // Password strength check
+  var strongPassword = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+  if (!strongPassword.test(patient_password)) {
+    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Password must be at least 8 characters long and include uppercase, lowercase, number, and special character!')
+      .fadeIn(500).delay(5000).fadeOut(100);
+    resetBtn(btn_text);
+    return;
+  }
+
+  // Confirm password match
+  if (patient_password !== patient_cpassword) {
+    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Passwords do not match!')
+      .fadeIn(500).delay(5000).fadeOut(100);
+    resetBtn(btn_text);
+    return;
+  }
+
+  // Prepare form data
+  var form = $('#signupform')[0];
+  var formData = new FormData(form);
+  formData.append("action", action);
+
+  $.ajax({
+    type: "POST",
+    url: endPoint,
+    data: formData,
+    dataType: "json",
+    processData: false,
+    contentType: false,
+    cache: false,
+    success: function (response) {
+      if (response.status === "success") {
+        $('#success-div').html('<div><i class="bi-check"></i></div> ACCOUNT CREATED SUCCESSFULLY!')
+          .fadeIn(500).delay(5000).fadeOut(100);
+        $('#signupform')[0].reset();
+        setTimeout(function () {
+          window.location.href = response.redirect_url;
+        }, 2000);
+      } else {
+        $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + response.message)
+          .fadeIn(500).delay(5000).fadeOut(100);
+      }
+      resetBtn(btn_text);
+    },
+    error: function (xhr, status, error) {
+      console.error('AJAX Error:', status, error);
+      $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
+        .fadeIn(500).delay(5000).fadeOut(100);
+      resetBtn(btn_text);
+    }
+  });
+}
+
+// Helper to reset button state
+function resetBtn(btn_text) {
+  $('#sign_up_btn').html(btn_text);
+  document.getElementById('sign_up_btn').disabled = false;
+}
 
 
 

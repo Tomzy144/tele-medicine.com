@@ -21,15 +21,6 @@
     <!-- doctor login section  -->
     <div class="fill-form-div login-div" id="next_2">
         <div class="input-div animated fadeIn"> <h2>Doctor Log-In </h2>
-           <div class="social-signup">
-                <button class="social-btn google-btn" type="button">
-                    <i class="bi-google"></i> Login with Google
-                </button>
-            </div>
-              <!-- Divider -->
-            <div class="divider">
-                <span>OR</span>
-            </div>
 
             <form action='<script>endPoint</script>' id="loginform" enctype="multipart/form-data" method="post">
                 <label><i class="bi-key"></i> Please Enter Your Email Address</label><br><br>
@@ -52,19 +43,8 @@
      <div class="fill-form-div login-div" id="next_5">
         <div class="input-div">
             <h2>Doctor Sign-Up</h2>
-            <div class="social-signup">
-              <button class="social-btn google-btn" type="button" 
-                        onclick="window.location.href='http://localhost/tele-medicine-base-api?action=google_patient_signup_api'">
-                    <i class="bi-google"></i> Sign up with Google
-                </button>
 
-            </div>
-              <!-- Divider -->
-            <div class="divider">
-                <span>OR</span>
-            </div>
-
-            <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
+            <form action="<script>endPoint</script>" id="docsignupform" enctype="multipart/form-data" method="post">
                <label><i class="bi-user-o"></i> Your Name</label><br><br>
                 <div class="name-fields">
                     <input class="input-field half" id="doctor_first_name" type="text" name="firstname" placeholder="First Name" />
@@ -215,18 +195,39 @@
                 <span>OR</span>
             </div>
 
-            <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
-               <label><i class="bi-user-o"></i> Your Name</label><br><br>
+           <form action="<script>endPoint</script>" id="signupform" enctype="multipart/form-data" method="post">
+
+                <p style="font-size:14px; color:#fff; margin-bottom:20px;">
+                    Please fill out the form below to create your patient account.
+                </p>
+
+                <label><i class="bi-person"></i> Full Name</label><br><br>
                 <div class="name-fields">
                     <input class="input-field half" id="patient_first_name" type="text" name="firstname" placeholder="First Name" />
                     <input class="input-field half" id="patient_last_name" type="text" name="lastname" placeholder="Last Name" />
                 </div><br><br>
 
                 <label><i class="bi-envelope"></i> Email Address</label><br><br>
-                <input class="input-field" type="email" id="patient_sign_up_email" name="semail" placeholder="Enter Your Email Address" /><br><br>
+                <input class="input-field" type="email" id="patient_sign_up_email" name="semail" placeholder="Enter Your Email Address" onkeyup="validateEmail()" />
+                <small id="email_error" style="font-size:12px; color:orange; display:none;"></small><br><br>
 
-                <label><i class="bi-flag"></i> Select Country</label><br><br>
-                 <select id="country" name="country">
+                <label><i class="bi-telephone"></i> Phone Number</label><br><br>
+                <input class="input-field" type="tel" id="patient_phone" name="phone" placeholder="Enter Your Phone Number" /><br><br>
+
+
+
+                <label><i class="bi-calendar"></i> Date of Birth</label><br><br>
+                <input class="input-field" type="date" id="patient_dob" name="dob" /><br><br>
+
+                <label><i class="bi-gender-ambiguous"></i> Gender</label><br><br>
+                <select id="patient_gender" name="gender">
+                    <option value="" disabled selected>Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select><br><br>
+
+                <label><i class="bi-flag"></i> Country</label><br><br>
+                <select id="country" name="country">
                     <option disabled selected>Detecting your country...</option>
                 </select><br><br>
 
@@ -245,26 +246,12 @@
                     </small>
                 </div>
 
-
-                <!-- <div id="password-strength" style="width:100%; height:5px; background:#eee; border-radius:5px; margin:8px 0;">
-                    <div id="strength-bar" style="width:0%; height:100%; border-radius:5px;"></div>
-                </div>
-                <p id="strength-text" style="font-size:12px; margin-top:4px; color:#fff;">Password strength: Weak</p> -->
-
-
                 <label><i class="bi-lock"></i> Confirm Password</label><br><br>
-                <input class="input-field" type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
+                <input class="input-field" type="password" id="patient_cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
 
-          
-
-
-
-                <input name="action" value="sign_up" type="hidden" />
-                <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up as a Patient</button>
-
-            
-
+                <button class="btn" id="sign_up_btn" type="button" onclick="patient_sign_up_()" title="Sign-Up">Create Patient Account</button>
             </form>
+
           
 
            
@@ -403,6 +390,17 @@
                 let doctorCountrySelect = document.getElementById("doctor_country");
                 doctorCountrySelect.innerHTML = "<option disabled selected>Select a Country</option>";
             });
+
+
+                        //  $("#patient_phone").intlTelInput({
+                        // initialCountry: "auto",
+                        // geoIpLookup: function(success, failure) {
+                        //     $.get("https://ipinfo.io", function() {}, "jsonp").always(function(resp) {
+                        //     var countryCode = (resp && resp.country) ? resp.country : "us";
+                        //     success(countryCode);
+                        //     });
+                        // }
+                        // });
     </script>
 
 
