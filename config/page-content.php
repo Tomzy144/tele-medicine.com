@@ -160,11 +160,11 @@
 
             <form action='<script>endPoint</script>' id="loginform" enctype="multipart/form-data" method="post">
                 <label><i class="bi-key"></i> Enter Your Email Address</label><br><br>
-                <input class="input-field" type="email" id="patient_email_address" name="member_id" placeholder="Email Address"><br><br>
+                <input class="input-field" type="email" id="patient_login_email" name="member_id" placeholder="Email Address"><br><br>
                 <label><i class="bi-lock"></i> Enter Password</label><br><br>
                 <input class="input-field" type="password" id="patient_login_password" name="password" placeholder="Password"><br><br>
                 <input name="action" value="login_api" type="hidden" />
-                <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
+                <button class="btn" type="button" id="login_btn" title="Login" onclick="patient_sign_in()"> LOGIN</button>
                 <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
                 <div class="notification-div">
                     <span>New to Us?</span> <span class="in"  onclick="_next_page('next_6');">SIGN UP </span>

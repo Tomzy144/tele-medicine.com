@@ -289,6 +289,7 @@ function patient_sign_up_() {
           .fadeIn(500).delay(5000).fadeOut(100);
         $('#signupform')[0].reset();
         setTimeout(function () {
+           sessionStorage.setItem('session_id', response.session_id);
           window.location.href = response.redirect_url;
         }, 2000);
       } else {
@@ -320,58 +321,58 @@ function resetBtn(btn_text) {
 
 
 
-
-
-function _sign_in(){ 
-    var member_id = $('#email_address').val();
-    var password = $('#password').val();
-    if((member_id!='')&&(password!='')){
-        user_login(member_id,password);
+function patient_sign_in(){ 
+    var patient_email = $('#patient_login_email').val();
+    var patient_password = $('#patient_login_password').val();
+    if((patient_email!='')&&(patient_password!='')){
+        var action = 'patient_login_api';
+        var btn_text = $('#login_btn').html();
+        $('#login_btn').html('Authenticating...');
+        document.getElementById('login_btn').disabled = true;
+        var dataString = {
+            action: action,
+            patient_email: patient_email,
+            patient_password: patient_password
+        };
+        $.ajax({
+            type: "POST",
+            url: endPoint,
+            dataType: "json",
+            data: dataString,
+            cache: false,
+            success: function (response) {
+                if (response.success === true) {
+                    $('#success-div').html('<div><i class="bi-check"></i></div> LOGIN SUCCESSFUL!').fadeIn(500).delay(5000).fadeOut(100);
+                    sessionStorage.setItem('session_id', response.session_id);
+                    setTimeout(function() {
+                        window.location.href = response.redirect_url;
+                    }, 2000);
+                } else {
+                    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + response.message)
+                        .fadeIn(500).delay(5000).fadeOut(100);
+                }
+                $('#login_btn').html(btn_text);
+                document.getElementById('login_btn').disabled = false;
+            },
+            error: function (xhr, status, error) {
+                console.error('AJAX Error:', status, error);
+                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
+                    .fadeIn(500).delay(5000).fadeOut(100);
+                $('#login_btn').html(btn_text);
+                document.getElementById('login_btn').disabled = false;
+            }
+        });
     }else{
         $('#warning-div').fadeIn(500).delay(5000).fadeOut(100);
     }
-};
-
-function user_login(member_id, password) {
-  var action = 'login_api';
-  var btn_text = $('#login_btn').html();
-  $('#login_btn').html('Authenticating...');
-  document.getElementById('login_btn').disabled = true;
-  var dataString = {
-    action: action,
-    member_id: member_id,
-    password: password
-  };
-  $.ajax({
-    type: "POST",
-    url: endPoint,
-    dataType: "json",
-    data: dataString,
-    cache: false,
-    success: function (response) {
-      if (response.success === true) {
-        $('#success-div').html('<div><i class="bi-check"></i></div> LOGIN SUCCESSFUL!').fadeIn(500).delay(5000).fadeOut(100);
-        sessionStorage.setItem('session_id', response.session_id);
-        sessionStorage.setItem('role_id', response.role_id);
-        setTimeout(function() {
-          window.location.href = response.redirect_url;
-        }, 2000);
-      } else {
-        $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + response.message)
-          .fadeIn(500).delay(5000).fadeOut(100);
-      }
-      $('#login_btn').html(btn_text);
-      document.getElementById('login_btn').disabled = false;
-    },
-    error: function (xhr, status, error) {
-      console.error('AJAX Error:', status, error);
-      $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
-        .fadeIn(500).delay(5000).fadeOut(100);
-      $('#login_btn').html(btn_text);
-      document.getElementById('login_btn').disabled = false;
-    }
-  });
 }
+
+
+
+
+
+
+
 
 function _proceed_reset_password() {
   var input = $('#reset_password_email').val();
