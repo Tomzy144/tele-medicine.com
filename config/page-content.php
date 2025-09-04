@@ -28,7 +28,7 @@
                 <label><i class="bi-lock"></i> Please Enter Your Password</label><br><br>
                 <input class="input-field" type="password" id="doctor_login_password" name="doctor_login_password" placeholder="Password"><br><br>
                 <input name="action" value="login_api" type="hidden" />
-                <button class="btn" type="button" id="login_btn" title="Login" onclick="_sign_in()"> LOGIN</button>
+                <button class="btn" type="button" id="doctor_login_btn" title="Login" onclick="doctor_sign_in()"> LOGIN</button>
                 <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
 
                 <div class="notification-div">
@@ -52,7 +52,8 @@
                 </div><br><br>
 
                 <label><i class="bi-envelope"></i>  Email Address</label><br><br>
-                <input class="input-field" type="email" id="doctor_sign_up_email" name="semail" placeholder="Enter Your Email Address" /><br><br>
+                <input class="input-field" type="email" id="doctor_sign_up_email" onkeyup="DocValidateEmail();" name="semail" placeholder="Enter Your Email Address" />
+                  <small id="doc_email_error" style="font-size:12px; color:orange; display:none;"></small><br><br>
 
                 <label><i class="bi-phone"></i> Phone Number </label><br><br>
                 <input class="input-field" type="text" id="doctor_sign_up_phone" name="sphone" placeholder=" Enter Your Phone Number" /><br><br>
@@ -119,21 +120,16 @@
                 </div>
 
 
-                <!-- <div id="password-strength" style="width:100%; height:5px; background:#eee; border-radius:5px; margin:8px 0;">
-                    <div id="strength-bar" style="width:0%; height:100%; border-radius:5px;"></div>
-                </div>
-                <p id="strength-text" style="font-size:12px; margin-top:4px; color:#fff;">Password strength: Weak</p> -->
-
 
                 <label><i class="bi-lock"></i> Confirm Password</label><br><br>
-                <input class="input-field" type="password" id="cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
+                <input class="input-field" type="password" id="doctor_cpassword" name="cpassword" placeholder="Confirm Password" /><br><br>
 
           
 
 
 
                 <input name="action" value="sign_up" type="hidden" />
-                <button class="btn" id="sign_up_btn" type="button" onclick="sign_up_()" title="Sign-Up">Sign-Up As a Doctor</button>
+                <button class="btn" id="doctor_sign_up_btn" type="button" onclick="doctor_sign_up_()" title="Sign-Up">Sign-Up As a Doctor</button>
 
             
 
@@ -164,7 +160,7 @@
                 <label><i class="bi-lock"></i> Enter Password</label><br><br>
                 <input class="input-field" type="password" id="patient_login_password" name="password" placeholder="Password"><br><br>
                 <input name="action" value="login_api" type="hidden" />
-                <button class="btn" type="button" id="login_btn" title="Login" onclick="patient_sign_in()"> LOGIN</button>
+                <button class="btn" type="button" id="patient_login_btn" title="Login" onclick="patient_sign_in()"> LOGIN</button>
                 <p class="reset" onclick="_next_page('next_4');">Forgot Password? </p>
                 <div class="notification-div">
                     <span>New to Us?</span> <span class="in"  onclick="_next_page('next_6');">SIGN UP </span>

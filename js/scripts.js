@@ -193,6 +193,21 @@ function validateEmail() {
   }
 }
 
+function DocValidateEmail(){
+  var email = $('#doctor_sign_up_email').val().trim();
+   var email_error = $('#doc_email_error');
+
+  // Simple regex for email format
+  var regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (email === "") {
+    email_error.text("Email is required").show();
+  } else if (!regex.test(email)) {
+    email_error.text("Invalid email format").show();
+  } else {
+    email_error.hide();
+  }
+}
 
 
 
@@ -314,21 +329,14 @@ function resetBtn(btn_text) {
 }
 
 
-
-
-
-
-
-
-
 function patient_sign_in(){ 
     var patient_email = $('#patient_login_email').val();
     var patient_password = $('#patient_login_password').val();
     if((patient_email!='')&&(patient_password!='')){
         var action = 'patient_login_api';
-        var btn_text = $('#login_btn').html();
-        $('#login_btn').html('Authenticating...');
-        document.getElementById('login_btn').disabled = true;
+        var btn_text = $('#patient_login_btn').html();
+        $('#patient_login_btn').html('Authenticating...');
+        document.getElementById('patient_login_btn').disabled = true;
         var dataString = {
             action: action,
             patient_email: patient_email,
@@ -351,20 +359,176 @@ function patient_sign_in(){
                     $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + response.message)
                         .fadeIn(500).delay(5000).fadeOut(100);
                 }
-                $('#login_btn').html(btn_text);
-                document.getElementById('login_btn').disabled = false;
+                $('#patient_login_btn').html(btn_text);
+                document.getElementById('patient_login_btn').disabled = false;
             },
             error: function (xhr, status, error) {
                 console.error('AJAX Error:', status, error);
                 $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
                     .fadeIn(500).delay(5000).fadeOut(100);
-                $('#login_btn').html(btn_text);
-                document.getElementById('login_btn').disabled = false;
+                $('#patient_login_btn').html(btn_text);
+                document.getElementById('patient_login_btn').disabled = false;
             }
         });
     }else{
         $('#warning-div').fadeIn(500).delay(5000).fadeOut(100);
     }
+}
+
+
+
+
+function doctor_sign_up_() {
+    var firstname             = $('#doctor_first_name').val();
+    var lastname              = $('#doctor_last_name').val();
+    var semail                = $('#doctor_sign_up_email').val();
+    var sphone                = $('#doctor_sign_up_phone').val();
+    var speciality            = $('#doctor_speciality').val();
+    var other_speciality      = $('#other_speciality').val();
+    var sub_speciality        = $('#doctor_sub_speciality').val();
+    var years_experience      = $('#doctor_years_experience').val();
+    var medical_license       = $('#doctor_medical_license').val();
+    var license_issuing_state = $('#doctor_license_issuing_state').val();
+    var country               = $('#doctor_country').val();
+    var password              = $('#sign-D-password').val();
+    var cpassword             = $('#doctor_cpassword').val();
+
+    var action = "doctor_sign_up";
+
+        var requiredFields = [
+          firstname,
+          lastname,
+          semail,
+          sphone,
+          speciality,
+          (speciality === "other" ? other_speciality : "ok"), // if "other", must fill it
+          sub_speciality,
+          years_experience,
+          medical_license,
+          license_issuing_state,
+          country,
+          password,
+          cpassword
+      ];
+
+      // Check if any field is empty
+      for (var i = 0; i < requiredFields.length; i++) {
+          if (requiredFields[i] === "" || requiredFields[i] === null) {
+              $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> All fields must be filled.')
+                  .fadeIn(500).delay(5000).fadeOut(100);
+              return;
+          }
+      }
+
+    if (password !== cpassword) {
+        $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Passwords do not match.')
+            .fadeIn(500).delay(5000).fadeOut(100);
+        return;
+    }
+
+    var formData = {
+        action: action,
+        firstname: firstname,
+        lastname: lastname,
+        semail: semail,
+        sphone: sphone,
+        speciality: speciality,
+        other_speciality: other_speciality,
+        sub_speciality: sub_speciality,
+        years_experience: years_experience,
+        medical_license: medical_license,
+        license_issuing_state: license_issuing_state,
+        country: country,
+        password: password
+    };
+
+    var btn_text = $('#doctor_sign_up_btn').html();
+    $('#doctor_sign_up_btn').html('Submitting...');
+    document.getElementById('doctor_sign_up_btn').disabled = true;
+
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: formData,
+        dataType: "json",
+        success: function(response) {
+            if (response.success === true) {
+                $('#success-div').html('<div><i class="bi-check"></i></div> Registration successful!')
+                    .fadeIn(500).delay(5000).fadeOut(100);
+                    sessionStorage.setItem('session_id', response.session_id);
+                setTimeout(function() {
+
+                    window.location.href = response.redirect_url;
+                }, 2000);
+            } else {
+                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + response.message)
+                    .fadeIn(500).delay(5000).fadeOut(100);
+            }
+            $('#doctor_sign_up_btn').html(btn_text);
+            document.getElementById('doctor_sign_up_btn').disabled = false;
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error:", status, error);
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+            $('#doctor_sign_up_btn').html(btn_text);
+            document.getElementById('doctor_sign_up_btn').disabled = false;
+        }
+    });
+}
+
+
+
+function doctor_sign_in() {
+    let email = document.getElementById("doctor_login_email_address").value.trim();
+    let password = document.getElementById("doctor_login_password").value.trim();
+    let loginBtn = document.getElementById("doctor_login_btn");
+
+    if (email === "" || password === "") {
+        $('#warning-div')
+            .html('<div><i class="bi-exclamation-triangle"></i></div> Email and password are required.')
+            .fadeIn(500).delay(5000).fadeOut(100);
+        return;
+    }
+
+    loginBtn.disabled = true;
+    loginBtn.innerText = "Logging in...";
+
+    let formData = new FormData();
+    formData.append("action", "doctor_login_api");
+    formData.append("doctor_login_email_address", email);
+    formData.append("doctor_login_password", password);
+
+    fetch(endPoint, {
+        method: "POST",
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            $('#success-div')
+                .html('<div><i class="bi-check"></i></div> WELCOME BACK!')
+                .fadeIn(500).delay(2000).fadeOut(100);
+
+            setTimeout(() => {
+                window.location.href = data.redirect_url;
+            }, 2000);
+        } else {
+            $('#warning-div')
+                .html('<div><i class="bi-exclamation-triangle"></i></div> ' + (data.message || "Login failed. Try again."))
+                .fadeIn(500).delay(5000).fadeOut(100);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        $('#warning-div')
+            .html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
+            .fadeIn(500).delay(5000).fadeOut(100);
+    })
+    .finally(() => {
+        loginBtn.disabled = false;
+        loginBtn.innerText = "LOGIN";
+    });
 }
 
 
