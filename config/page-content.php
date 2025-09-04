@@ -281,7 +281,7 @@
 
    <div class="fill-form-div reset-pass-form">
             <div class="input-div"> <h2> RESET PASSWORD </h2> 
-                <p>HI <span id="admin_name"></span>, kindly enter the OTP sent to your mail (<span id="admin_email"></span>).</p>
+                <p>HI <span id="user_name"></span>, kindly enter the OTP sent to your mail (<span id="admin_email"></span>).</p>
                 <label><i class="fa fa-envelope"></i> Enter OTP</label><br><br>
                 <input class="input-field" type="OTP" name="otp" placeholder="Enter OTP"  input id="cotp" title-div="Enter OTP"/><br><br>
                 <div class="notification-div alert-div" style="margin-bottom:0px;">

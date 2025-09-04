@@ -558,11 +558,11 @@ function _proceed_reset_password() {
           dataType: 'json',
           success: function(response) {
               var scheck = response.status_id;
-              var admin_email = response.admin_email;
-              if (scheck == 1 && response.medium == "email") {
-                  _reset_password(admin_email);
+              var user_email = response.user_email;
+              if (scheck == 1 ) {
+                  _reset_password(user_email);
               } else if (scheck == 2) {
-                  $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Account Suspended<br /><span>Contact the admin for help</span>')
+                  $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Account Suspended<br /><span>Contact the Support for help</span>')
                       .fadeIn(500).delay(5000).fadeOut(100);
               } else {
                   $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div>Error: Email NOT found!<br /><span>Invalid Email Address</span>')
@@ -582,11 +582,11 @@ function _proceed_reset_password() {
   }
 }
 
-function _reset_password(admin_email) {
+function _reset_password(user_email) {
   var action = 'reset_password';
   var originalContent = $('#next_2').html();
   $('#next_2').html('<div class="loading" style="display:block;"><div class="length"></div><div class="length"></div><div class="length"></div><div class="length"></div><div class="length"></div><div class="length last"></div></div>').fadeIn(500);
-  var dataString = 'action=' + action + '&admin_email=' + admin_email;
+  var dataString = 'action=' + action + '&user_email=' + user_email;
   $.ajax({
       type: "POST",
       url: endPoint,
@@ -597,8 +597,8 @@ function _reset_password(admin_email) {
               var result = typeof response === "string" ? JSON.parse(response) : response;
               if (result.success) {
                   $('#next_2').html("");
-                  $('#admin_name').text(result.admin_name);
-                  $('#admin_email').text(result.admin_email);
+                  $('#user_name').text(result.user_name);
+                  $('#user_email').text(result.user_email);
                   $('#success-div').html('<div><i class="bi-check"></i></div>' + result.message + '!').fadeIn(500).delay(5000).fadeOut(100);
                   var show = document.querySelector(".reset-pass-form");
                   if (show) {

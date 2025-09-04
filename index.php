@@ -73,20 +73,10 @@ if($s_staff_id!=''){
         </div>
     </div>
  
-    <script>
-        superplaceholder({el: email_address,
-            sentences: ['Enter Your Email Address', 'e.g yemas@gmail.com','e.g yemashelp@gmail.com', 'e.g admin@gmail.com'],
-            options: {
-            letterDelay: 80,
-            loop: true,
-            startOnFocus: false
-        }
-    });
-    </script>
 
 <script>
         superplaceholder({el: reset_password_email,
-            sentences: ['Enter Your Email', 'e.g g yemas@gmail.com','e.g yemashelp@gmail.com'],
+            sentences: ['Enter Your Email', 'e.g telemedicine@gmail.com','e.g teleMedicineSupport@gmail.com'],
             options: {
             letterDelay: 80,
             loop: true,
