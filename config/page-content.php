@@ -281,13 +281,13 @@
 
    <div class="fill-form-div reset-pass-form">
             <div class="input-div"> <h2> RESET PASSWORD </h2> 
-                <p>HI <span id="user_name"></span>, kindly enter the OTP sent to your mail (<span id="admin_email"></span>).</p>
+                <p>HI <span id="user_name"></span>, kindly enter the OTP sent to your mail (<span id="user_email"></span>).</p>
                 <label><i class="fa fa-envelope"></i> Enter OTP</label><br><br>
                 <input class="input-field" type="OTP" name="otp" placeholder="Enter OTP"  input id="cotp" title-div="Enter OTP"/><br><br>
                 <div class="notification-div alert-div" style="margin-bottom:0px;">
                     <span><strong>OTP</strong></span> not received? 
-                    <span id="admin_id" style="display:none;"></span> <!-- Hidden span for member_id -->
-                    <span id="resend" onclick='_resend_otp("resend", document.getElementById("admin_email").innerText)'>
+                    <span id="table_name" style="display:none;"></span> <!-- Hidden span for member_id -->
+                    <span id="resend" onclick='_resend_otp(document.getElementById("table_name").innerText, document.getElementById("user_email").innerText)'>
                         <i class="bi-send"></i> <strong>RESEND OTP</strong>
                     </span>
                 </div>
@@ -299,8 +299,18 @@
                 <input class="input-field" type="password" placeholder="Confirm New Password" id="r_cpassword" name="confirmpassword" title="Confirm Password"/><br><br>
 
 
-            <!-- <div class="pswd_info">At least 8 charaters required including upper & lower cases and special characters and numbers</div>
-            <div id="pswd_info"><span>password not accepted</span></div> -->
+                <div class="pswd_info3" style="display:none;">
+                    <div class="strength-bar-container2" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
+                        <div class="strength-bar2" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
+                    </div>
+                    <p class="strength-text2" style="font-size:12px; margin-top:6px; color:#fff;">
+                        Password strength: Weak
+                    </p>
+                    <small class="strength-requirements2" style="font-size:11px; color:#fff; display:block;">
+                        At least 8 characters required including upper & lower cases, numbers, and special characters
+                    </small>
+                </div>
+
             <button class="btn" type="button"  title="Reset" id="finish-reset-btn" onclick="_finish_reset_password()"><i class="bi-check2"></i> Reset Password </button>
         </div>
     </div>

@@ -560,6 +560,7 @@ function _proceed_reset_password() {
               var scheck = response.status_id;
               var user_email = response.user_email;
               if (scheck == 1 ) {
+                
                   _reset_password(user_email);
               } else if (scheck == 2) {
                   $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Account Suspended<br /><span>Contact the Support for help</span>')
@@ -584,8 +585,8 @@ function _proceed_reset_password() {
 
 function _reset_password(user_email) {
   var action = 'reset_password';
-  var originalContent = $('#next_2').html();
-  $('#next_2').html('<div class="loading" style="display:block;"><div class="length"></div><div class="length"></div><div class="length"></div><div class="length"></div><div class="length"></div><div class="length last"></div></div>').fadeIn(500);
+  var originalContent = $('#next_4').html();
+  $('#next_4').html('<div class="loading" style="display:block;"><div class="length"></div><div class="length"></div><div class="length"></div><div class="length"></div><div class="length"></div><div class="length last"></div></div>').fadeIn(500);
   var dataString = 'action=' + action + '&user_email=' + user_email;
   $.ajax({
       type: "POST",
@@ -596,18 +597,21 @@ function _reset_password(user_email) {
           try {
               var result = typeof response === "string" ? JSON.parse(response) : response;
               if (result.success) {
-                  $('#next_2').html("");
-                  $('#user_name').text(result.user_name);
+                  $('#next_4').html("");
+                  $('#user_name').text(result.username);
                   $('#user_email').text(result.user_email);
+                  $('#table_name').text(result.table_name);
                   $('#success-div').html('<div><i class="bi-check"></i></div>' + result.message + '!').fadeIn(500).delay(5000).fadeOut(100);
                   var show = document.querySelector(".reset-pass-form");
+                 
                   if (show) {
                       show.style.display = "block";
+                    
                   }
               } else {
                   $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div>' + result.message + '<br /><span></span>').fadeIn(500).delay(5000).fadeOut(100);
                   setTimeout(function() {
-                      $('#next_2').html(originalContent).fadeIn(500);
+                      $('#next_4').html(originalContent).fadeIn(500);
                   }, 4000);
               }
           } catch (e) {
@@ -628,30 +632,68 @@ function _reset_password(user_email) {
   });
 }
 
-function _check_password(){
-    var password = $('#r_password').val();
-    if (password==''){
-    $('#pswd_info').hide();
-    $('.pswd_info').fadeIn(500);
-    }else{
-    $('.pswd_info').hide();
-        if(password.length<8){
-             $('#pswd_info').fadeIn(500);
-        }else{
-            if (password.match(/^(?=[^A-Z]*[A-Z])(?=[^!"#$%&'()*+,-.:;<=>?@[\]^_`{|}~]*[!"#$%&'()*+,-.:;<=>?@[\]^_`{|}~])(?=\D*\d).{8,}$/)) {
-                $('#pswd_info').hide();
-              } else {
-                 $('#pswd_info').fadeIn(500);
-              }
+function _check_password() {
+    let password = $('#r_password').val(); // main reset password field
+    let strengthBar = $('.pswd_info3 .strength-bar2');
+    let strengthText = $('.pswd_info3 .strength-text2');
+    let requirements = $('.pswd_info3 .strength-requirements2');
+
+    if (password.length === 0) {
+        $('.pswd_info3').fadeOut(300);
+        strengthBar.css('width', '0%').css('background', 'transparent');
+        strengthText.text('');
+        requirements.fadeIn(300); // show requirements when empty
+        return;
+    }
+
+    $('.pswd_info3').fadeIn(300);
+
+    let strength = 0;
+    if (password.length >= 8) strength += 25;
+    if (/[A-Z]/.test(password)) strength += 25;
+    if (/[0-9]/.test(password)) strength += 25;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 25;
+
+    strengthBar.css('width', strength + '%');
+
+    if (strength <= 25) {
+        strengthBar.css('background', 'red');
+        strengthText.text('Password strength: Very Weak');
+        requirements.fadeIn(300);
+    } else if (strength <= 50) {
+        strengthBar.css('background', 'orange');
+        strengthText.text('Password strength: Weak');
+        requirements.fadeIn(300);
+    } else if (strength <= 75) {
+        strengthBar.css('background', 'yellowgreen');
+        strengthText.text('Password strength: Good');
+        requirements.fadeIn(300);
+    } else {
+        strengthBar.css('background', 'green');
+        strengthText.text('Password strength: Strong');
+        requirements.fadeOut(300); // hide requirements once strong
+    }
+
+    // === Extra validation with confirm password ===
+    let confirmPassword = $('#r_cpassword').val();
+    if (confirmPassword !== '') {
+        if (password !== confirmPassword) {
+            strengthText.text('Passwords do not match').css('color', 'red');
+        } else {
+            strengthText.text('Passwords match').css('color', 'green');
         }
+    } else {
+        strengthText.css('color', '#fff'); // reset default color
     }
 }
 
-function _resend_otp(ids, admin_email) {
+
+function _resend_otp(table_name, user_email) {
+    var ids = 'resend';
   var btn_text = $('#' + ids).html();
   $('#' + ids).html('SENDING...');
   var action = 'resend_otp';
-  var dataString = 'action=' + action + '&admin_email=' + admin_email;
+  var dataString = 'action=' + action + '&user_email=' + user_email + '&table_name=' + table_name;
   $.ajax({
       type: "POST",
       url: endPoint,
@@ -683,7 +725,8 @@ function _finish_reset_password(){
   var otp = $('#cotp').val();
   var password = $('#r_password').val();
   var cpassword = $('#r_cpassword').val();
-  var admin_email= document.getElementById("admin_email").innerText;
+  var user_email= document.getElementById("user_email").innerText;
+  var table_name= document.getElementById("table_name").innerText;
   if((otp=='')||(password=='')||(cpassword=='')){
       $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Please Fill All Fields<br /><span>Fields cannot be empty</span>').fadeIn(500).delay(5000).fadeOut(100);
   }else{
@@ -695,7 +738,7 @@ function _finish_reset_password(){
           $('#finish-reset-btn').html('PROCESSING...');
           document.getElementById('finish-reset-btn').disabled=true;
       var action='finish_reset_password';
-      var dataString ='action='+ action+'&admin_email='+ admin_email+'&otp='+ otp+'&password='+ password;
+      var dataString ='action='+ action+'&user_email='+ user_email+'&otp='+ otp+'&password='+ password +'&table_name='+ table_name;
           $.ajax({
           type: "POST",
           url: endPoint,
@@ -710,9 +753,7 @@ function _finish_reset_password(){
             var remove_div = document.querySelector(".reset-pass-form");
             remove_div.style.display="none";
             _next_page('next_1');
-            setTimeout(function() {
-              window.location.reload();
-          }, 4000);
+           
           }else{
               $('#not-success-div').html('<div><i class="bi-x-circle"></i></div> INVALID OTP<br /><span>Check the OTP and try again</span>').fadeIn(500).delay(5000).fadeOut(100);
           $('#finish-reset-btn').html(btn_text);
