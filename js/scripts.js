@@ -140,13 +140,15 @@ function patient_google_sign() {
                 window.location.href = response.url;
               
             } else {
-                alert(response.message || "Unable to start Google signup.");
+                //alert(response.message || "Unable to start Google signup.");
+                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div>Unable to start Google signup.<br /><span></span>').fadeIn(500).delay(5000).fadeOut(100);
             }
         },
         error: function(xhr, status, error) {
             console.error("AJAX Error (init):", status, error);
             console.error("Response Text:", xhr.responseText);
-            alert("Error occurred: " + error + "\nCheck console for details.");
+            // alert("Error occurred: " + error + "\nCheck console for details.");
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div>Error occurred during Google signup.').fadeIn(500).delay(5000).fadeOut(100);
         }
     });
 }
@@ -166,13 +168,15 @@ function patient_google_login() {
                 window.location.href = response.url;
               
             } else {
-                alert(response.message || "Unable to start Google signup.");
+               // alert(response.message || "Unable to start Google signup.");
+                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div>Unable to start Google Login.<br /><span></span>').fadeIn(500).delay(5000).fadeOut(100);
             }
         },
         error: function(xhr, status, error) {
             console.error("AJAX Error (init):", status, error);
             console.error("Response Text:", xhr.responseText);
-            alert("Error occurred: " + error + "\nCheck console for details.");
+            // alert("Error occurred: " + error + "\nCheck console for details.");
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div>Error occurred during Google Login.').fadeIn(500).delay(5000).fadeOut(100);
         }
     });
 }

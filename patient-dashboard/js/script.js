@@ -175,7 +175,7 @@ function _upload_profile_pix(){
 		}
 }
 
-function get_member_details(sessionId) {
+function get_patient_details(sessionId) {
     var action = 'get_member_details'; 
     var member_id = sessionId;
     var dataString = {

@@ -9,9 +9,9 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <?php include 'meta.php' ?>
-    <title><?php echo $thename ?> | Member Dashboard</title>
-    <meta name="keywords" content="Member - <?php echo $thename ?>" />
-    <meta name="description" content="Member Dashboard <?php echo $thename ?>" />
+    <title><?php echo $thename ?> | Patient Dashboard</title>
+    <meta name="keywords" content="Patient - <?php echo $thename ?>" />
+    <meta name="description" content="Patient Dashboard <?php echo $thename ?>" />
 
     <script>
         var sessionId = sessionStorage.getItem('session_id');
@@ -29,15 +29,15 @@
             sessionTimeoutHandler = setTimeout(function() {
                 sessionStorage.clear();
                 alert("Session expired. Redirecting to login page...");
-                window.location.href = "../login";
+                window.location.href = "../";
             }, sessionTimeout);
         }
 
         
 
         window.onload = function() {
-            get_member_details(sessionId);
-            fetch_all_entries(sessionId);
+            get_patient_details(sessionId);
+            // fetch_all_entries(sessionId);
             resetSessionTimer();
 
             document.addEventListener('mousemove', resetSessionTimer);
