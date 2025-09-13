@@ -50,23 +50,27 @@
 </head>
 <body>
     <?php include 'alert.php'; ?>
-    <?php include 'config/sub-code.php'; ?>
     <?php include 'config/page-content.php'; ?>
 
     <header>
         <!-- Include header -->
         <?php include "headerinner.php" ?>
         <div class="logo-div">
-            <div class="text-div"><h2>TEMIDIRE COOPERATIVE</h2></div>
+            <div class="text-div"><h2>TELE-MEDICINE</h2></div>
             <div class="list-div">
                 <ul>
                     <li>
-                        <p id="first" class="first" onclick="_next_page('next_1'), fetch_all_entries(), highlite2('first');">
+                        <p  id="first" class="first active" onclick="_next_page('next_1'), fetch_all_entries(), highlite2('first');">
                             <i class="bi-speedometer"></i> Dashboard
                         </p>
                     </li>
+                     <li>
+                        <p id="second" class="first" onclick="_next_page('next_2'), fetch_all_doctors(), highlite2('second');">
+                            <i class="bi-doctor"></i> Doctors List
+                        </p>
+                    </li>
                     <li>
-                        <p id="second" class="second" onclick="_next_page('next_2'), restore_div(), highlite2('second');">
+                        <p id="third" class="second" onclick="_next_page('next_3'), restore_div(), highlite2('third');">
                             <i class="bi-person-gear"></i> Setting
                         </p>
                     </li>

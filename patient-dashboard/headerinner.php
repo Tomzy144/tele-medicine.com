@@ -1,16 +1,6 @@
 
-
-<!-- <form method="post" action="config/code.php" id="logoutform">
-    <input type="hidden" name="action" value="logout"/>    
-    <div class="nav-div" onclick="document.getElementById('logoutform').submit();">
-    <div class="header-inner-div fadeInDown animated">
-        <div class="text-div"><h1><i class="bi-speedometer"></i> Dashboard</h1></div>
-       <button class="header-btn"  type="submit" title="Log Out"><i class="bi-power"></i> Log-Out </button>
-    </div>
-</form> -->
-
-
 <div class="dash-header" id="change3">
+  <div class="header-inner-div">
     <div class="search-div" id="change4">
       <div class="search-box" id="search_box">
         <input type="text" onkeyup="entry_search();" id="search_input" placeholder="Search by Month...">  <i class="bi-search"></i>
@@ -23,7 +13,7 @@
     <div class="right-nav-div"><i class="bi bi-list" onclick="_open_menu()"></i></div> 
     <div class="personal-div">
       <div class="inner-div" id="icons">
-       
+      
 
         <div class="lang-div mail-div">
           <!-- <i class="bi-envelope"></i> -->
@@ -36,7 +26,7 @@
         </div>
 
 
-       
+      
 
 
 <label >
@@ -51,6 +41,7 @@
       </div>
 
     </div>
+  </div>
   </div>
   
             
