@@ -7,40 +7,45 @@
       </div>
     </div>
 
-    <!-- <div class="switch-div" onclick="changer();" id="change5">
-      <div class="circle"  id="x"> </div>
-    </div> -->
-    <div class="right-nav-div"><i class="bi bi-list" onclick="_open_menu()"></i></div> 
     <div class="personal-div">
       <div class="inner-div" id="icons">
       
-
-        <div class="lang-div mail-div">
-          <!-- <i class="bi-envelope"></i> -->
-        </div>
-
-
-        <div class="lang-div notification-div" onclick="pop_notification();">
-            <i class="bi-bell"></i>
-            <span id="notification-count" class="notification-badge">0</span>
-        </div>
+   
+          <div class="lang-div mail-div">
+            <i class="bi-envelope"></i>
+          </div>
 
 
-      
+          <div class="lang-div notification-div" onclick="pop_notification();">
+              <i class="bi-bell"></i>
+              <span id="notification-count" class="notification-badge">0</span>
+          </div>
 
 
-<label >
-        <div class="lang-div profile"  onclick="show_account_setting();"  action = "update_profile_pix" title="show profile">
-        <?php if ($passport==''){?>
-          <img src="<?php echo $website_url; ?>/uploaded_files/profile_pix/1.jpg" id="my_passport2" alt="profile picture"/>
-              <?php } else {?>
-                <img src="<?php echo $website_url; ?>/uploaded_files/profile_pix/<?php echo $passport; ?>" id="my_passport" alt="profile picture"/>
-              <?php } ?>
-        </div>
-</label>
+        
+
+
+          <label >
+                  <div class="lang-div profile"  onclick="show_account_setting();"  action = "update_profile_pix" title="show profile">
+                  <?php if ($passport==''){?>
+                    <img src="<?php echo $website_url; ?>/uploaded_files/patient_profile_pix/001.png" id="my_passport2" alt="profile picture"/>
+                        <?php } else {?>
+                          <img src="<?php echo $website_url; ?>/uploaded_files/profile_pix/<?php echo $passport; ?>" id="my_passport" alt="profile picture"/>
+                        <?php } ?>
+                  </div>
+                
+          </label>
+
+          <div class=" lang-div name-div">
+            <p id="patient_name">Bills Samatha </p>
+          </div>
+         
+          
       </div>
-
+    
     </div>
+   
+    
   </div>
   </div>
   

@@ -265,12 +265,12 @@ header  .dash-header .search-div .search-box{
   background: #ecf0f1;
   width: 80%;
   border: 0.4px solid ;
-  border-color: #666;
+  border-color: #2894d2;
 
   border-radius: 5px;
   text-align: center;
 
-  color: #000;
+  color: #2894d2;
 
 
   
@@ -286,12 +286,12 @@ header  .dash-header .search-div .search-box input{
   outline: 1px !important;
   font-size: 15px;
   margin-top: 1%;
-  color: #000;
+  color: #2894d2;
   /* background-color: yellow; */
 }
 
 header .dash-header .search-div .search-box i{
-  color: #000;
+  color: #2894d2;
   cursor: pointer;
   width: 15%;
   padding:10px;
@@ -351,7 +351,7 @@ header  .dash-header .personal-div .inner-div{
   width: 98%;
   height: 90%;
   text-align: center;
-  color: #d5d6d7;
+  color: #2894d2;
   /* color: #3c4141; */
   
 }
@@ -389,7 +389,6 @@ header  .dash-header .personal-div .inner-div .lang-div i{
 header  .dash-header .personal-div .inner-div .profile{
   width: 17%;
   height: 90%;
-  /* border-radius: 15px; */
   object-fit: cover;
 
 
@@ -397,9 +396,9 @@ header  .dash-header .personal-div .inner-div .profile{
 }
 header  .dash-header .personal-div .inner-div .profile img{
   /* width: 50px; */
-  border-radius: 15px;
+  /* border-radius: 15px; */
   height: 100%;
-  width: 90%;
+  width: 100%;
   /* height: 95%; */
 
 } 
