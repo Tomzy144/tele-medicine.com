@@ -66,7 +66,7 @@
                     </li>
                      <li>
                         <p id="second" class="first" onclick="_next_page('next_2'), fetch_all_doctors(), highlite2('second');">
-                            <i class="bi-doctor"></i> Doctors List
+                            <i class="bi-people"></i> Doctors List
                         </p>
                     </li>
                     <li>

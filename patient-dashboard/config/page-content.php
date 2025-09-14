@@ -14,6 +14,17 @@
     <header class="fadeInDown animated">
     </header>
 
+    <section class="dashboard-session">
+       <div class="inner-div">
+        <div class="profile-info-div">
+
+        </div>
+        <div class="activities-div">
+            
+        </div>
+       </div>
+    </section>
+
 
 
    
