@@ -21,7 +21,7 @@ body{
   margin :0px;
   font-size: 15px;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
-  background-color: #d5d6d7;
+  background-color: #c3d1eb;
   transition: 1s;
 
 }
@@ -474,42 +474,207 @@ header .header-inner-div ul{
   overflow: hidden;
   text-align: center;
   float: right;
+  overflow: auto;
 }
 
 
 .dashboard-session .inner-div {
-  width: 98%;
-  height: auto;
+ max-width: 98%;
   margin: auto;
-  display: flex;                         
-  justify-content: space-between; 
-  color: #ffffff;
-  overflow: hidden;
-  border-radius: 5px;
-   align-items: flex-start;
+  display: flex;            /* main container uses flex */
+  align-items: flex-start;  /* align to the top */
+  justify-content: space-between;
+  gap: 10px; 
 }
 
-.dashboard-session .inner-div .profile-info-div {
-  flex: 0 0 38%;
-  height: 50vh;
-  text-align: left;
+.dashboard-session .inner-div .left-column {
+  flex: 0 0 38.5%;   /* width for left column */
+  display: flex;
+  flex-direction: column;
+  gap: 10px;       /* spacing between the two small boxes */
+}
+
+.dashboard-session .inner-div .left-column .profile-info-div,
+.dashboard-session .inner-div .left-column .recent-info-div {
+  height: 40vh;
   border-radius: 5px;
   font-size: 18px;
   color: #2894d2;
   font-weight: bold;
   font-family: body-font;
   background: #fff;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  font-family: body-font;
+  color: #2894d2;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  
 }
+
 
 .dashboard-session .inner-div .activities-div {
-  flex: 0 0 60%; 
-  height: 80vh;
-  text-align: center;
+  flex: 0 0 60%;
+  height: 81vh;   /* full height */
   border-radius: 5px;
   font-size: 18px;
   color: #2894d2;
   font-weight: bold;
   font-family: body-font;
   background: #fff;
+  text-align: center;
+}
+.dashboard-session .inner-div .left-column .profile-info-div .inner-div,
+.dashboard-session .inner-div .left-column .recent-info-div .inner-div,
+.dashboard-session .inner-div .activities-div .inner-div {
+  margin: auto;
+  height: 90%;
+  width: 90%;
+  padding: 20px;
+
+
 }
 
+
+.dashboard-session .inner-div .left-column .profile-info-div .profile-card {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.dashboard-session .inner-div .left-column .profile-info-div .profile-card .img-div img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #2894d2;
+  box-shadow: 0 0 12px rgba(40, 148, 210, 0.3);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-session .inner-div .left-column .profile-info-div .profile-card .img-div img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 18px rgba(40, 148, 210, 0.5);
+}
+
+.dashboard-session .inner-div .left-column.profile-info-div .profile-card .text-div h3 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.dashboard-session .inner-div .left-column .profile-info-div .profile-card .text-div p {
+  margin: 4px 0;
+  font-size: 14px;
+  color: #555;
+  line-height: 1.4;
+}
+
+.dashboard-session .inner-div .left-column .profile-info-div .profile-card .text-div b {
+  color: #2894d2;
+  font-weight: 600;
+}
+
+
+.dashboard-session .inner-div .left-column .recent-info-div {
+  background: #fff;
+  overflow-x: hidden;     /* horizontal scrolling */
+  overflow-y: hidden;
+  white-space: nowrap;  /* keep items in a row */
+  max-width: 32vw;
+  position: relative; /* needed for sticky children */
+ 
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-scroll {
+  padding-top: 30px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;            /* keep items in single row */
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;           /* space for scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #2894d2 #f1f1f1;
+  width: 100%;
+  white-space: nowrap;  /* keep items in a row */
+}
+
+
+/* Sticky heading */
+.dashboard-session .inner-div .left-column .recent-info-div .heading-div {
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 3;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  width: 100%;
+  position: absolute;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .heading-div h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: bold;
+  color: #2894d2;
+}
+
+
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list {
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list li {
+  flex: 0 0 auto;
+  width: 200px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list li:hover {
+  background: #f9fcff;
+  transform: translateY(-3px);
+  cursor: pointer;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #2894d2;
+  margin-bottom: 10px;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info {
+  text-align: center;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .name {
+  margin: 0;
+  font-weight: bold;
+  color: #222;
+  font-size: 15px;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .specialty {
+  margin: 3px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .date {
+  font-size: 12px;
+  color: #777;
+}
