@@ -87,48 +87,51 @@
 
             <!-- Big right column -->
             <div class="activities-div">
-                <div class="inner-div">
-                     <div class="heading-div">
-                        Activities
-                     </div>
-                  
-                    <table>
-                    <thead>
-                        <tr>
-                        <th>Date</th>
-                        <th>Doctor</th>
-                        <th>Prescription</th>
-                        </tr>
-                    </thead>
-                   <tbody id="all-entries-body">
-                        <tr>
-                            <td>2025-09-10</td>
-                            <td>Dr. Adebayo Johnson</td>
-                            <td>Paracetamol 500mg (2x daily)</td>
-                        </tr>
-                        <tr>
-                            <td>2025-09-05</td>
-                            <td>Dr. Chioma Okafor</td>
-                            <td>Amoxicillin 250mg (3x daily)</td>
-                        </tr>
-                        <tr>
-                            <td>2025-08-28</td>
-                            <td>Dr. Musa Ibrahim</td>
-                            <td>Cough Syrup (10ml, 2x daily)</td>
-                        </tr>
-                        <tr>
-                            <td>2025-08-15</td>
-                            <td>Dr. Grace Oladipo</td>
-                            <td>Vitamin D Supplements</td>
-                        </tr>
-                        <tr>
-                            <td>2025-07-30</td>
-                            <td>Dr. Kelvin Mensah</td>
-                            <td>Ibuprofen 400mg (as needed)</td>
-                        </tr>
-                        </tbody>
+                <div class="right-inner-div">
+                    <div class="heading-div">
+                        <h3>Activities Log</h3>
+                        <hr>
+                    </div>
+                    <div class="table-div">
+                        <table>
+                            <thead>
+                                <tr>
+                                <th>Date</th>
+                                <th>Doctor</th>
+                                <th>Prescription</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-entries-body">
+                                <tr>
+                                    <td>2025-09-10</td>
+                                    <td>Dr. Adebayo Johnson</td>
+                                    <td>Paracetamol 500mg (2x daily)</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-09-05</td>
+                                    <td>Dr. Chioma Okafor</td>
+                                    <td>Amoxicillin 250mg (3x daily)</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-08-28</td>
+                                    <td>Dr. Musa Ibrahim</td>
+                                    <td>Cough Syrup (10ml, 2x daily)</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-08-15</td>
+                                    <td>Dr. Grace Oladipo</td>
+                                    <td>Vitamin D Supplements</td>
+                                </tr>
+                                <tr>
+                                    <td>2025-07-30</td>
+                                    <td>Dr. Kelvin Mensah</td>
+                                    <td>Ibuprofen 400mg (as needed)</td>
+                                </tr>
+                            </tbody>
 
-                    </table>
+                        </table>
+                    </div>
+                  
                 </div>
             </div>
 
