@@ -267,107 +267,8 @@ function logout() {
 
 
 
-function fetch_all_entries(session_id) {
-    var action = 'fetch_all_entries'; 
-    var member_id = session_id;
-    var dataString = { action: action, member_id: member_id };
-
-    $.ajax({
-        type: "POST",
-        url: endPoint, // Ensure endPoint is correctly defined
-        dataType: "json", // Expect JSON response
-        data: dataString, // Data being sent
-        cache: false, // Disable cache for security reasons
-        success: function (response) {
-            if (response.success) {
-                var entries = response.data;
-                var table = document.getElementById('table');
-
-                // Clear initial content of the table except the header rows
-                $("#table tr:gt(1)").remove();
-
-                var runningBalance = {
-                    shares: 0,
-                    savings: 0,
-                    loans: 0,
-                    deposits: 0
-                };
-
-                // Loop through the entries to populate the table
-                entries.forEach(function (entry) {
-                    var row = table.insertRow();
-
-                    // Insert data into cells
-                    row.insertCell(0).textContent = new Date(entry.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
-                    row.insertCell(1).textContent = entry.payment_type || 'xxxxxxx';
-
-                    // Shares
-                    var sharesDebit = parseFloat(entry.shares_debit) || 0;
-                    var sharesCredit = parseFloat(entry.shares_credit) || 0;
-                    runningBalance.shares += sharesCredit - sharesDebit;
-                    row.insertCell(2).textContent = sharesDebit || 'xxxxxxx';
-                    row.insertCell(3).textContent = sharesCredit || 'xxxxxxx';
-                    row.insertCell(4).textContent = runningBalance.shares.toFixed(2);
-
-                    // Savings
-                    var savingsDebit = parseFloat(entry.savings_debit) || 0;
-                    var savingsCredit = parseFloat(entry.savings_credit) || 0;
-                    runningBalance.savings += savingsCredit - savingsDebit;
-                    row.insertCell(5).textContent = savingsDebit || 'xxxxxxx';
-                    row.insertCell(6).textContent = savingsCredit || 'xxxxxxx';
-                    row.insertCell(7).textContent = runningBalance.savings.toFixed(2);
-
-
-
-                     // Loans data
-                    const loansDebit = parseFloat(entry.loans_debit) || 0;
-                    const loansCredit = parseFloat(entry.loans_credit) || 0;
-
-                    // Calculate running balance and ensure it is positive
-                    runningBalance.loans += loansCredit - loansDebit;
-                    var runningBalance1 = Math.abs(runningBalance.loans);
-                    // Insert values into table cells
-                    row.insertCell(8).textContent = loansDebit.toFixed(2) || 'xxxxxxx';
-                    row.insertCell(9).textContent = loansCredit.toFixed(2) || 'xxxxxxx';
-                    row.insertCell(10).textContent = runningBalance1.toFixed(2);
-
-
-
-
-                    // Loans
-                    // var loansDebit = parseFloat(entry.loans_debit) || 0;
-                    // var loansCredit = parseFloat(entry.loans_credit) || 0;
-                    // runningBalance.loans += loansCredit - loansDebit;
-                    // row.insertCell(8).textContent = loansDebit || 'xxxxxxx';
-                    // row.insertCell(9).textContent = loansCredit || 'xxxxxxx';
-                    // row.insertCell(10).textContent = runningBalance.loans.toFixed(2);
-
-                    // Deposits
-                    var depositsDebit = parseFloat(entry.deposits_debit) || 0;
-                    var depositsCredit = parseFloat(entry.deposits_credit) || 0;
-                    runningBalance.deposits += depositsCredit - depositsDebit;
-                    row.insertCell(11).textContent = depositsDebit || 'xxxxxxx';
-                    row.insertCell(12).textContent = depositsCredit || 'xxxxxxx';
-                    row.insertCell(13).textContent = runningBalance.deposits.toFixed(2);
-
-                    // Interest Remaining
-                    row.insertCell(14).textContent = entry.interest_remaining || 'N/A';
-
-                    // Receipts Remark
-                    row.insertCell(15).textContent = entry.remark || 'N/A';
-                });
-
-                // Display search box after loading entries
-                document.getElementById('search_box').style.display = "block";
-                // Display a notification once after entries load
-            } else {
-                console.log('Failed to fetch entries:', response.message);
-            }
-        },
-        error: function (xhr, status, error) {
-            console.error('Error fetching entries:', status, error);
-        }
-    });
+function fetch_all_doctors() {
+  
 }
 
 
@@ -411,27 +312,16 @@ function highlite2(id) {
 
 
 function restore_div() {
-    var option_divs = document.querySelectorAll('.option-div'); // Get all option-div elements
-    var account_setting_div = document.getElementById('account-setting-div'); // Get the account-setting-div element
-    var add_on = document.getElementById('add-on'); // Get the add-on element (heading)
-    var system_setting_div = document.getElementById('system-setting-div'); // Get the account-setting-div element
     var search_div = document.getElementById('search_box');
+    var search_Rdiv = document.getElementById('setting_id');
+    
 
-    // Loop through option divs and restore visibility
-    option_divs.forEach(function(option_div) {
-        if (option_div.style.display === "none") {
-            option_div.style.display = "block";  // Restore option divs
-            account_setting_div.style.display = "none"; // Hide account-setting div
-            system_setting_div.style.display = "none"; // Hide account-setting div
-           
-        }
-    });
-        search_div.style.display="none";
-   
+    search_div.style.display = "none";
+    search_Rdiv.style.display = "block";
 
-    // Reset the heading text
-    add_on.innerHTML = "Setting";  // Reset text to original
+
 }
+
 
 
 

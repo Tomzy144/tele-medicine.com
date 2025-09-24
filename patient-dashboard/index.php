@@ -65,12 +65,12 @@
                         </p>
                     </li>
                      <li>
-                        <p id="second" class="first" onclick="_next_page('next_2'), fetch_all_doctors(), highlite2('second');">
+                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'), fetch_all_doctors();">
                             <i class="bi-people"></i> Doctors List
                         </p>
                     </li>
                     <li>
-                        <p id="third" class="second" onclick="_next_page('next_3'), restore_div(), highlite2('third');">
+                        <p id="third" class="third" onclick="_next_page('next_3'), restore_div(), highlite2('third');">
                             <i class="bi-person-gear"></i> Setting
                         </p>
                     </li>

@@ -2,8 +2,9 @@
 <div class="dash-header" id="change3">
   <div class="header-inner-div">
     <div class="search-div" id="change4">
+      <h3 style="display: none;" id="setting_id">Settings</h3>
       <div class="search-box" id="search_box">
-        <input type="text" onkeyup="entry_search();" id="search_input" placeholder="Search by Month...">  <i class="bi-search"></i>
+        <input type="text" onkeyup="entry_search();" id="search_input" placeholder="Search for Doctors...">  <i class="bi-search"></i>
       </div>
     </div>
 
