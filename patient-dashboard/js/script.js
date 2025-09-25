@@ -322,6 +322,14 @@ function restore_div() {
 
 }
 
+function remove_heading(){
+    var search_div = document.getElementById('search_box');
+    var search_Rdiv = document.getElementById('setting_id');
+    
+
+    search_div.style.display = "block";
+    search_Rdiv.style.display = "none";
+}
 
 
 

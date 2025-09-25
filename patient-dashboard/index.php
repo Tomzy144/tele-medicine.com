@@ -60,12 +60,12 @@
             <div class="list-div">
                 <ul>
                     <li>
-                        <p  id="first" class="first active" onclick="_next_page('next_1'), fetch_all_entries(), highlite2('first');">
+                        <p  id="first" class="first active" onclick="_next_page('next_1'),highlite2('first'), remove_heading(), fetch_user() ;">
                             <i class="bi-speedometer"></i> Dashboard
                         </p>
                     </li>
                      <li>
-                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'), fetch_all_doctors();">
+                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'), remove_heading(), fetch_all_doctors();">
                             <i class="bi-people"></i> Doctors List
                         </p>
                     </li>
@@ -75,7 +75,7 @@
                         </p>
                     </li>
 
-                    <li onclick="logout();"><p><i class="bi-power"></i> Log-Out</p></li>
+                    <li id="fourth" onclick="logout(),highlite2('fourth');"><p><i class="bi-power"></i> Log-Out</p></li>
                 </ul>
             </div>
         </div>
