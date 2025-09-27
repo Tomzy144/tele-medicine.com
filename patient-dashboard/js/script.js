@@ -319,7 +319,7 @@ function chat_up2(doctor_id) {
                 document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
                 document.querySelector(".chat-user .status").textContent = doctor.status_id == 1 ? "Online" : "Offline";
                 document.getElementById('doctor_id').value = doctor_id;
-                load_chat_messages();
+                refreshChat();
             } else {
                 console.log("Doctor not found");
             }
@@ -330,30 +330,82 @@ function chat_up2(doctor_id) {
     });
 }
 
-   function load_chat_messages() {
-                var patient_id = $('#patient_id').val();
-                var doctor_id = $('#doctor_id').val();
-                $.ajax({
-                    url: endPoint,
-                    type: 'POST',
-                    data: {
-                        action: 'load_messages',
-                        patient_id: patient_id,
-                        doctor_id: doctor_id
-                    },
-                    dataType: 'json',
-                    success: function(data) {
-                        chatMessages.empty();
-                        data.forEach(msg => {
-                            createMessage(msg);
-                        });
-                        chatMessages.scrollTop(chatMessages[0].scrollHeight);
-                    },
-                    error: function(err) {
-                        console.error("Failed to load messages:", err);
+// function load_chat_messages() {
+//     var patient_id = $('#patient_id').val();
+//     var doctor_id = $('#doctor_id').val();
+//     $.ajax({
+//         url: endPoint,
+//         type: 'POST',
+//         data: {
+//             action: 'load_messages',
+//             patient_id: patient_id,
+//             doctor_id: doctor_id
+//         },
+//         dataType: 'json',
+//         success: function(data) {
+//             chatMessages.empty();
+//             data.forEach(msg => {
+//                 createMessage(msg);
+//             });
+//             chatMessages.scrollTop(chatMessages[0].scrollHeight);
+//         },
+//         error: function(err) {
+//             console.error("Failed to load messages:", err);
+//         }
+//     });
+// }
+
+
+function updateDoctorStatus() {
+    doctorId = $('#doctor_id').val();
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        data: { action: 'doctor_status', doctor_id: doctorId },
+        dataType: 'json',
+        success: function(data) {
+            $('#doctorStatus')
+                .text(data.online ? "Online" : "Offline")
+                .css("color", data.online ? "green" : "gray");
+        }
+    });
+}
+
+
+function updateTicks() {
+    const doctorId = $('#doctor_id').val();
+    const patientId = $('#patient_id').val();
+
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        data: { action: 'load_messages', patient_id: patientId, doctor_id: doctorId },
+        dataType: 'json',
+        success: function(messages) {
+            $(".message.sent .ticks").each(function() {
+                const $tickEl = $(this);
+                const msgText = $tickEl.siblings(".text").text();
+                const msg = messages.find(m => m.message === msgText);
+
+                if (msg) {
+                    const newTickHTML = getTickHTML(msg.status);
+                    // Only update if status changed
+                    if ($tickEl.html() !== newTickHTML) {
+                        $tickEl.html(newTickHTML);
                     }
-                });
-            }
+                }
+            });
+        },
+        error: function(err) {
+            console.error("Failed to update ticks:", err);
+        }
+    });
+}
+
+
+
+
+
 
 
 function view_doctor_profile(doctor_id) {
