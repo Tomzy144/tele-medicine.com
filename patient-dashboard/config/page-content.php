@@ -2,12 +2,12 @@
 <?php if ($page=='dashboard'){?>
 <?php    
   
-  $member_id=$_POST['member_id'];
+  $patient_id=$_POST['patient_id'];
 
 
    
 ?>
- 
+
     <!-- ////index  -->
     <div class="fill-form-div login-div"  id="next_1"> 
         <?php include "index-phone-div.php"?>
@@ -155,8 +155,8 @@
         
                 <div class="chat-input">
                     <textarea id="chatInput" placeholder="Type a message..."></textarea>
-                         <p style="display:block;" id="patient_id">xxxxx</p>
-                <button onclick="send_chat(document.getElementById('patient_id').textContent);" id="sendBtn">Send</button>
+                         <input class="input" type="hidden" value="" id="patient_id"  /><br><br>
+                <button onclick="send_chat();" id="sendBtn">Send</button>
                     
                 </div>
             </div>

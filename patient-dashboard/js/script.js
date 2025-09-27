@@ -194,6 +194,7 @@ function get_patient_details(sessionId) {
                 // Only full name and passport are needed
                 var patientName = patientDetails.patient_name; 
                 var patient_passport = patientDetails.patient_passport;
+                document.getElementById('patient_id').value = sessionId;
 
                 // Display the patient's name
                 document.getElementById('patient-name').textContent = patientName;

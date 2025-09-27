@@ -46,7 +46,7 @@
            
        
            
-          document.getElementById('patient_id').textContent = sessionId;
+            // document.getElementById('patient_id').textContent = sessionId;
             document.addEventListener('mousemove', resetSessionTimer);
             document.addEventListener('keypress', resetSessionTimer);
         };
