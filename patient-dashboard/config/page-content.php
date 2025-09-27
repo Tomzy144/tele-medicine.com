@@ -33,9 +33,9 @@
                                 <?php } ?>
                                 </div>
                                 <div class="text-div">
-                                <h3><?php echo $member_fullname; ?></h3>
-                                <p><b>Patient ID:</b> <?php echo $member_id; ?></p>
-                                <p><b>Age:</b> <?php echo $member_age; ?> Years</p>
+                                <h3 id="patient-name">xxxxxxx</h3>
+                                <!-- <p><b>Patient ID:</b> ?php echo $member_id; ?></p>
+                                <p><b>Age:</b> ?php echo $member_age; ?> Years</p> -->
                                 </div>
                             </div>
                         </div>

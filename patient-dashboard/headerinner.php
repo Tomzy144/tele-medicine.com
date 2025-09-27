@@ -29,7 +29,7 @@
           <label >
                   <div class="lang-div profile"  onclick="show_account_setting();"  action = "update_profile_pix" title="show profile">
                   <?php if ($passport==''){?>
-                    <img src="<?php echo $website_url; ?>/uploaded_files/patient_profile_pix/001.png" id="my_passport2" alt="profile picture"/>
+                    <img src="<?php echo $website_url; ?>/uploaded_files/patient_profile_pix/001.png" id="my_passport" alt="profile picture"/>
                         <?php } else {?>
                           <img src="<?php echo $website_url; ?>/uploaded_files/profile_pix/<?php echo $passport; ?>" id="my_passport" alt="profile picture"/>
                         <?php } ?>

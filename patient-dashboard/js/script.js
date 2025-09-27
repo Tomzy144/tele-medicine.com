@@ -176,80 +176,56 @@ function _upload_profile_pix(){
 }
 
 function get_patient_details(sessionId) {
-    var action = 'get_member_details'; 
-    var member_id = sessionId;
-    var dataString = {
-        action: action,
-        member_id: member_id,
-    };
-
     $.ajax({
         type: "POST",
-        url: endPoint, // Ensure endPoint is correctly defined
-        dataType: "json", // Expect JSON response
-        data: dataString, // Data being sent
-        cache: false, // Disable cache for security reasons
+        url: endPoint,
+        dataType: "json",
+        data: {
+            action: "get_patient_details",
+            patient_id: sessionId
+        },
+        cache: false,
         success: function (response) {
             if (response.success) {
-               
-                // Extract member details from the response
-                var memberDetails = response.data; // Now it's directly the object
+                var patientDetails = response.data;
 
-                // Get the member details
-                var memberName = memberDetails.member_name; 
-                var member_id = memberDetails.member_id; 
-                var member_passport = memberDetails.member_passport; // The file name of the passport
-                var member_phone_number = memberDetails.member_phone_number;
-                var member_bvn = memberDetails.member_bvn;
-                var occupation = memberDetails.occupation;
-                var date_of_birth = memberDetails.date_of_birth;
-                var marital_status = memberDetails.marital_status;
-                var member_nin = memberDetails.member_nin;
-                var member_address = memberDetails.member_address;
-                var member_gender = memberDetails.member_gender;
-                var member_email = memberDetails.member_email;
+                // Only full name and passport are needed
+                var patientName = patientDetails.patient_name; 
+                var patient_passport = patientDetails.patient_passport;
 
-                // Displaying the member's name in the HTML
-                document.getElementById('name').textContent = memberName; // Update the span with the member name
-                document.getElementById('member_id').value = member_id;
+                // Display the patient's name
+                document.getElementById('patient-name').textContent = patientName;
+                  document.getElementById('patient_name').textContent = patientName;
 
-                // Set the passport image source instead of value
-                var passportImage = document.getElementById('my_passport');
-                var passportImage2 = document.getElementById('my_passport2');
-                var passportImage3 = document.getElementById('my_passport3');
-                if (member_passport) {
-                    passportImage.src = '../uploaded_files/profile_pix/' + member_passport; // Set the actual passport image URL
-                    passportImage2.src = '../uploaded_files/profile_pix/' + member_passport;
-                    passportImage3.src = '../uploaded_files/profile_pix/' + member_passport;
+                // Handle passport image(s)
+                 var defaultImg = '../uploaded_files/profile_pix/11.png';
+
+                var imageUrl;
+                if (patient_passport) {
+                    // If it's already a full URL, use it directly
+                    if (patient_passport.startsWith("http://") || patient_passport.startsWith("https://")) {
+                        imageUrl = patient_passport;
+                    } else {
+                        // Otherwise assume it's just a filename
+                        imageUrl = '../uploaded_files/profile_pix/' + patient_passport;
+                    }
                 } else {
-                    passportImage.src = '../uploaded_files/profile_pix/1.jpg'; // Set the default image if no passport is available
-                    
+                    imageUrl = defaultImg;
                 }
 
-                // Populate other fields with member details
-                // document.getElementById('phone_number').value = member_phone_number;
-                // document.getElementById('bvn').value = member_bvn;
-                // document.getElementById('occupation').value = occupation;
-                // document.getElementById('member_email').value = member_email;
-                // document.getElementById('date_of_birth').value = date_of_birth;
-                // document.getElementById('marital_status').value = marital_status;
-                // document.getElementById('address').value = member_address;
-                // document.getElementById('gender').value = member_gender;
-                // document.getElementById('file_name_display').value = member_nin;
-                //document.getElementById('NIN').value = member_nin;
-               
-               
-               
+                document.getElementById('my_passport').src = imageUrl;
+                document.getElementById('my_passport2').src = imageUrl;
+                document.getElementById('change-btn').src = imageUrl;
 
-                // You can also log the member details if needed
-                // console.log('Member Details:', memberDetails); // Log the full details for debugging
-                pop_notification();
+
+
+                pop_notification(); // keep if needed
             } else {
-                console.log('Failed to fetch member details:', response.message);
+                console.log('Failed to fetch patient details:', response.message);
             }
         },
         error: function (xhr, status, error) {
-            console.error('Error fetching member details:', status, error);
+            console.error('Error fetching patient details:', status, error);
         }
     });
 }
@@ -258,7 +234,7 @@ function get_patient_details(sessionId) {
 function logout() {
     sessionStorage.clear();
     alert("Logging OUT...")
-    window.location.href = "../login";
+    window.location.href = "../";
    
 
  
@@ -374,6 +350,7 @@ function addToPrescription(el) {
   chatMessages.appendChild(reply);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
 
 
 
