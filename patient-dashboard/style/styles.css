@@ -883,11 +883,28 @@ header .header-inner-div ul{
   color: #fff;
 }
 
+
+
 .message.received {
-  background: #f1f0f0; /* softer light grey */
+  background: #e0e0e0;
   align-self: flex-start;
   border-bottom-left-radius: 0;
-  color: #222; /* dark text for readability */
+  position: relative;
+  padding-right: 30px; /* space for the button */
+}
+
+.message .reaction-btn {
+  position: absolute;
+  right: 6px;
+  top: 6px;
+  font-size: 14px;
+  color: #2894d2;
+  cursor: pointer;
+  display: none; /* hidden by default */
+}
+
+.message.received:hover .reaction-btn {
+  display: inline; /* show on hover */
 }
 
 .message.seen .ticks {

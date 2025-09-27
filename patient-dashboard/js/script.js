@@ -361,7 +361,19 @@ function open_chat(){
 }
 
 
+function addToPrescription(el) {
+  const msgText = el.parentElement.textContent.replace("➕", "").trim();
+  
+  // Simulate saving to prescription table
+  alert("Added to prescription: " + msgText);
 
+  // Optional: give feedback inside chat
+  const reply = document.createElement("div");
+  reply.className = "message sent";
+  reply.textContent = "✅ '" + msgText + "' added to prescription list.";
+  chatMessages.appendChild(reply);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
 
 
 

@@ -156,7 +156,10 @@
                         <span class="text">I'm good, thanks! How about you?</span>
                         <span class="ticks">✓✓</span>
                     </div>
-                    <div class="message received">Doing well, just chilling.</div>
+                   <div class="message received">
+                        Doing well, just chilling.
+                        <span class="reaction-btn" onclick="addToPrescription(this)">➕</span>
+                    </div>
                 </div>
 
                 <div class="chat-input">
