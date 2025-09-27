@@ -849,13 +849,37 @@ header .header-inner-div ul{
 
 /* Messages area */
 .chat-messages {
-  flex: 1; /* expands to fill space between header & input */
+  flex: 1;
   padding: 15px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   background: #fafafa;
+
+  /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #2894d2 #e0e0e0; /* thumb color | track color */
 }
+
+/* Chrome, Edge, Safari scrollbar */
+.chat-messages::-webkit-scrollbar {
+  width: 8px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: #e0e0e0; /* light track */
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: #2894d2; /* blue thumb */
+  border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: #1f7bb5; /* darker blue on hover */
+}
+
 
 .message {
   margin: 8px 0;
