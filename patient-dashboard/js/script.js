@@ -175,6 +175,8 @@ function _upload_profile_pix(){
 		}
 }
 
+
+
 function get_patient_details(sessionId) {
     $.ajax({
         type: "POST",
@@ -198,7 +200,7 @@ function get_patient_details(sessionId) {
                   document.getElementById('patient_name').textContent = patientName;
 
                 // Handle passport image(s)
-                 var defaultImg = '../uploaded_files/profile_pix/11.png';
+                 var defaultImg = rootUrl + 'uploaded_files/patient_profile_pix/11.png';
 
                 var imageUrl;
                 if (patient_passport) {
@@ -207,7 +209,7 @@ function get_patient_details(sessionId) {
                         imageUrl = patient_passport;
                     } else {
                         // Otherwise assume it's just a filename
-                        imageUrl = '../uploaded_files/profile_pix/' + patient_passport;
+                        imageUrl = rootUrl+ 'uploaded_files/patient_profile_pix/' + patient_passport;
                     }
                 } else {
                     imageUrl = defaultImg;
@@ -242,10 +244,126 @@ function logout() {
 
 
 
-
 function fetch_all_doctors() {
-  
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        dataType: "json",
+        data: { action: "fetch_all_doctors" },
+        cache: false,
+        success: function (response) {
+            var container = document.getElementById("doctors_list");
+            container.innerHTML = ""; // clear before adding
+
+            if (response.success) {
+                response.data.forEach(function (doctor) {
+                    var doctorImg = doctor.doctor_passport
+                        ? "../uploaded_files/doctor_profile_pix/" + doctor.doctor_passport
+                        : "../uploaded_files/doctor_profile_pix/doc_default.jpeg";
+
+                    var speciality = doctor.speciality 
+                        || doctor.other_speciality 
+                        || doctor.sub_speciality 
+                        || "General Practitioner";
+
+                    var card = document.createElement("div");
+                    card.className = "doctor-card";
+                    card.innerHTML = `
+                        <img src="${doctorImg}" alt="Doctor">
+                        <div class="doctor-info">
+                            <h4>Dr. ${doctor.doctor_name}</h4>
+                            <p class="role">${speciality}</p>
+                            <p class="desc">With ${doctor.years_experience}+ years of experience.</p>
+                            <div class="rating">★★★★☆</div>
+                            <div class="actions">
+                                <button class="view-btn" onclick="view_doctor_profile('${doctor.doctor_id}');" data-id="${doctor.doctor_id}">View Profile</button>
+                                <button class="chat-btn" onclick="chat_up2('${doctor.doctor_id}');" data-id="${doctor.doctor_id}">Chat Up</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+            } else {
+                container.innerHTML = `<p>No doctors found.</p>`;
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching doctors:", error);
+        }
+    });
 }
+
+function chat_up2(doctor_id) {
+    _next_page('next_1'), highlite2('first');
+
+    var activities = document.querySelector('.activities-div');
+    var chat_div = document.querySelector('.chat-div');
+    activities.style.display = 'none';
+    chat_div.style.display = 'flex';
+
+    // AJAX call to fetch doctor details
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        dataType: "json",
+        data: {
+            action: "get_doctor_details",
+            doctor_id: doctor_id
+        },
+        cache: false,
+        success: function (response) {
+            if (response.success) {
+                var doctor = response.data;
+                // update the chat header
+                document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
+                document.querySelector(".chat-user .status").textContent = doctor.status_id == 1 ? "Online" : "Offline";
+            } else {
+                console.log("Doctor not found");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching doctor:", error);
+        }
+    });
+}
+
+
+
+function view_doctor_profile(doctor_id) {
+    // Example fetch from DB or API
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: "get_doctor_profile", doctor_id: doctor_id },
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                let d = response.data;
+
+                document.getElementById("doctorName").textContent = "Dr. " + d.firstname + " " + d.lastname;
+                document.getElementById("doctorSpeciality").textContent = d.speciality || "N/A";
+                document.getElementById("doctorExperience").textContent = d.years_experience + " years";
+                document.getElementById("doctorLicense").textContent = d.medical_license;
+                document.getElementById("doctorCountry").textContent = d.country;
+
+                let img = d.doctor_passport ? "../uploaded_files/doctor_profile_pix/" + d.doctor_passport : "../uploaded_files/doctor_profile_pix/doc_default.jpeg";
+                document.getElementById("doctorImage").src = img;
+
+                document.getElementById("doctorProfileModal").style.display = "block";
+            } else {
+                alert("Doctor profile not found.");
+            }
+        },
+        error: function() {
+            alert("Error loading profile.");
+        }
+    });
+}
+
+function closeDoctorModal() {
+    document.getElementById("doctorProfileModal").style.display = "none";
+}
+
 
 
 

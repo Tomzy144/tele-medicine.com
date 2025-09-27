@@ -14,8 +14,10 @@
     <meta name="description" content="Patient Dashboard <?php echo $thename ?>" />
 
     <script>
-        var sessionId = sessionStorage.getItem('session_id');
 
+       
+        var sessionId = sessionStorage.getItem('session_id');
+      
         if (!sessionId) {
             sessionStorage.clear();
             window.location.href = "../";
@@ -40,9 +42,16 @@
             // fetch_all_entries(sessionId);
             resetSessionTimer();
 
+          
+           
+       
+           
+          document.getElementById('patient_id').textContent = sessionId;
             document.addEventListener('mousemove', resetSessionTimer);
             document.addEventListener('keypress', resetSessionTimer);
         };
+
+      
     </script>
 
 
@@ -53,6 +62,7 @@
     <?php include 'config/page-content.php'; ?>
 
     <header>
+       
         <!-- Include header -->
         <?php include "headerinner.php" ?>
         <div class="logo-div">
@@ -100,6 +110,8 @@
             };
         }
     </script>
+
+
 
     <!-- Include bottom scripts -->
     <?php include 'bottom-scripts.php' ?>

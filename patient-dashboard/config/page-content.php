@@ -28,7 +28,7 @@
                                     <img src="<?php echo $website_url; ?>/uploaded_files/patient_profile_pix/11.png" 
                                         id="my_passport2" alt="profile picture"/>
                                 <?php } else { ?>
-                                    <img src="<?php echo $website_url; ?>/uploaded_files/profile_pix/<?php echo $passport; ?>" 
+                                    <img src="<?php echo $website_url; ?>/uploaded_files/patient_profile_pix/<?php echo $passport; ?>" 
                                         id="my_passport" alt="profile picture"/>
                                 <?php } ?>
                                 </div>
@@ -136,37 +136,33 @@
                 </div>
 
 
-                <div class="chat-div">
-               <div class="chat-header">
+              <div class="chat-div">
+                <div class="chat-header">
                     <div class="chat-user">
-                        <strong>Dr. John Doe</strong><br>
-                        <span class="status">Online</span>
+                        <strong id="chatDoctorName">Dr. John Doe</strong><br>
+                        <span class="status" id="doctorStatus">Offline</span>
                     </div>
                     <div class="chat-actions">
                         <button class="icon-btn" title="Video Call">
-                        <i class="bi bi-camera-video"></i>
+                            <i class="bi bi-camera-video"></i>
                         </button>
                     </div>
                 </div>
 
-
                 <div class="chat-messages" id="chatMessages">
-                    <div class="message received">Hey! How are you?</div>
-                    <div class="message sent">
-                        <span class="text">I'm good, thanks! How about you?</span>
-                        <span class="ticks">✓✓</span>
-                    </div>
-                   <div class="message received">
-                        Doing well, just chilling.
-                        <span class="reaction-btn" onclick="addToPrescription(this)">➕</span>
-                    </div>
+                    <!-- Messages will load dynamically -->
                 </div>
-
+        
                 <div class="chat-input">
                     <textarea id="chatInput" placeholder="Type a message..."></textarea>
-                    <button onclick="send_chat();" id="sendBtn">Send</button>
+                         <p style="display:block;" id="patient_id">xxxxx</p>
+                <button onclick="send_chat(document.getElementById('patient_id').textContent);" id="sendBtn">Send</button>
+                    
                 </div>
-                </div>
+            </div>
+
+
+
 
 
 
@@ -174,136 +170,50 @@
     </div>  
 
     <div class="fill-form-div login-div"  id="next_2"> 
-       <section class="doctor-list-section">
+        <section class="doctor-list-section">
             <div class="inner-div">
                 <div class="doctor-list-heading">
-                    <div class="div-in">
-                        <h3>Doctors List</h3>
-                        <p>Browse and connect with our experienced doctors.</p>
-                    </div>
-                    
+                <div class="div-in">
+                    <h3>Doctors List</h3>
+                    <p>Browse and connect with our experienced doctors.</p>
                 </div>
-               <div class="doctor-list-div">
-                    <div class="doctor-card-container">
-                       <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                               <h4>Dr. Jon Snow</h4>
-                                <p class="role">Cardiologist</p>
-                                <p class="desc">Specialist in heart and vascular health with 10+ years of experience.</p>
-                                <div class="rating">★★★★★</div>
-                                <div class="actions">
-                                <button class="view-btn">View Profile</button>
-                                <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Tyrion Lannister</h4>
-                                <p class="role">Pediatrician</p>
-                                <p class="desc">Expert in child healthcare and wellness programs.</p>
-                                <div class="rating">★★★★☆</div>
-                                <div class="actions">
-                                <button class="view-btn">View Profile</button>
-                                <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Daenerys Targaryen</h4>
-                                <p class="role">Neurologist</p>
-                                <p class="desc">Specialist in brain and nervous system disorders with global recognition.</p>
-                                <div class="rating">★★★★★</div>
-                                <div class="actions">
-                                    <button class="view-btn">View Profile</button>
-                                    <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Jon Snow</h4>
-                                <p class="role">Cardiologist</p>
-                                <p class="desc">Dedicated to heart and vascular health with years of life-saving expertise.</p>
-                                <div class="rating">★★★★☆</div>
-                                <div class="actions">
-                                    <button class="view-btn">View Profile</button>
-                                    <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Arya Stark</h4>
-                                <p class="role">Surgeon</p>
-                                <p class="desc">Highly skilled in precision surgeries and rapid recovery techniques.</p>
-                                <div class="rating">★★★★★</div>
-                                <div class="actions">
-                                    <button class="view-btn">View Profile</button>
-                                    <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Cersei Lannister</h4>
-                                <p class="role">Oncologist</p>
-                                <p class="desc">Expert in cancer treatment and patient-centered therapy programs.</p>
-                                <div class="rating">★★★☆☆</div>
-                                <div class="actions">
-                                    <button class="view-btn">View Profile</button>
-                                    <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Sansa Stark</h4>
-                                <p class="role">Dermatologist</p>
-                                <p class="desc">Focused on skincare, aesthetics, and long-term skin health solutions.</p>
-                                <div class="rating">★★★★☆</div>
-                                <div class="actions">
-                                    <button class="view-btn">View Profile</button>
-                                    <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="doctor-card">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                            <div class="doctor-info">
-                                <h4>Dr. Khal Drogo</h4>
-                                <p class="role">Orthopedic Specialist</p>
-                                <p class="desc">Master of bone, joint, and sports injury treatments with warrior spirit.</p>
-                                <div class="rating">★★★★★</div>
-                                <div class="actions">
-                                    <button class="view-btn">View Profile</button>
-                                    <button class="chat-btn">Chat Up</button>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
-
+                <div class="doctor-list-div">
+                <div class="doctor-card-container" id="doctors_list">
+                    <!-- Doctor cards will be injected here -->
+                </div>
+                </div>
             </div>
-            
         </section>
+
+       <!-- Doctor Profile Modal -->
+        <div id="doctorProfileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeDoctorModal()">&times;</span>
+
+            <div class="profile-header">
+            <img id="doctorImage" src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
+            <div class="profile-info">
+                <h2 id="doctorName">Dr. John Doe</h2>
+                <p id="doctorSpeciality">Cardiologist</p>
+                <p><strong>Experience:</strong> <span id="doctorExperience">10 years</span></p>
+                <p><strong>License:</strong> <span id="doctorLicense">ABC123</span></p>
+            </div>
+            </div>
+
+            <div class="profile-details">
+            <p><strong>Country:</strong> <span id="doctorCountry">Nigeria</span></p>
+            </div>
+        </div>
+        </div>
+
     </div>
+
+
+   
+
+
+
 
     <div class="fill-form-div login-div"  id="next_3">
       <section class="setting-section">
@@ -384,7 +294,145 @@
 
     
    
- 
+    <script>
+             const chatMessages = document.getElementById("chatMessages");
+            const chatInput = document.getElementById("chatInput");
+            const doctorStatus = document.getElementById("doctorStatus");
+
+            // Replace with actual IDs
+            const doctorId = "doc123";
+            const patientId = "pat456";
+
+            // WebSocket setup
+            const ws = new WebSocket("ws://localhost:8080");
+
+            // Censorship regex
+            const phoneRegex = /\+?\d[\d\s-]{6,}\d/g;
+            const emailRegex = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+            const passwordRegex = /\b(password|pass|pwd|secret)\b/gi;
+
+            function censorMessage(text) {
+                return text
+                    .replace(phoneRegex, "****")
+                    .replace(emailRegex, "****")
+                    .replace(passwordRegex, "****");
+            }
+
+            // Create message element
+            function createMessage(msgData) {
+                const msg = document.createElement("div");
+                msg.className = msgData.sender === "patient" ? "message sent" : "message received";
+
+                let innerHTML = `<span class="text">${censorMessage(msgData.message)}</span>`;
+
+                if (msgData.sender === "patient") {
+                    innerHTML += `<span class="ticks">✓</span>`;
+                } else {
+                    innerHTML += `<span class="reaction-btn" onclick="addToPrescription(this)">➕</span>`;
+                }
+
+                msg.innerHTML = innerHTML;
+                chatMessages.appendChild(msg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+
+                if (msgData.sender === "patient") {
+                    const ticks = msg.querySelector(".ticks");
+                    setTimeout(() => (ticks.textContent = "✓✓"), 1000);
+                    setTimeout(() => (ticks.style.color = "blue"), 2000);
+                }
+            }
+
+            // Update doctor status
+            function updateDoctorStatus(isOnline) {
+                doctorStatus.textContent = isOnline ? "Online" : "Offline";
+                doctorStatus.style.color = isOnline ? "green" : "gray";
+            }
+
+            // Send chat message
+            function send_chat(event) {
+                if (event && event.type === "keydown") {
+                    if (event.key === "Enter" && !event.shiftKey) {
+                        event.preventDefault();
+                    } else {
+                        return;
+                    }
+                }
+
+                const text = chatInput.value.trim();
+                if (!text) return;
+
+                const msgData = {
+                    sender: "patient",
+                    message: text,
+                    patientId,
+                    doctorId,
+                    type: "chat"
+                };
+
+                createMessage(msgData);
+                ws.send(JSON.stringify(msgData));
+                chatInput.value = "";
+            }
+
+            // Press Enter to send
+            chatInput.addEventListener("keydown", send_chat);
+
+            // Handle incoming messages & status
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+
+                // Update doctor online status
+                if (data.type === "status" && data.user === "doctor" && data.id === doctorId) {
+                    updateDoctorStatus(data.online);
+                }
+
+                // Handle incoming chat messages
+                if (data.type === "chat") {
+                    // Ignore messages sent by this patient
+                    if (!(data.sender === "patient" && data.patientId === patientId)) {
+                        createMessage(data);
+                    }
+                }
+
+                // Handle reactions
+                if (data.type === "reaction") {
+                    // Update reaction button if needed
+                }
+            };
+
+            // Add to prescription function
+            function addToPrescription(btn) {
+                const messageText = btn.parentElement.querySelector(".text").textContent;
+
+                ws.send(JSON.stringify({
+                    type: "reaction",
+                    action: "add_to_prescription",
+                    message: messageText,
+                    patientId,
+                    doctorId
+                }));
+
+                btn.textContent = "✅"; // show it added
+            }
+
+            // Notify server that patient is online
+            ws.onopen = () => {
+                ws.send(JSON.stringify({
+                    type: "status",
+                    user: "patient",
+                    id: patientId
+                }));
+            };
+
+            // Optional: ping server to keep alive & check doctor status
+            setInterval(() => {
+                ws.send(JSON.stringify({ type: "ping", user: "patient", id: patientId }));
+            }, 10000);
+
+
+
+
+    </script> 
     <script>
         function readURL(input) {
         if (input.files && input.files[0]) {
@@ -449,46 +497,7 @@
         }
 
 
-            const chatMessages = document.getElementById("chatMessages");
-        const chatInput = document.getElementById("chatInput");
 
-        function send_chat(event) {
-            // Handle "Enter" vs "Shift+Enter"
-            if (event && event.type === "keydown") {
-                if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault(); // stop newline
-                } else {
-                    return; // allow Shift+Enter to work
-                }
-            }
-
-            const text = chatInput.value.trim();
-            if (!text) return;
-
-            const msg = document.createElement("div");
-            msg.className = "message sent";
-            msg.innerHTML = `<span class="text">${text}</span><span class="ticks">✓</span>`;
-            chatMessages.appendChild(msg);
-
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            chatInput.value = "";
-
-            const ticks = msg.querySelector(".ticks");
-            setTimeout(() => (ticks.textContent = "✓✓"), 1000);
-            setTimeout(() => (ticks.style.color = "blue"), 2000);
-
-            if (text.toLowerCase().includes("prescribe")) {
-                setTimeout(() => {
-                    const reply = document.createElement("div");
-                    reply.className = "message received";
-                    reply.textContent = "✅ Added to prescription list.";
-                    chatMessages.appendChild(reply);
-                    chatMessages.scrollTop = chatMessages.scrollHeight;
-                }, 1500);
-            }
-        }
-
-        chatInput.addEventListener("keydown", send_chat);
 
 
     </script>

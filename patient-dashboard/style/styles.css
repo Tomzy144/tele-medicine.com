@@ -1144,6 +1144,128 @@ header .header-inner-div ul{
   background: #e0e0e0;
 }
 
+/* Modal overlay */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 9999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Modal box */
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 600px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Close button */
+.close-btn {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+.close-btn:hover {
+  color: red;
+}
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background: rgba(0, 0, 0, 0.6);
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Modal Box */
+.modal-content {
+  background: #fff;
+  margin: 5% auto;
+  padding: 20px;
+  border-radius: 16px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0px 8px 25px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-in-out;
+  font-family: Arial, sans-serif;
+}
+
+/* Close Button */
+.close-btn {
+  float: right;
+  font-size: 24px;
+  font-weight: bold;
+  color: #666;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #000;
+}
+
+/* Profile Header */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.profile-header img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #007bff;
+}
+.profile-info h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #333;
+}
+.profile-info p {
+  margin: 6px 0;
+  color: #555;
+  font-size: 15px;
+}
+
+/* Profile Details */
+.profile-details {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 10px;
+}
+.profile-details p {
+  margin: 8px 0;
+  font-size: 15px;
+  color: #444;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { transform: translateY(30px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .setting-section {
   height: calc(100vh - 110px);
   margin: auto;
