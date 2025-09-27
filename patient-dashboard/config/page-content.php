@@ -156,7 +156,8 @@
                 <div class="chat-input">
                     <textarea id="chatInput" placeholder="Type a message..."></textarea>
                          <input class="input" type="hidden" value="" id="patient_id"  /><br><br>
-                <button onclick="send_chat();" id="sendBtn">Send</button>
+                        <input class="input" type="hidden" value="" id="doctor_id"  />
+                    <button onclick="send_chat();" id="sendBtn">Send</button>
                     
                 </div>
             </div>
@@ -295,57 +296,51 @@
     
    
     <script>
-             const chatMessages = document.getElementById("chatMessages");
-            const chatInput = document.getElementById("chatInput");
-            const doctorStatus = document.getElementById("doctorStatus");
+          $(document).ready(function() {
+            const chatMessages = $("#chatMessages");
+            const chatInput = $("#chatInput");
+            const doctorStatus = $("#doctorStatus");
 
-            // Replace with actual IDs
-            const doctorId = "doc123";
-            const patientId = "pat456";
+            const patientId = $("#patient_id").val();
+            const doctorId = $("#doctor_id").val();
+          
 
-            // WebSocket setup
-            const ws = new WebSocket("ws://localhost:8080");
-
-            // Censorship regex
-            const phoneRegex = /\+?\d[\d\s-]{6,}\d/g;
-            const emailRegex = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
-            const passwordRegex = /\b(password|pass|pwd|secret)\b/gi;
-
-            function censorMessage(text) {
-                return text
-                    .replace(phoneRegex, "****")
-                    .replace(emailRegex, "****")
-                    .replace(passwordRegex, "****");
+            // Tick rendering
+            function getTickHTML(status) {
+                switch(status) {
+                    case 'sent': return "✓";              // doctor offline
+                    case 'delivered': return "✓✓";       // doctor online
+                    case 'read': return '<span style="color:blue">✓✓</span>'; // read
+                    default: return "✓";
+                }
             }
 
-            // Create message element
+            // Censor sensitive info
+            function censorMessage(text) {
+                const phoneRegex = /\+?\d[\d\s-]{6,}\d/g;
+                const emailRegex = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
+                const passwordRegex = /\b(password|pass|pwd|secret)\b/gi;
+
+                return text.replace(phoneRegex, "****")
+                        .replace(emailRegex, "****")
+                        .replace(passwordRegex, "****");
+            }
+
+            // Display message
             function createMessage(msgData) {
-                const msg = document.createElement("div");
-                msg.className = msgData.sender === "patient" ? "message sent" : "message received";
+                const msgClass = msgData.sender === "patient" ? "message sent" : "message received";
 
                 let innerHTML = `<span class="text">${censorMessage(msgData.message)}</span>`;
 
                 if (msgData.sender === "patient") {
-                    innerHTML += `<span class="ticks">✓</span>`;
+                    innerHTML += `<span class="ticks">${getTickHTML(msgData.status)}</span>`;
                 } else {
                     innerHTML += `<span class="reaction-btn" onclick="addToPrescription(this)">➕</span>`;
                 }
 
-                msg.innerHTML = innerHTML;
-                chatMessages.appendChild(msg);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-
-                if (msgData.sender === "patient") {
-                    const ticks = msg.querySelector(".ticks");
-                    setTimeout(() => (ticks.textContent = "✓✓"), 1000);
-                    setTimeout(() => (ticks.style.color = "blue"), 2000);
-                }
-            }
-
-            // Update doctor status
-            function updateDoctorStatus(isOnline) {
-                doctorStatus.textContent = isOnline ? "Online" : "Offline";
-                doctorStatus.style.color = isOnline ? "green" : "gray";
+                const msgDiv = $("<div>").addClass(msgClass).html(innerHTML);
+                chatMessages.append(msgDiv);
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
             }
 
             // Send chat message
@@ -358,76 +353,86 @@
                     }
                 }
 
-                const text = chatInput.value.trim();
+                const text = chatInput.val().trim();
                 if (!text) return;
 
                 const msgData = {
                     sender: "patient",
                     message: text,
-                    patientId,
-                    doctorId,
-                    type: "chat"
+                    patient_id: patientId,
+                    doctor_id: doctorId,
+                    message_type: "text",
+                    action: "send_message"
                 };
 
-                createMessage(msgData);
-                ws.send(JSON.stringify(msgData));
-                chatInput.value = "";
+                // Display locally with 'sent' tick
+                createMessage({...msgData, status: "sent"});
+
+                // AJAX to backend
+                $.ajax({
+                    url: endPoint,
+                    type: 'POST',
+                    data: msgData,
+                    dataType: 'json',
+                    success: function(data) {
+                        // Update ticks dynamically
+                        const messages = $(".message.sent");
+                        messages.each(function() {
+                            const textEl = $(this).find(".text").text();
+                            if (textEl === msgData.message) {
+                                $(this).find(".ticks").html(getTickHTML(data.status));
+                            }
+                        });
+                    },
+                    error: function(err) { console.error('Message send failed:', err); }
+                });
+
+                chatInput.val("");
             }
 
-            // Press Enter to send
-            chatInput.addEventListener("keydown", send_chat);
+            // Send on Enter key or button click
+            chatInput.on("keydown", send_chat);
+            $("#sendBtn").on("click", send_chat);
 
-            // Handle incoming messages & status
-            ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-
-                // Update doctor online status
-                if (data.type === "status" && data.user === "doctor" && data.id === doctorId) {
-                    updateDoctorStatus(data.online);
-                }
-
-                // Handle incoming chat messages
-                if (data.type === "chat") {
-                    // Ignore messages sent by this patient
-                    if (!(data.sender === "patient" && data.patientId === patientId)) {
-                        createMessage(data);
-                    }
-                }
-
-                // Handle reactions
-                if (data.type === "reaction") {
-                    // Update reaction button if needed
-                }
-            };
-
-            // Add to prescription function
-            function addToPrescription(btn) {
-                const messageText = btn.parentElement.querySelector(".text").textContent;
-
-                ws.send(JSON.stringify({
-                    type: "reaction",
-                    action: "add_to_prescription",
-                    message: messageText,
-                    patientId,
-                    doctorId
-                }));
-
-                btn.textContent = "✅"; // show it added
+            // Update doctor status (example: can be fetched periodically via AJAX)
+            function updateDoctorStatus(isOnline) {
+                doctorStatus.text(isOnline ? "Online" : "Offline")
+                            .css("color", isOnline ? "green" : "gray");
             }
 
-            // Notify server that patient is online
-            ws.onopen = () => {
-                ws.send(JSON.stringify({
-                    type: "status",
-                    user: "patient",
-                    id: patientId
-                }));
-            };
-
-            // Optional: ping server to keep alive & check doctor status
+            // Example: periodically check doctor status
             setInterval(() => {
-                ws.send(JSON.stringify({ type: "ping", user: "patient", id: patientId }));
+                $.ajax({
+                    url: endPoint,
+                    type: 'POST',
+                    data: { action: 'doctor_status', doctor_id: doctorId },
+                    dataType: 'json',
+                    success: function(data) {
+                        updateDoctorStatus(data.online);
+                    }
+                });
             }, 10000);
+
+            // Expose reaction function
+            window.addToPrescription = function(btn) {
+                const messageText = $(btn).siblings(".text").text();
+
+                $.ajax({
+                    url: endPoint,
+                    type: 'POST',
+                    data: {
+                        action: "add_to_prescription",
+                        message: messageText,
+                        patient_id: patientId,
+                        doctor_id: doctorId
+                    },
+                    dataType: 'json',
+                    success: function() { $(btn).text("✅"); }
+                });
+            }
+        });
+
+
 
 
 

@@ -318,6 +318,7 @@ function chat_up2(doctor_id) {
                 // update the chat header
                 document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
                 document.querySelector(".chat-user .status").textContent = doctor.status_id == 1 ? "Online" : "Offline";
+                document.getElementById('doctor_id').value = doctor_id;
             } else {
                 console.log("Doctor not found");
             }
