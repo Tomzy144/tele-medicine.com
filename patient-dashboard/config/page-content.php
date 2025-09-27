@@ -50,32 +50,32 @@
 
                             <div class="recent-scroll">
                                 <ul class="recent-list">
-                                <li>
-                                <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                                <div class="doctor-info">
-                                    <p class="name">Dr. John Smith</p>
-                                    <p class="specialty">Cardiologist</p>
-                                    <p class="date">Last contacted: 12 Sep 2025</p>
-                                </div>
-                                </li>
-                                <li>
-                                <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                                <div class="doctor-info">
-                                    <p class="name">Dr. Sarah Lee</p>
-                                    <p class="specialty">Neurologist</p>
-                                    <p class="date">Last contacted: 10 Sep 2025</p>
-                                </div>
-                                </li>
+                                    <li onclick="open_chat();">
+                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
+                                        <div class="doctor-info">
+                                            <p class="name">Dr. John Smith</p>
+                                            <p class="specialty">Cardiologist</p>
+                                            <p class="date">Last contacted: 12 Sep 2025</p>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
+                                        <div class="doctor-info">
+                                            <p class="name">Dr. Sarah Lee</p>
+                                            <p class="specialty">Neurologist</p>
+                                            <p class="date">Last contacted: 10 Sep 2025</p>
+                                        </div>
+                                    </li>
 
-                                <li>
-                                <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                                <div class="doctor-info">
-                                    <p class="name">Dr. John Smith</p>
-                                    <p class="specialty">Neurologist</p>
-                                    <p class="date">Last contacted: 10 Sep 2025</p>
-                                </div>
-                                </li>
-                                <!-- Repeat dynamically with PHP loop -->
+                                    <li>
+                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
+                                        <div class="doctor-info">
+                                            <p class="name">Dr. John Smith</p>
+                                            <p class="specialty">Neurologist</p>
+                                            <p class="date">Last contacted: 10 Sep 2025</p>
+                                        </div>
+                                    </li>
+                                    <!-- Repeat dynamically with PHP loop -->
                                 </ul>
 
                             </div>
@@ -135,7 +135,38 @@
                     </div>
                 </div>
 
-            </div>
+
+                <div class="chat-div">
+               <div class="chat-header">
+                    <div class="chat-user">
+                        <strong>Dr. John Doe</strong><br>
+                        <span class="status">Online</span>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="icon-btn" title="Video Call">
+                        <i class="bi bi-camera-video"></i>
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message received">Hey! How are you?</div>
+                    <div class="message sent">
+                        <span class="text">I'm good, thanks! How about you?</span>
+                        <span class="ticks">✓✓</span>
+                    </div>
+                    <div class="message received">Doing well, just chilling.</div>
+                </div>
+
+                <div class="chat-input">
+                    <textarea id="chatInput" placeholder="Type a message..."></textarea>
+                    <button onclick="send_chat();" id="sendBtn">Send</button>
+                </div>
+                </div>
+
+
+
         </section>
     </div>  
 
@@ -341,6 +372,13 @@
 
     </div>
 
+     <!-- <div class="fill-form-div login-div"  id="next_4">
+        <section class="chat-section">
+
+        </section>
+
+     </div> -->
+
     
    
  
@@ -406,6 +444,50 @@
             }
         });
         }
+
+
+            const chatMessages = document.getElementById("chatMessages");
+        const chatInput = document.getElementById("chatInput");
+
+        function send_chat(event) {
+            // Handle "Enter" vs "Shift+Enter"
+            if (event && event.type === "keydown") {
+                if (event.key === "Enter" && !event.shiftKey) {
+                    event.preventDefault(); // stop newline
+                } else {
+                    return; // allow Shift+Enter to work
+                }
+            }
+
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            const msg = document.createElement("div");
+            msg.className = "message sent";
+            msg.innerHTML = `<span class="text">${text}</span><span class="ticks">✓</span>`;
+            chatMessages.appendChild(msg);
+
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            chatInput.value = "";
+
+            const ticks = msg.querySelector(".ticks");
+            setTimeout(() => (ticks.textContent = "✓✓"), 1000);
+            setTimeout(() => (ticks.style.color = "blue"), 2000);
+
+            if (text.toLowerCase().includes("prescribe")) {
+                setTimeout(() => {
+                    const reply = document.createElement("div");
+                    reply.className = "message received";
+                    reply.textContent = "✅ Added to prescription list.";
+                    chatMessages.appendChild(reply);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                }, 1500);
+            }
+        }
+
+        chatInput.addEventListener("keydown", send_chat);
+
+
     </script>
 
 

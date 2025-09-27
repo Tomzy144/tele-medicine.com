@@ -534,7 +534,8 @@ header .header-inner-div ul{
 }
 .dashboard-session .inner-div .left-column .profile-info-div .inner-div,
 .dashboard-session .inner-div .left-column .recent-info-div .inner-div,
-.dashboard-session .inner-div .activities-div .inner-div {
+.dashboard-session .inner-div .activities-div .inner-div,
+.dashboard-session .inner-div .chat-div .inner-div {
   margin: auto;
   height: 90%;
   width: 90%;
@@ -759,6 +760,197 @@ header .header-inner-div ul{
 .dashboard-session .inner-div .activities-div .right-inner-div .table-div table tr:hover {
   background-color: #f9fafc;
 }
+
+ .dashboard-session .inner-div .chat-div{
+  flex: 0 0 60%;
+  height: 81vh;   /* full height */
+  border-radius: 5px;
+  font-size: 18px;
+  color: #2894d2;
+  font-weight: bold;
+  font-family: body-font;
+  background: #fff;
+  text-align: center;
+  display: none;
+ }
+
+.dashboard-session .inner-div .chat-div .right-inner-div{
+  width: 100%;
+}
+
+
+.chat-div {
+  display: flex;
+  flex-direction: column;
+  height: 600px;          /* or 100% if parent controls height */
+  width: 380px;           /* adjust as needed */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: Arial, sans-serif;
+  background: #fafafa;
+}
+
+.chat-header {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ddd;
+  background: #f9f9f9;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* name left, icon right */
+}
+
+.chat-user strong {
+  font-size: 16px;
+}
+
+.chat-user .status {
+  font-size: 12px;
+  color: green;
+}
+
+.chat-actions {
+  display: flex;
+  align-items: center;
+}
+
+.icon-btn {
+  background: #f0f0f0;
+  border: none;
+  border-radius: 50%;     /* makes it round */
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: #075e54;         /* WhatsApp green */
+  transition: background 0.2s, color 0.2s;
+}
+
+.icon-btn:hover {
+  background: #e0e0e0;
+  color: #4CAF50;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #075e54;
+}
+
+.icon-btn:hover {
+  color: #4CAF50;
+}
+
+
+/* Messages area */
+.chat-messages {
+  flex: 1; /* expands to fill space between header & input */
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: #fafafa;
+}
+
+.message {
+  margin: 8px 0;
+  max-width: 70%;
+  padding: 10px 40px 10px 14px; /* add right padding for ticks */
+  border-radius: 8px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  position: relative;
+  font-size: 14px;
+}
+.message .ticks {
+  font-size: 12px;
+  color: #c8c8c8; /* soft grey for delivered */
+  position: absolute;
+  bottom: 6px;
+  right: 10px;
+  margin-left: 6px;
+}
+
+.message.sent {
+  background: #0b93f6; /* WhatsApp-style blue */
+  align-self: flex-end;
+  border-bottom-right-radius: 0;
+  color: #fff;
+}
+
+.message.received {
+  background: #f1f0f0; /* softer light grey */
+  align-self: flex-start;
+  border-bottom-left-radius: 0;
+  color: #222; /* dark text for readability */
+}
+
+.message.seen .ticks {
+  color: #34b7f1; /* WhatsApp tick blue */
+}
+
+
+/* Input area */
+.chat-input {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #ddd;
+  padding: 10px;
+  background: #fff;
+}
+
+.chat-input textarea {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  outline: none;
+  font-size: 14px;
+  line-height: 1.4;
+  resize: none; /* disable manual resize */
+  min-height: 40px;
+  max-height: 100px; /* prevent it from growing too big */
+  overflow-y: auto;
+  background: #f9f9f9;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.chat-input textarea:focus {
+  border: 1px solid #2894d2;
+  box-shadow: 0 0 6px rgba(40, 148, 210, 0.5); /* soft blue glow */
+  background: #fff;
+}
+
+
+
+.chat-input button {
+  margin-left: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 20px;
+  background: #2894d2;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.chat-input button:hover {
+  background: #1DA1F2;
+}
+
+
+
+
+
+
+
+
 
 .doctor-list-section{
   height: calc(100vh - 110px);

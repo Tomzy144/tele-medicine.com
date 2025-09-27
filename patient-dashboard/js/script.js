@@ -353,6 +353,21 @@ function show_system_setting() {
 }
 
 
+function open_chat(){
+    var activities = document.querySelector('.activities-div');
+    var chat_div = document.querySelector('.chat-div');
+    activities.style.display = 'none';
+    chat_div.style.display = 'flex';
+}
+
+
+
+
+
+
+
+
+
 function icon_toggle(){
     const toggle = document.getElementById('togglePassword');
     const toggle2 = document.getElementById('togglePassword2');
