@@ -344,14 +344,16 @@
             }
 
             // Load previous messages
-            function load_chat_messages() {
+           function load_chat_messages() {
+                var patient_id = $('#patient_id').val();
+                var doctor_id = $('#doctor_id').val();
                 $.ajax({
                     url: endPoint,
                     type: 'POST',
                     data: {
                         action: 'load_messages',
-                        patient_id: patientId,
-                        doctor_id: doctorId
+                        patient_id: patient_id,
+                        doctor_id: doctor_id
                     },
                     dataType: 'json',
                     success: function(data) {
