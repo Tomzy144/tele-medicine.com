@@ -296,21 +296,21 @@
     
    
     <script>
-          $(document).ready(function() {
+        $(document).ready(function() {
             const chatMessages = $("#chatMessages");
             const chatInput = $("#chatInput");
             const doctorStatus = $("#doctorStatus");
 
             const patientId = $("#patient_id").val();
             const doctorId = $("#doctor_id").val();
-          
+           
 
-            // Tick rendering
+            // Ticks display based on status
             function getTickHTML(status) {
                 switch(status) {
-                    case 'sent': return "✓";              // doctor offline
-                    case 'delivered': return "✓✓";       // doctor online
-                    case 'read': return '<span style="color:blue">✓✓</span>'; // read
+                    case 'sent': return "✓";
+                    case 'delivered': return "✓✓";
+                    case 'read': return '<span style="color:blue">✓✓</span>';
                     default: return "✓";
                 }
             }
@@ -326,7 +326,7 @@
                         .replace(passwordRegex, "****");
             }
 
-            // Display message
+            // Display a single message
             function createMessage(msgData) {
                 const msgClass = msgData.sender === "patient" ? "message sent" : "message received";
 
@@ -343,14 +343,36 @@
                 chatMessages.scrollTop(chatMessages[0].scrollHeight);
             }
 
+            // Load previous messages
+            function load_chat_messages() {
+                $.ajax({
+                    url: endPoint,
+                    type: 'POST',
+                    data: {
+                        action: 'load_messages',
+                        patient_id: patientId,
+                        doctor_id: doctorId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        chatMessages.empty();
+                        data.forEach(msg => {
+                            createMessage(msg);
+                        });
+                        chatMessages.scrollTop(chatMessages[0].scrollHeight);
+                    },
+                    error: function(err) {
+                        console.error("Failed to load messages:", err);
+                    }
+                });
+            }
+
             // Send chat message
             function send_chat(event) {
                 if (event && event.type === "keydown") {
                     if (event.key === "Enter" && !event.shiftKey) {
                         event.preventDefault();
-                    } else {
-                        return;
-                    }
+                    } else return;
                 }
 
                 const text = chatInput.val().trim();
@@ -365,7 +387,7 @@
                     action: "send_message"
                 };
 
-                // Display locally with 'sent' tick
+                // Display locally
                 createMessage({...msgData, status: "sent"});
 
                 // AJAX to backend
@@ -375,32 +397,32 @@
                     data: msgData,
                     dataType: 'json',
                     success: function(data) {
-                        // Update ticks dynamically
-                        const messages = $(".message.sent");
-                        messages.each(function() {
+                        // Update tick
+                        $(".message.sent").each(function() {
                             const textEl = $(this).find(".text").text();
                             if (textEl === msgData.message) {
                                 $(this).find(".ticks").html(getTickHTML(data.status));
                             }
                         });
                     },
-                    error: function(err) { console.error('Message send failed:', err); }
+                    error: function(err) {
+                        console.error('Message send failed:', err);
+                    }
                 });
 
                 chatInput.val("");
             }
 
-            // Send on Enter key or button click
+            // Attach send events
             chatInput.on("keydown", send_chat);
             $("#sendBtn").on("click", send_chat);
 
-            // Update doctor status (example: can be fetched periodically via AJAX)
+            // Update doctor online/offline status periodically
             function updateDoctorStatus(isOnline) {
                 doctorStatus.text(isOnline ? "Online" : "Offline")
                             .css("color", isOnline ? "green" : "gray");
             }
 
-            // Example: periodically check doctor status
             setInterval(() => {
                 $.ajax({
                     url: endPoint,
@@ -413,7 +435,7 @@
                 });
             }, 10000);
 
-            // Expose reaction function
+            // Add to prescription function
             window.addToPrescription = function(btn) {
                 const messageText = $(btn).siblings(".text").text();
 
@@ -430,7 +452,11 @@
                     success: function() { $(btn).text("✅"); }
                 });
             }
+
+            // Load messages on page load
+            load_chat_messages();
         });
+
 
 
 

@@ -319,6 +319,7 @@ function chat_up2(doctor_id) {
                 document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
                 document.querySelector(".chat-user .status").textContent = doctor.status_id == 1 ? "Online" : "Offline";
                 document.getElementById('doctor_id').value = doctor_id;
+                load_chat_messages(doctor_id);
             } else {
                 console.log("Doctor not found");
             }
@@ -328,6 +329,43 @@ function chat_up2(doctor_id) {
         }
     });
 }
+
+// function load_chat_messages(doctor_id) {
+//     const patient_id = $("#patient_id").val();
+    
+//     $.ajax({
+//         url: endPoint, // same PHP handler
+//         type: 'POST',
+//         data: {
+//             action: 'load_messages',
+//             patient_id: patient_id,
+//             doctor_id: doctor_id
+//         },
+//         dataType: 'json',
+//         success: function(data) {
+//             $("#chatMessages").empty(); // clear previous messages
+
+//             // data should be an array of messages from backend
+//             data.forEach(msg => {
+//                 createMessage({
+//                     sender: msg.sender,
+//                     message: msg.message,
+//                     status: msg.status,
+//                     patient_id: msg.patient_id,
+//                     doctor_id: msg.doctor_id,
+//                     message_type: msg.message_type
+//                 });
+//             });
+
+//             // Scroll to bottom
+//             $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+//         },
+//         error: function(err) {
+//             console.error("Failed to load messages:", err);
+//         }
+//     });
+// }
+
 
 
 
