@@ -17,7 +17,7 @@
 
 <script src="<?php echo $website_url?>patient-dashboard/js/jquery-v3.6.1.min.js"></script>
 <script src="<?php echo $website_url?>patient-dashboard/js/aos.js"></script> 
-<script src="<?php echo $website_url?>patient-dashboard/js/chat.js"></script>
+<!-- <script src="?php echo $website_url?>patient-dashboard/js/chat-script.js"></script> -->
 <script src="<?php echo $website_url?>patient-dashboard/js/script.js"></script>
 <script src="<?php echo $website_url?>patient-dashboard/js/superplaceholder.js"></script> 
 
