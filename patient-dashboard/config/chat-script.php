@@ -6,99 +6,91 @@ function refreshChat() {
     const patientId = $("#patient_id").val();
     const doctorId = $("#doctor_id").val();
 
-    // Ticks display
-    function getTickHTML(status) {
-        switch(status) {
-            case 'sent': return "✓";
-            case 'delivered': return "✓✓";
-            case 'read': return '<span style="color:blue">✓✓</span>';
-            default: return "✓";
-        }
-    }
+    // --- Tick display helper ---
+    const getTickHTML = (status) => ({
+        sent: "✓",
+        delivered: "✓✓",
+        read: '<span style="color:blue">✓✓</span>'
+    }[status] || "✓");
 
-    // Censor sensitive info
+    // --- Censor helper ---
     function censorMessage(text) {
-        const phoneRegex = /\+?\d[\d\s-]{6,}\d/g;
-        const emailRegex = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
-        const passwordRegex = /\b(password|pass|pwd|secret)\b/gi;
-        return text.replace(phoneRegex, "****")
-                   .replace(emailRegex, "****")
-                   .replace(passwordRegex, "****");
+        return text
+            .replace(/\+?\d[\d\s-]{6,}\d/g, "****")
+            .replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, "****")
+            .replace(/\b(password|pass|pwd|secret)\b/gi, "****");
     }
 
-    // Display a single message
+    // --- Render a single message ---
     function createMessage(msgData) {
         const msgClass = msgData.sender === "patient" ? "message sent" : "message received";
         let innerHTML = `<span class="text">${censorMessage(msgData.message)}</span>`;
-
-        if (msgData.sender === "patient") {
-            innerHTML += `<span class="ticks">${getTickHTML(msgData.status)}</span>`;
-        } else {
-            innerHTML += `<span class="reaction-btn" onclick="addToPrescription(this)">➕</span>`;
-        }
-
-        const msgDiv = $("<div>").addClass(msgClass).html(innerHTML);
-        chatMessages.append(msgDiv);
+        innerHTML += msgData.sender === "patient"
+            ? `<span class="ticks">${getTickHTML(msgData.status)}</span>`
+            : `<span class="reaction-btn" onclick="addToPrescription(this)">➕</span>`;
+        $("<div>").addClass(msgClass).html(innerHTML).appendTo(chatMessages);
         chatMessages.scrollTop(chatMessages[0].scrollHeight);
     }
 
-    // --- Load chat history from PHP backend ---
+    // --- Load chat history once (initial only) ---
     function loadChatHistory() {
-        $.post(endPoint, {
-            action: "load_messages",
-            patient_id: patientId,
-            doctor_id: doctorId
-        }, function(res) {
-            if (res && res.length) {
-                chatMessages.empty();
-                res.forEach(msg => createMessage(msg));
-                console.log("📝 Chat history loaded from backend");
-            }
+        $.post(endPoint, { action: "load_messages", patient_id: patientId, doctor_id: doctorId }, (res) => {
+            chatMessages.empty();
+            if (Array.isArray(res) && res.length) res.forEach(createMessage);
         }, "json");
     }
 
-    // --- Initialize WebSocket ---
-    const ws = new WebSocket("ws://localhost:8080");
+    // --- Load doctor status once (initial only) ---
+    function loadDoctorStatus() {
+        $.post(endPoint, { action: "doctor_status", doctor_id: doctorId }, (res) => {
+            updateDoctorStatus(res.online === true || res.online === "1" || res.online === 1);
+        }, "json");
+    }
 
-    ws.onopen = () => {
-        console.log("✅ Connected to WebSocket server");
+    // --- Update doctor status display ---
+    function updateDoctorStatus(online) {
+        doctorStatus.text(online ? "Online" : "Offline")
+                    .css("color", online ? "green" : "gray");
+    }
 
-        // Send patient status
-        ws.send(JSON.stringify({
-            type: "status",
-            role: "patient",
-            id: patientId,
-            doctor_id: doctorId
-        }));
+    // --- WebSocket connection (no polling) ---
+    let ws;
+    function connectWebSocket() {
+        ws = new WebSocket("ws://localhost:8080");
 
-        // Load chat history initially
-        loadChatHistory();
-    };
+        ws.onopen = () => {
+            console.log("✅ WebSocket connected");
+            ws.send(JSON.stringify({ type: "status", role: "patient", id: patientId, doctor_id: doctorId }));
 
-    ws.onclose = (event) => console.warn("❌ WebSocket closed:", event);
-    ws.onerror = (error) => console.error("⚠️ WebSocket error:", error);
+            loadChatHistory();  // initial messages
+            loadDoctorStatus(); // initial doctor status
+        };
 
-    ws.onmessage = (event) => {
-        console.log("📥 Message received:", event.data);
-        const data = JSON.parse(event.data);
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("📥 WS Message:", data);
 
-        if (data.type === "chat") {
-            // Only render messages not already sent by this patient locally
-            if (!(data.sender === "patient" && data.patient_id === patientId)) {
-                createMessage(data);
-                console.log("💬 New message displayed from server");
+            if (data.type === "chat") {
+                if (!(data.sender === "patient" && data.patient_id === patientId)) {
+                    createMessage(data);
+                }
             }
-        }
 
-        if (data.type === "status" && data.role === "doctor" && data.id === doctorId) {
-            const online = data.online;
-            doctorStatus.text(online ? "Online" : "Offline")
-                        .css("color", online ? "green" : "gray");
-            console.log(`👨‍⚕️ Doctor is ${online ? "online" : "offline"}`);
-        }
-    };
+            if (data.type === "status" && data.role === "doctor" && data.id === doctorId) {
+                updateDoctorStatus(data.online === true || data.online === "1" || data.online === 1);
+            }
+        };
 
-    // --- Send chat message ---
+        ws.onclose = () => {
+            console.warn("❌ WebSocket closed. Reconnecting in 5s...");
+            setTimeout(connectWebSocket, 5000);
+        };
+
+        ws.onerror = (err) => console.error("⚠️ WebSocket error:", err);
+    }
+    connectWebSocket();
+
+    // --- Send chat ---
     function send_chat(event) {
         if (event && event.type === "keydown" && event.key !== "Enter") return;
         event?.preventDefault();
@@ -117,19 +109,14 @@ function refreshChat() {
             timestamp: new Date().toISOString()
         };
 
-        createMessage(msgData);          // Display locally
-        ws.send(JSON.stringify(msgData)); // Send to server
-        console.log("📤 Message sent to server:", msgData);
+        createMessage(msgData);
 
-        // Persist via PHP backend
-        $.post(endPoint, {
-            action: "send_message",
-            sender: "patient",
-            patient_id: patientId,
-            doctor_id: doctorId,
-            message: text,
-            message_type: "text"
-        }, (res) => console.log("Saved to DB:", res), "json");
+        if (ws && ws.readyState === WebSocket.OPEN) {
+            ws.send(JSON.stringify(msgData));
+        }
+
+        // still save to DB
+        $.post(endPoint, { action: "send_message", ...msgData });
 
         chatInput.val("");
     }
@@ -138,14 +125,11 @@ function refreshChat() {
     $("#sendBtn").on("click", send_chat);
 
     // --- Add to prescription ---
-    window.addToPrescription = function(btn) {
+    window.addToPrescription = (btn) => {
         const messageText = $(btn).siblings(".text").text();
-        $.post(endPoint, {
-            action: "add_to_prescription",
-            message: messageText,
-            patient_id: patientId,
-            doctor_id: doctorId
-        }, (res) => $(btn).text("✅"), "json");
+        $.post(endPoint, { action: "add_to_prescription", message: messageText, patient_id: patientId, doctor_id: doctorId }, () => {
+            $(btn).text("✅");
+        }, "json");
     };
 }
 </script>
