@@ -178,6 +178,12 @@ function _upload_profile_pix(){
 
 
 function get_patient_details(sessionId) {
+      var activities = document.querySelector('.activities-div');
+    var chat_div = document.querySelector('.chat-div');
+    activities.style.display = 'flex';
+    chat_div.style.display = 'none';
+
+
     $.ajax({
         type: "POST",
         url: endPoint,
@@ -311,13 +317,6 @@ function loadPrescriptions(patient_id) {
 }
 
 
-
-
-
-
-
-
-
 function fetch_all_doctors() {
     $.ajax({
         type: "POST",
@@ -402,10 +401,6 @@ function chat_up2(doctor_id) {
         }
     });
 }
-
-
-
-
 
 
 function view_doctor_profile(doctor_id) {
@@ -560,19 +555,63 @@ function open_chat(doctor_id) {
 }
 
 
-// function addToPrescription(el) {
-//   const msgText = el.parentElement.textContent.replace("➕", "").trim();
-  
-//   // Simulate saving to prescription table
-//   alert("Added to prescription: " + msgText);
 
-//   // Optional: give feedback inside chat
-//   const reply = document.createElement("div");
-//   reply.className = "message sent";
-//   reply.textContent = "✅ '" + msgText + "' added to prescription list.";
-//   chatMessages.appendChild(reply);
-//   chatMessages.scrollTop = chatMessages.scrollHeight;
+//////////////////////////////////////
+
+// Upload image via AJAX
+function uploadImageToServer(file) {
+    var formData = new FormData();
+    var patient_id = document.getElementById('patient_id').value;
+
+    formData.append('patient_id', patient_id);
+    formData.append('passport', file);
+
+    $.ajax({
+        url: '../config/upload_passport.php',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            try {
+                var data = JSON.parse(response);
+                if (data.success) {
+                    $('#success-div').html('<div><i class="bi-check"></i></div> ' + data.message)
+                        .fadeIn(500).delay(5000).fadeOut(100);
+                } else {
+                    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + data.message)
+                        .fadeIn(500).delay(5000).fadeOut(100);
+                }
+            } catch (e) {
+                console.error('Invalid response:', response);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Image upload failed:', status, error);
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Image upload failed. Please try again.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+        }
+    });
+}
+
+// // Remove/reset image to default
+// function removeImage() {
+//     var defaultUrl = document.getElementById('my_passport').getAttribute('data-default');
+
+//     document.getElementById('my_passport').src = defaultUrl;
+//     document.getElementById('my_passport2').src = defaultUrl;
+
+//     var remove_btn = document.getElementById('remove_btn');
+//     remove_btn.disabled = true;
+//     remove_btn.style.cursor = "not-allowed";
+
+//     document.getElementById('file-input').value = '';
 // }
+// //////////////////////////////////////
+
+
+
+
 
 
 
@@ -603,68 +642,6 @@ function icon_toggle(){
     
   }
   
-
-  // Function triggered when "Change Image" button is clicked
-function changeImage() {
-    // Trigger the hidden file input when the change button is clicked
-    document.getElementById('file-input').click();
-}
-
-// Function triggered when the file input changes (i.e., when a file is selected)
-function previewImage(event) {
-    var file = event.target.files[0];
-
-    if (file) {
-        var reader = new FileReader();
-
-        // When the file is loaded, update the image preview
-        reader.onload = function(e) {
-            document.getElementById('my_passport').src = e.target.result;
-            document.getElementById('my_passport2').src = e.target.result;
-
-            // Enable the remove button after an image is selected
-            var remove_btn = document.getElementById('remove_btn');
-            remove_btn.disabled = false;
-            remove_btn.style.cursor = "pointer";
-        };
-
-        // Read the file as a data URL (base64 encoded)
-        reader.readAsDataURL(file);
-
-        // Send the image to the server
-        uploadImageToServer(file);
-    }
-}
-function uploadImageToServer(file) {
-    var member_id = $('#member_id').val();
-    var formData = new FormData();
-    // var action = "move_passport";
-    formData.append('member_id', member_id);
-    // formData.append('action', action);
-
-    formData.append('passport', file);
-    
-
-    $.ajax({
-        url:  '../config/upload_passport.php',
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(success) {
-            // Ensure response is parsed as JSON
-            if (success) {
-                $('#success-div').html('<div><i class="bi-check"></i></div> '+ success.message)
-                    .fadeIn(500).delay(5000).fadeOut(100);
-            } else {
-                // Handle failure
-                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + success.message);
-                $('#warning-div').fadeIn(500).delay(5000).fadeOut(100); // Optional: fade out warning after some time
-            }
-        },
-    });
-}
-
 
 // Function triggered when "Remove" button is clicked
 function removeImage() {

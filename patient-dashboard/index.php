@@ -72,7 +72,7 @@
             <div class="list-div">
                 <ul>
                     <li>
-                        <p  id="first" class="first active" onclick="_next_page('next_1'),highlite2('first'), remove_heading(), fetch_user() ;">
+                        <p  id="first" class="first active" onclick="_next_page('next_1'),highlite2('first'), remove_heading(), get_patient_details(sessionId);">
                             <i class="bi-speedometer"></i> Dashboard
                         </p>
                     </li>

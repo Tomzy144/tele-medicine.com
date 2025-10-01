@@ -192,22 +192,19 @@
                 <h3>Profile Settings</h3>
                 <hr>
                 <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
-                <div class="form-group">
-                    <label for="my_passport">Profile Picture</label>
-                    <div class="profile-pic-div">
-                    <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'patient_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
-                        id="change-btn" alt="Profile Picture"/>
-                    <button class="upload-btn">Change Picture</button>
-                    <div class="preview-div">
-                        <img id="preview-img" src="#" alt="Image Preview" style="display: none;"/>
+                    <div class="form-group">
+                        <label for="my_passport">Profile Picture</label>
+                        <div class="profile-pic-div">
+                        <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'patient_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
+                            id="change-btn" alt="Profile Picture"/>
+                        <button type ="button" onclick="open_file()" class="upload-btn">Change Picture</button>
+                        </div>
                     </div>
+                    <div class="form-group">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" id="full-name" name="full_name" value="<?php echo $member_fullname; ?>" required>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label for="full-name">Full Name</label>
-                    <input type="text" id="full-name" name="full_name" value="<?php echo $member_fullname; ?>" required>
-                </div>
-                <button type="submit" class="save-btn">Save Changes</button>
+                    <button type="button" class="save-btn">Save Changes</button>
                 </form>
             </div>
         </div>
@@ -314,6 +311,39 @@
             }
         });
         }
+
+        //////////////for image upload and preview /////////////
+        // Get the existing profile image
+        var changeBtn = document.getElementById("change-btn");
+
+        // Create a hidden file input
+        var fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.accept = "image/*";
+
+        // Named function to open file manager (called from button)
+        function open_file() {
+            fileInput.click(); // ✅ opens file manager
+        }
+
+        // When user selects a file, update the existing image
+        fileInput.addEventListener("change", function showSelectedImage() {
+            if (this.files && this.files[0]) {
+                var selectedFile = this.files[0];
+
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    changeBtn.src = e.target.result; // update existing image
+                };
+                reader.readAsDataURL(selectedFile);
+
+                // Upload immediately
+                uploadImageToServer(selectedFile);
+            }
+        });
+
+
+
 
 
 
