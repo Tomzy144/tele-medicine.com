@@ -4,6 +4,7 @@ const mysql = require("mysql2/promise");
 const wss = new WebSocket.Server({ port: 8080 });
 
 let db;
+const clients = new Map(); // key = userId, value = ws
 
 // Connect to MySQL
 (async () => {
@@ -21,13 +22,10 @@ let db;
   }
 })();
 
-// Broadcast helper
-function broadcast(data) {
-  wss.clients.forEach(client => {
-    if (client.readyState === WebSocket.OPEN) {
-      client.send(JSON.stringify(data));
-    }
-  });
+function sendToClient(ws, data) {
+  if (ws && ws.readyState === WebSocket.OPEN) {
+    ws.send(JSON.stringify(data));
+  }
 }
 
 wss.on("connection", ws => {
@@ -38,19 +36,50 @@ wss.on("connection", ws => {
       const data = JSON.parse(message);
       console.log("📥 Received:", data);
 
-      // Doctor logs in
+      // ---------- DOCTOR LOGIN ----------
       if (data.type === "doctor_login") {
-        await db.query("UPDATE doctor_tab SET online_status = '1' WHERE doctor_id = ?", [data.doctor_id]);
-        broadcast({ type: "doctor_status_update", doctor_id: data.doctor_id, status: "online" });
+        clients.set("doctor_" + data.doctor_id, ws);
+        await db.query("UPDATE doctor_tab SET online_status='1' WHERE doctor_id=?", [data.doctor_id]);
+
+        // Broadcast status
+        wss.clients.forEach(client => {
+          sendToClient(client, { type: "doctor_status_update", doctor_id: data.doctor_id, status: "online" });
+        });
+
+        // Send missed messages (sent or delivered)
+        const [missed] = await db.query(
+          `SELECT * FROM chat_messages WHERE doctor_id=? AND status IN ('sent','delivered')`,
+          [data.doctor_id]
+        );
+        if (missed.length) {
+          sendToClient(ws, { type: "missed_messages", data: missed });
+        }
       }
 
-      // Doctor logs out
+      // ---------- DOCTOR LOGOUT ----------
       if (data.type === "doctor_logout") {
-        await db.query("UPDATE doctor_tab SET online_status = '0' WHERE doctor_id = ?", [data.doctor_id]);
-        broadcast({ type: "doctor_status_update", doctor_id: data.doctor_id, status: "offline" });
+        clients.delete("doctor_" + data.doctor_id);
+        await db.query("UPDATE doctor_tab SET online_status='0' WHERE doctor_id=?", [data.doctor_id]);
+        wss.clients.forEach(client => {
+          sendToClient(client, { type: "doctor_status_update", doctor_id: data.doctor_id, status: "offline" });
+        });
       }
 
-      // Patient/doctor asks for history
+      // ---------- PATIENT LOGIN ----------
+      if (data.type === "patient_login") {
+        clients.set("patient_" + data.patient_id, ws);
+
+        // Send missed messages (sent or delivered)
+        const [missed] = await db.query(
+          `SELECT * FROM chat_messages WHERE patient_id=? AND status IN ('sent','delivered')`,
+          [data.patient_id]
+        );
+        if (missed.length) {
+          sendToClient(ws, { type: "missed_messages", data: missed });
+        }
+      }
+
+      // ---------- GET CHAT HISTORY ----------
       if (data.type === "get_history") {
         const [rows] = await db.query(
           `SELECT sn, doctor_id, patient_id, sender, message, message_type, status, created_at 
@@ -59,57 +88,95 @@ wss.on("connection", ws => {
            ORDER BY created_at ASC`,
           [data.doctor_id, data.patient_id]
         );
-        ws.send(JSON.stringify({ type: "history", data: rows }));
+        sendToClient(ws, { type: "history", data: rows });
       }
 
-      // Patient/doctor asks for status
+      // ---------- GET DOCTOR STATUS ----------
       if (data.type === "get_status") {
         const [rows] = await db.query("SELECT online_status FROM doctor_tab WHERE doctor_id=?", [data.doctor_id]);
         if (rows.length) {
-          ws.send(JSON.stringify({
+          sendToClient(ws, {
             type: "doctor_status_update",
             doctor_id: data.doctor_id,
-            status: rows[0].online_status === 1 ? "online" : "offline"
-          }));
+            status: rows[0].online_status == 1 ? "online" : "offline"
+          });
         }
       }
 
-      // New chat message
+      // ---------- NEW CHAT MESSAGE ----------
       if (data.type === "chat") {
-        const { doctor_id, patient_id, sender, message: msg, message_type, status } = data;
+        const { doctor_id, patient_id, sender, message: msg, message_type } = data;
 
-        try {
-          const [result] = await db.query(
-            "INSERT INTO chat_messages (doctor_id, patient_id, sender, message, message_type, status) VALUES (?, ?, ?, ?, ?, ?)",
-            [doctor_id, patient_id, sender, msg, message_type || "text", status || "sent"]
+        const [result] = await db.query(
+          "INSERT INTO chat_messages (doctor_id, patient_id, sender, message, message_type, status) VALUES (?, ?, ?, ?, ?, ?)",
+          [doctor_id, patient_id, sender, msg, message_type || "text", "sent"]
+        );
+
+        console.log("✅ Chat saved with ID:", result.insertId);
+
+        let newMsg = {
+          type: "new_message",
+          sn: result.insertId,
+          doctor_id,
+          patient_id,
+          sender,
+          message: msg,
+          message_type: message_type || "text",
+          status: "sent",
+          created_at: new Date().toISOString()
+        };
+
+        // Deliver to doctor
+        const doctorWs = clients.get("doctor_" + doctor_id);
+        if (doctorWs) {
+          await db.query("UPDATE chat_messages SET status='delivered' WHERE sn=?", [result.insertId]);
+          newMsg.status = "delivered";
+          sendToClient(doctorWs, newMsg);
+
+          // Notify sender
+          const senderKey = sender === "doctor" ? "doctor_" + doctor_id : "patient_" + patient_id;
+          const senderWs = clients.get(senderKey);
+          if (senderWs) {
+            sendToClient(senderWs, { type: "message_delivered", message_id: result.insertId, delivered_to: "doctor" });
+          }
+        }
+
+        // Deliver to patient
+        const patientWs = clients.get("patient_" + patient_id);
+        if (patientWs) {
+          if (sender === "doctor") {
+            await db.query("UPDATE chat_messages SET status='delivered' WHERE sn=?", [result.insertId]);
+            newMsg.status = "delivered";
+          }
+          sendToClient(patientWs, newMsg);
+
+          const senderKey = sender === "doctor" ? "doctor_" + doctor_id : "patient_" + patient_id;
+          const senderWs = clients.get(senderKey);
+          if (senderWs) {
+            sendToClient(senderWs, { type: "message_delivered", message_id: result.insertId, delivered_to: "patient" });
+          }
+        }
+      }
+
+      // ---------- MARK MESSAGES AS SEEN ----------
+      if (data.type === "mark_seen") {
+        const { message_ids, seen_by } = data; // array of sn
+
+        if (Array.isArray(message_ids) && message_ids.length > 0) {
+          await db.query(
+            `UPDATE chat_messages SET status='seen' WHERE sn IN (?) AND sender!=?`,
+            [message_ids, seen_by]
           );
 
-          console.log("✅ Chat saved with ID:", result.insertId);
-
-          const newMsg = {
-            type: "new_message",
-            sn: result.insertId,
-            doctor_id,
-            patient_id,
-            sender,
-            message: msg,
-            message_type: message_type || "text",
-            status: status || "sent",
-            created_at: new Date().toISOString()
+          const updateNotice = {
+            type: "messages_seen",
+            message_ids,
+            seen_by
           };
 
-          broadcast(newMsg);
-        } catch (err) {
-          console.error("❌ DB Insert Error:", err.sqlMessage || err);
-          ws.send(JSON.stringify({ type: "error", message: "DB insert failed" }));
+          // Notify all connected clients
+          wss.clients.forEach(client => sendToClient(client, updateNotice));
         }
-      }
-
-      // Add to prescription
-      if (data.type === "add_to_prescription") {
-        console.log(`📝 Prescription add: ${data.message}`);
-        // You can insert into prescriptions table here if needed
-        ws.send(JSON.stringify({ type: "prescription_added", success: true }));
       }
 
     } catch (err) {
@@ -117,7 +184,26 @@ wss.on("connection", ws => {
     }
   });
 
+  // ---------- WEBSOCKET CLOSE ----------
   ws.on("close", () => {
     console.log("❌ Client disconnected");
+
+    for (const [userId, clientWs] of clients.entries()) {
+      if (clientWs === ws) {
+        clients.delete(userId);
+
+        // Doctor disconnect
+        if (userId.startsWith("doctor_")) {
+          const doctorId = userId.split("_")[1];
+          db.query("UPDATE doctor_tab SET online_status='0' WHERE doctor_id=?", [doctorId]);
+          wss.clients.forEach(client => {
+            sendToClient(client, { type: "doctor_status_update", doctor_id: doctorId, status: "offline" });
+          });
+        }
+
+        break;
+      }
+    }
   });
+
 });

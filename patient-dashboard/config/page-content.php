@@ -48,37 +48,12 @@
                                 <h3>Recently Contacted Doctors</h3>
                             </div>
 
-                            <div class="recent-scroll">
+                          <div class="recent-scroll">
                                 <ul class="recent-list">
-                                    <li onclick="open_chat();">
-                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                                        <div class="doctor-info">
-                                            <p class="name">Dr. John Smith</p>
-                                            <p class="specialty">Cardiologist</p>
-                                            <p class="date">Last contacted: 12 Sep 2025</p>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                                        <div class="doctor-info">
-                                            <p class="name">Dr. Sarah Lee</p>
-                                            <p class="specialty">Neurologist</p>
-                                            <p class="date">Last contacted: 10 Sep 2025</p>
-                                        </div>
-                                    </li>
-
-                                    <li>
-                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor">
-                                        <div class="doctor-info">
-                                            <p class="name">Dr. John Smith</p>
-                                            <p class="specialty">Neurologist</p>
-                                            <p class="date">Last contacted: 10 Sep 2025</p>
-                                        </div>
-                                    </li>
-                                    <!-- Repeat dynamically with PHP loop -->
+                                    <!-- Populated by JS -->
                                 </ul>
-
                             </div>
+
                             
                         </div>
                     

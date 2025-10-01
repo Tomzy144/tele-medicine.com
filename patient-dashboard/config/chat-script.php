@@ -10,7 +10,7 @@ function refreshChat() {
     const getTickHTML = (status) => ({
         sent: "✓",
         delivered: "✓✓",
-        read: '<span style="color:blue">✓✓</span>'
+        seen: '<span style="color:blue">✓✓</span>'
     }[status] || "✓");
 
     // --- Censor helper ---
@@ -25,9 +25,13 @@ function refreshChat() {
     function createMessage(msgData) {
         const msgClass = msgData.sender === "patient" ? "message sent" : "message received";
         let innerHTML = `<span class="text">${censorMessage(msgData.message)}</span>`;
-        innerHTML += msgData.sender === "patient"
-            ? `<span class="ticks">${getTickHTML(msgData.status)}</span>`
-            : `<span class="reaction-btn" onclick="addToPrescription(this)">➕</span>`;
+
+        if (msgData.sender === "patient") {
+            innerHTML += `<span class="ticks">${getTickHTML(msgData.status)}</span>`;
+        } else {
+            innerHTML += `<span class="reaction-btn" onclick="addToPrescription(this)">➕</span>`;
+        }
+
         $("<div>").addClass(msgClass).html(innerHTML).appendTo(chatMessages);
         chatMessages.scrollTop(chatMessages[0].scrollHeight);
     }
@@ -46,6 +50,9 @@ function refreshChat() {
         ws.onopen = () => {
             console.log("✅ WebSocket connected");
 
+            // login patient
+            ws.send(JSON.stringify({ type: "patient_login", patient_id: patientId }));
+
             // ask server for chat history & doctor status
             ws.send(JSON.stringify({ type: "get_history", doctor_id: doctorId, patient_id: patientId }));
             ws.send(JSON.stringify({ type: "get_status", doctor_id: doctorId }));
@@ -55,17 +62,44 @@ function refreshChat() {
             const data = JSON.parse(event.data);
             console.log("📥 WS Message:", data);
 
-            if (data.type === "history") {
+            if (data.type === "history" || data.type === "missed_messages") {
                 chatMessages.empty();
                 data.data.forEach(createMessage);
+
+                // mark all messages as seen after rendering
+                const unseenIds = data.data.filter(m => m.sender === "doctor" && m.status !== "seen").map(m => m.sn);
+                if (unseenIds.length) {
+                    ws.send(JSON.stringify({ type: "mark_seen", message_ids: unseenIds, seen_by: "patient" }));
+                }
             }
 
             if (data.type === "new_message") {
                 createMessage(data);
+
+                // mark doctor's messages as seen immediately
+                if (data.sender === "doctor" && data.status !== "seen") {
+                    ws.send(JSON.stringify({ type: "mark_seen", message_ids: [data.sn], seen_by: "patient" }));
+                }
             }
 
-            if (data.type === "doctor_status_update" && data.doctor_id === doctorId) {
+            if (data.type === "doctor_status_update" && data.doctor_id == doctorId) {
                 updateDoctorStatus(data.status === "online");
+            }
+
+            if (data.type === "message_delivered") {
+                // update tick for patient's own messages
+                chatMessages.find(".message.sent").each(function() {
+                    const tick = $(this).find(".ticks");
+                    tick.html(getTickHTML("delivered"));
+                });
+            }
+
+            if (data.type === "messages_seen") {
+                // update tick to blue for messages seen by doctor
+                chatMessages.find(".message.sent").each(function() {
+                    const tick = $(this).find(".ticks");
+                    tick.html(getTickHTML("seen"));
+                });
             }
 
             if (data.type === "prescription_added") {
@@ -100,7 +134,6 @@ function refreshChat() {
             status: "sent"
         };
 
-        // send only (server saves + broadcasts back)
         if (ws && ws.readyState === WebSocket.OPEN) {
             ws.send(JSON.stringify(msgData));
         }

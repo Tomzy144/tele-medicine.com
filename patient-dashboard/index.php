@@ -41,6 +41,7 @@
             get_patient_details(sessionId);
             // fetch_all_entries(sessionId);
             resetSessionTimer();
+            fetch_recently_contacted_doc(sessionId);
 
           
            

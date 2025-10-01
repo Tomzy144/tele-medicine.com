@@ -242,6 +242,45 @@ function logout() {
 
  
 }
+function fetch_recently_contacted_doc(patient_id) {
+    $.ajax({
+        url: endPoint,
+        type: "POST",
+        data: {  
+            action: "fetch_recently_contacted_doc",
+            patient_id: patient_id 
+        },
+        dataType: "json",
+        success: function(doctors) {
+            let html = "";
+
+            if (doctors.length > 0) {
+                doctors.forEach(doc => {
+                    html += `
+                        <li onclick="open_chat('${doc.doctor_id}')">
+                            <img src="${doc.doctor_passport}" alt="Doctor">
+                            <div class="doctor-info">
+                                <p class="name">${doc.doctor_fullname}</p>
+                                <p class="specialty">${doc.speciality}</p>
+                                <p class="date">Last contacted: ${doc.last_time_contacted}</p>
+                            </div>
+                        </li>
+                    `;
+                });
+            } else {
+                html = `<li><p>No recent contacts found</p></li>`;
+            }
+
+            $(".recent-list").html(html);
+        },
+        error: function() {
+            $(".recent-list").html("<li><p>Error loading recent doctors</p></li>");
+        }
+    });
+}
+
+
+
 
 
 
@@ -317,7 +356,7 @@ function chat_up2(doctor_id) {
                 var doctor = response.data;
                 // update the chat header
                 document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
-                document.querySelector(".chat-user .status").textContent = doctor.status_id == 1 ? "Online" : "Offline";
+                document.querySelector(".chat-user .status").textContent = doctor.online_status == 1 ? "Online" : "Offline";
                 document.getElementById('doctor_id').value = doctor_id;
                 refreshChat();
             } else {
@@ -453,11 +492,37 @@ function show_system_setting() {
 }
 
 
-function open_chat(){
+function open_chat(doctor_id) {
     var activities = document.querySelector('.activities-div');
     var chat_div = document.querySelector('.chat-div');
     activities.style.display = 'none';
     chat_div.style.display = 'flex';
+
+      $.ajax({
+        type: "POST",
+        url: endPoint,
+        dataType: "json",
+        data: {
+            action: "get_doctor_details",
+            doctor_id: doctor_id
+        },
+        cache: false,
+        success: function (response) {
+            if (response.success) {
+                var doctor = response.data;
+                // update the chat header
+                document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
+                document.querySelector(".chat-user .status").textContent = doctor.online_status == 1 ? "Online" : "Offline";
+                document.getElementById('doctor_id').value = doctor_id;
+                refreshChat();
+            } else {
+                console.log("Doctor not found");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching doctor:", error);
+        }
+    });
 }
 
 
