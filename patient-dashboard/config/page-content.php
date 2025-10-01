@@ -202,34 +202,60 @@
                     </div>
                     <div class="form-group">
                         <label for="full-name">Full Name</label>
-                        <input type="text" id="full-name" name="full_name" value="<?php echo $member_fullname; ?>" required>
+                        <input type="text" id="full_name" name="full_name" value="<?php echo $member_fullname; ?>" required>
                     </div>
-                    <button type="button" class="save-btn">Save Changes</button>
+                    <button type="button" onclick="update_profile();" class="save-btn">Save Changes</button>
                 </form>
             </div>
         </div>
 
+      
         <!-- Password Modal -->
         <div class="modal" id="password-modal">
-        <div class="modal-content">
-            <span class="close" data-close="password-modal">&times;</span>
-            <h3>Change Password</h3>
-            <form id="password-form" method="post" class="form-div">
-            <div class="form-group">
-                <label for="old-password">Old Password</label>
-                <input type="password" id="old-password" name="old_password" required>
+            <div class="modal-content">
+                <span class="close" data-close="password-modal">&times;</span>
+                <h3>Change Password</h3>
+                <form id="password-form" method="post" class="form-div">
+                    <div class="form-group">
+                        <label for="old-password">Old Password</label>
+                        <input type="password" id="old_password" name="old_password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">New Password</label>
+                        <input type="password" id="new_password" onkeyup="checkPasswordStrength()" name="new_password" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <input type="password" id="confirm_new_password" onkeyup="checkPasswordMatch()" name="confirm_new_password" required>
+                    </div>
+
+                    <!-- Eye icons -->
+                    <div class="form-group" style="margin-top:5px;">
+                        <i id="togglePassword" class="bi bi-eye" onclick="icon_toggle()" style="cursor:pointer; font-size:16px;"></i>
+                        <i id="togglePassword2" class="bi bi-eye-slash" onclick="icon_toggle()" style="cursor:pointer; font-size:16px; display:none;"></i>
+                    </div>
+
+                    <!-- Password Strength -->
+                    <div class="pswd_info3" style="display:none; margin-top:5px;">
+                        <div class="strength-bar-container2" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
+                            <div class="strength-bar2" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
+                        </div>
+                        <p class="strength-text2" style="font-size:12px; margin-top:6px; color:#2894d2;">
+                            Password strength: Weak
+                        </p>
+                        <small class="strength-requirements2" style="font-size:11px; color:#2894d2; display:block;">
+                            At least 8 characters required including upper & lower cases, numbers, and special characters
+                        </small>
+                    </div>
+
+                    <!-- Password Match Message -->
+                    <p id="matchMessage" style="font-size:12px; margin-top:5px; color:red; display:none;">Passwords do not match</p>
+
+                    <button type="button" onclick="update_password();" class="save-btn" style="margin-top:10px;">Update Password</button>
+                </form>
             </div>
-            <div class="form-group">
-                <label for="new-password">New Password</label>
-                <input type="password" id="new-password" name="new_password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm-password">Confirm New Password</label>
-                <input type="password" id="confirm-password" name="confirm_password" required>
-            </div>
-            <button type="submit" class="save-btn">Update Password</button>
-            </form>
-        </div>
         </div>
 
     </div>

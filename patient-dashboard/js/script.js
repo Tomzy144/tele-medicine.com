@@ -203,8 +203,10 @@ function get_patient_details(sessionId) {
                 document.getElementById('patient_id').value = sessionId;
 
                 // Display the patient's name
+                document.getElementById('full_name').value =  patientName;
                 document.getElementById('patient-name').textContent = patientName;
-                  document.getElementById('patient_name').textContent = patientName;
+                document.getElementById('patient_name').textContent = patientName;
+                  
 
                 // Handle passport image(s)
                  var defaultImg = rootUrl + 'uploaded_files/patient_profile_pix/11.png';
@@ -610,8 +612,45 @@ function uploadImageToServer(file) {
 // //////////////////////////////////////
 
 
+function update_profile() {
+    var patient_id = $('#patient_id').val();
+    var full_name = $('#full_name').val().trim();
 
+    if (!full_name) {
+          $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Name cannot be empty.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+        return;
+    }
 
+    $.ajax({
+        url: endPoint, // your backend endpoint
+        type: 'POST',
+        data: {
+            action: "update_patient_profile",
+            patient_id: patient_id,
+            full_name: full_name
+        },
+        success: function(response) {
+            try {
+                var data = JSON.parse(response);
+                if (data.success) {
+                    $('#success-div').html('<div><i class="bi-check"></i></div> ' + data.message)
+                        .fadeIn(500).delay(3000).fadeOut(100);
+                } else {
+                    $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + data.message)
+                        .fadeIn(500).delay(5000).fadeOut(100);
+                }
+            } catch (e) {
+                console.error("Invalid response:", response);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("Profile update failed:", status, error);
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Profile update failed.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+        }
+    });
+}
 
 
 
@@ -624,26 +663,75 @@ function icon_toggle(){
     const toggle2 = document.getElementById('togglePassword2');
     const password = document.getElementById('new_password');
     const cpassword = document.getElementById('confirm_new_password');
-  
-  
+
     if(password.type === "password"){
         password.type = 'text';
         cpassword.type = 'text';
         toggle.style.display="none";
         toggle2.style.display="block";
-    }
-    else{
-        // toggle.add='none';
+    } else {
         password.type = 'password';
-       cpassword.type = 'password';
-       toggle.style.display="block";
+        cpassword.type = 'password';
+        toggle.style.display="block";
         toggle2.style.display="none";
     }
-    
-  }
-  
+}
 
-// Function triggered when "Remove" button is clicked
+function checkPasswordStrength() {
+    const newPassword = document.getElementById('new_password');
+    const pswdInfo = document.querySelector('.pswd_info3');
+    const strengthBar = document.querySelector('.strength-bar2');
+    const strengthText = document.querySelector('.strength-text2');
+    const rulesText = document.querySelector('.strength-requirements2');
+
+    const val = newPassword.value;
+    pswdInfo.style.display = val.length ? 'block' : 'none';
+
+    let strength = 0;
+    if (val.length >= 8) strength += 1;
+    if (/[A-Z]/.test(val)) strength += 1;
+    if (/[a-z]/.test(val)) strength += 1;
+    if (/[0-9]/.test(val)) strength += 1;
+    if (/[\W_]/.test(val)) strength += 1;
+
+    const percent = (strength / 5) * 100;
+    strengthBar.style.width = percent + '%';
+
+    if (percent <= 40) {
+        strengthBar.style.background = 'red';
+        strengthText.textContent = 'Password strength: Weak';
+        rulesText.style.display = 'block';
+    } else if (percent <= 80) {
+        strengthBar.style.background = 'orange';
+        strengthText.textContent = 'Password strength: Medium';
+        rulesText.style.display = 'block';
+    } else {
+        strengthBar.style.background = 'green';
+        strengthText.textContent = 'Password strength: Strong';
+        rulesText.style.display = 'none'; // hide rules when strong
+    }
+
+    checkPasswordMatch(); // also check confirm password
+}
+
+// Confirm password match function
+function checkPasswordMatch() {
+    const newPassword = document.getElementById('new_password').value;
+    const confirmPassword = document.getElementById('confirm_new_password').value;
+    const matchMessage = document.getElementById('matchMessage');
+
+    if(confirmPassword.length === 0 || newPassword === confirmPassword) {
+        matchMessage.style.display = 'none'; // hide when matched
+    } else {
+        matchMessage.style.display = 'block';
+        matchMessage.style.color = 'red';
+        matchMessage.textContent = 'Passwords do not match';
+    }
+}
+
+
+
+
 function removeImage() {
     // Reset the image to the default placeholder
     document.getElementById('my_passport').src = "<?php echo $website_url; ?>/uploaded_files/profile_pix/1.jpg";
@@ -659,336 +747,6 @@ function removeImage() {
 }
 
   
-  
-
-/////// accept alphabeth ///////
-function isAlphabetic_Check() {
-    const key = event.keyCode || event.which;
-    
-    const alphabetKeys = Array.from({length: 26}, (_, i) => i + 65).concat(Array.from({length: 26}, (_, i) => i + 97));
-    if (!alphabetKeys.includes(key)) {
-      event.preventDefault();
-      $("#fullname_info").fadeIn(300);
-      document.getElementById("fullname").style.border = "rgb(245, 142, 58) 1px solid";
-    } else {
-      $("#fullname_info").fadeOut(300);
-      document.getElementById("fullname").style.border = "rgba(0, 0, 0, .1) 1px solid";
-    }
-  }
-  
-
-  function isNumber_Check2() {
-    var e = window.event;
-    var key = e.keyCode && e.which;
-  
-    if (!((key >= 48 && key <= 57) || key == 43 || key == 45)) {
-      if (e.preventDefault) {
-        e.preventDefault();
-        $("#duration_info").fadeIn(300);
-        document.getElementById("loanduration").style.border =
-          "rgb(245, 142, 58) 1px solid";
-      } else {
-        e.returnValue = false;
-      }
-    } else {
-      $("#duration_info").fadeOut(300);
-      document.getElementById("loanduration").style.border =
-        "rgba(0, 0, 0, .1) 1px solid";
-    }
-  }
-
-
-  function isPhoneNumberValid() {
-    const phoneNumber = document.getElementById('phone_number').value.trim();
-    
-    // If the input is empty, hide the error message and reset the border
-    if (phoneNumber === "") {
-        document.getElementById('duration_info').style.display = 'none';
-        document.getElementById('phone_number').style.border = "rgba(0, 0, 0, .1) 1px solid";
-        return; // Exit the function since no further validation is needed for an empty input
-    }
-    
-    // Check if the input contains only digits
-    const isNumeric = /^\d+$/.test(phoneNumber);
-    
-    // Check if the phone number starts with one of the allowed prefixes
-    const startsWithValidPrefix = phoneNumber.startsWith('090') || 
-                                  phoneNumber.startsWith('081') || 
-                                  phoneNumber.startsWith('080') || 
-                                  phoneNumber.startsWith('091') || 
-                                  phoneNumber.startsWith('070');
-    
-    // Check if the phone number is 11 digits long, numeric, and has a valid prefix
-    if (phoneNumber.length === 11 && isNumeric && startsWithValidPrefix) {
-        // If valid, hide the error message and reset the border
-        document.getElementById('duration_info').style.display = 'none';
-        document.getElementById('phone_number').style.border = "rgba(0, 0, 0, .1) 1px solid";
-    } else {
-        // If invalid, show the error message and highlight the input field
-        document.getElementById('duration_info').style.display = 'block';
-        document.getElementById('phone_number').style.border = "rgb(245, 142, 58) 1px solid";
-    }
-}
-
-
-function isBVNValid(){
-    const bvn = document.getElementById('bvn').value.trim();
-    
-    // If the input is empty, hide the error message and reset the border
-    if (bvn === "") {
-        document.getElementById('BVN_info').style.display = 'none';
-        document.getElementById('bvn').style.border = "rgba(0, 0, 0, .1) 1px solid";
-        return; // Exit the function since no further validation is needed for an empty input
-    }
-    
-    // Check if the input contains only digits
-    const isNumeric = /^\d+$/.test(bvn);
-    
-    // Check if the phone number is 11 digits long, numeric, and has a valid prefix
-    if (bvn.length === 11 && isNumeric) {
-        // If valid, hide the error message and reset the border
-        document.getElementById('BVN_info').style.display = 'none';
-        document.getElementById('bvn').style.border = "rgba(0, 0, 0, .1) 1px solid";
-    } else {
-        // If invalid, show the error message and highlight the input field
-        document.getElementById('BVN_info').style.display = 'block';
-        document.getElementById('bvn').style.border = "rgb(245, 142, 58) 1px solid";
-    }
-
-}
-function showSelectedFileName() {
-    const ninInput = document.getElementById('NIN');
-    const fileNameDisplay = document.getElementById('file_name_display');
-
-    // Check if a file has been selected
-    if (ninInput.files && ninInput.files.length > 0) {
-        const fileName = ninInput.files[0].name; // Get the name of the selected file
-        fileNameDisplay.value = fileName; // Display the file name in the text input
-        uploadNinToServer(ninInput.files[0]); // Pass the actual file
-    }
-}
-
-function uploadNinToServer(file) {
-    var formData = new FormData();
-    formData.append('NIN', file); // Append the file to the FormData
-
-    $.ajax({
-        url: '../config/upload_nin.php', // Change to your server-side script
-        type: 'POST',
-        data: formData,
-        contentType: false,
-        processData: false,
-        success: function(response) {
-            console.log('Image uploaded successfully:', response);
-        },
-        error: function(xhr, status, error) {
-            console.error('Image upload failed:', status, error);
-        }
-    });
-}
-
-
- 
-
-function validateDOB() {
-    const dobInput = document.getElementById('date_of_birth').value;
-    
-    // Check if a date has been selected
-    if (!dobInput) {
-        return; // If no date is selected, skip the validation
-    }
-
-    // Convert the input date from yyyy-mm-dd to a Date object
-    const dob = new Date(dobInput);
-
-    // Get today's date and format it
-    const today = new Date();
-    today.setHours(0, 0, 0, 0); // Set today's date to midnight
-
-    // Format the input date to dd/mm/yyyy
-    const formattedDob = dob.getDate().toString().padStart(2, '0') + '/' + 
-                         (dob.getMonth() + 1).toString().padStart(2, '0') + '/' + 
-                         dob.getFullYear();
-
-    // Format today's date to dd/mm/yyyy
-    const formattedToday = today.getDate().toString().padStart(2, '0') + '/' + 
-                           (today.getMonth() + 1).toString().padStart(2, '0') + '/' + 
-                           today.getFullYear();
-    
-    // Check if the selected date is today or a future date
-    if (dob >= today) {
-        // If invalid, show the error message and highlight the input field
-        document.getElementById('dob_info').innerHTML = `Date of birth cannot be today (${formattedToday}) or a future date.`;
-        document.getElementById('dob_info').style.display = 'block';
-        document.getElementById('date_of_birth').style.border = "rgb(245, 142, 58) 1px solid";
-    } else {
-        // If valid, hide the error message and reset the border
-        document.getElementById('dob_info').style.display = 'none';
-        document.getElementById('date_of_birth').style.border = "rgba(0, 0, 0, .1) 1px solid";
-    }
-}
-
-function validateEmail() {
-    var emailInput = document.getElementById('member_email');
-    var emailWarning = document.getElementById('email-warning');
-    var email = emailInput.value;
-    
-    // Regular expression for basic email validation
-    var emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (email && !emailPattern.test(email)) {
-        emailWarning.textContent = 'Invalid email format.';
-    } else {
-        emailWarning.textContent = ''; // Clear warning if valid
-    }
-}
-
-// function submit_biodata() {
-//     // var phone_number = $('#phone_number').val();
-//     // var bvn = $('#bvn').val();
-//     // var address = $('#address').val();
-//     // var gender = $('#gender').val();
-//     // var occupation = $('#occupation').val();
-//     // var date_of_birth = $('#date_of_birth').val();
-//     // var marital_status = $('#marital_status').val();
-//     var member_id = $('#member_id').val();
-//     // var member_email = $('#member_email').val();
-//     // var nin = $('#NIN').prop('files')[0]; // File input for NIN
-//     var passport = $('#file-input').prop('files')[0]; // File input for passport
-    
-//     var action = 'update_biodata';
-
-//     // // Validate phone number is not empty
-//     // if (phone_number === "") {
-//     //     $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + "Phone Number can't be empty")
-//     //         .fadeIn(500).delay(5000).fadeOut(100);
-//     //     return; // Exit the function if validation fails
-//     // }
-
-//     // Create a FormData object to hold the data
-//     var formData = new FormData();
-//     formData.append('action', action);
-//     // formData.append('phone_number', phone_number);
-//     // formData.append('bvn', bvn);
-//     // formData.append('address', address);
-//     // formData.append('gender', gender);
-//     // formData.append('occupation', occupation);
-//     // formData.append('date_of_birth', date_of_birth);
-//     // formData.append('marital_status', marital_status);
-//     formData.append('member_id', member_id);
-//     // formData.append('member_email', member_email);
-
-//     // // Append files only if new files are selected
-//     // if (nin) {
-//     //     formData.append('nin', nin);
-//     // } else {
-//     //     formData.append('nin', "");  // Send an empty string if no new NIN file is selected
-//     // }
-
-//     if (passport) {
-//         formData.append('passport', passport);
-//     } else {
-//         formData.append('passport', "");  // Send an empty string if no new passport file is selected
-//     }
-
-//     // Store the original button text
-//     var btn_text = $('#bio_data_btn').html();
-
-//     // Update button text and disable the button to prevent multiple requests
-//     $('#bio_data_btn').html('Authenticating...');
-//     document.getElementById('bio_data_btn').disabled = true;
-
-//     $.ajax({
-//         type: "POST",
-//         url: endPoint, // Ensure endPoint is correctly defined
-//         dataType: "json", // Expect JSON response
-//         data: formData, // Use the FormData object
-//         processData: false, // Prevent jQuery from processing the data
-//         contentType: false, // Prevent jQuery from setting content type
-//         cache: false,
-//         success: function (response) {
-//             // Check for response success
-//             if (response.success === true) {
-//                 $('#success-div').html('<div><i class="bi-check"></i></div> PASSPORT UPDATED SUCCESSFULLY!')
-//                     .fadeIn(500).delay(5000).fadeOut(100);
-//                 setTimeout(function() {
-//                     window.location.reload();
-//                 }, 3000);
-//             } else {
-//                 // Handle failure
-//                 $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + response.message1 + " " + response.message2)
-//                     .fadeIn(500).delay(5000).fadeOut(100);
-//             }
-
-//             // Re-enable the submit button and restore its text
-//             $('#bio_data_btn').html(btn_text);
-//             document.getElementById('bio_data_btn').disabled = false;
-//         },
-//         error: function (xhr, status, error) {
-//             // Handle any AJAX errors
-//             console.error('AJAX Error:', status, error);
-//             $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> An error occurred. Please try again.')
-//                 .fadeIn(500).delay(5000).fadeOut(100);
-
-//             // Re-enable the submit button and restore its text
-//             $('#bio_data_btn').html(btn_text);
-//             document.getElementById('bio_data_btn').disabled = false;
-//         }
-//     });
-// }
-
-
-
-
-
-
-function checkPasswordStrength() {
-    const password = document.getElementById('new_password').value;
-    const strengthInfo = document.getElementById('password-strength-info');
-    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[A-Za-z\d!@#\$%\^&\*]{8,}$/;
-
-    if (password === '') {
-        strengthInfo.textContent = '';
-    } else if (strongPasswordRegex.test(password)) {
-        strengthInfo.textContent = 'Strong password';
-        strengthInfo.style.color = 'white';
-    } else {
-        strengthInfo.textContent = 'Password must be at least 8 characters long, include an uppercase letter, a number, and a symbol.';
-        strengthInfo.style.color = 'orange';
-    }
-}
-
-function checkPasswordMatch() {
-    const password = document.getElementById('new_password').value;
-    const confirmPassword = document.getElementById('confirm_new_password').value;
-    const matchInfo = document.getElementById('password-match-info');
-
-    if (confirmPassword === '') {
-        matchInfo.textContent = '';
-    } else if (password === confirmPassword) {
-        matchInfo.textContent = 'Passwords match';
-        matchInfo.style.color = 'white';
-    } else {
-        matchInfo.textContent = 'Passwords do not match';
-        matchInfo.style.color = 'orange';
-    }
-}
-
-function icon_toggle() {
-    const passwordField = document.getElementById('new_password');
-    const iconShow = document.getElementById('togglePassword');
-    const iconHide = document.getElementById('togglePassword2');
-
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
-        iconShow.style.display = 'none';
-        iconHide.style.display = 'inline';
-    } else {
-        passwordField.type = 'password';
-        iconShow.style.display = 'inline';
-        iconHide.style.display = 'none';
-    }
-}
 
   
 function update_password() {
@@ -996,7 +754,7 @@ function update_password() {
     var new_password = $('#new_password').val();
     var confirm_new_password = $('#confirm_new_password').val();
     var action = "update_password";
-    var member_id = $('#member_id').val();
+    var patient_id = $('#patient_id').val();
 
     // Check if old password is empty
     if (old_password == "") {
@@ -1014,7 +772,7 @@ function update_password() {
     var dataString = {
         action: action,
         old_password: old_password,
-        member_id: member_id,
+        patient_id: patient_id,
         new_password: new_password
     };
 
