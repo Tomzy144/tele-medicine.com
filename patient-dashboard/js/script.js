@@ -280,6 +280,40 @@ function fetch_recently_contacted_doc(patient_id) {
 }
 
 
+function loadPrescriptions(patient_id) {
+  $.ajax({
+    type: "POST",
+    url: endPoint,
+    data: { action: "fetch_prescriptions", patient_id: patient_id },
+    dataType: "json",
+    success: function(response) {
+      const tbody = $("#all-entries-body");
+      tbody.empty();
+
+      if (response.success && response.data.length > 0) {
+        response.data.forEach(item => {
+          tbody.append(`
+            <tr>
+              <td>${item.prescribed_at}</td>
+              <td>Dr. ${item.doctor_name}</td>
+              <td>${item.prescription}</td>
+            </tr>
+          `);
+        });
+      } else {
+        tbody.append(`<tr><td colspan="3">No prescriptions found</td></tr>`);
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error("Error fetching prescriptions:", error);
+    }
+  });
+}
+
+
+
+
+
 
 
 
@@ -526,19 +560,19 @@ function open_chat(doctor_id) {
 }
 
 
-function addToPrescription(el) {
-  const msgText = el.parentElement.textContent.replace("➕", "").trim();
+// function addToPrescription(el) {
+//   const msgText = el.parentElement.textContent.replace("➕", "").trim();
   
-  // Simulate saving to prescription table
-  alert("Added to prescription: " + msgText);
+//   // Simulate saving to prescription table
+//   alert("Added to prescription: " + msgText);
 
-  // Optional: give feedback inside chat
-  const reply = document.createElement("div");
-  reply.className = "message sent";
-  reply.textContent = "✅ '" + msgText + "' added to prescription list.";
-  chatMessages.appendChild(reply);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+//   // Optional: give feedback inside chat
+//   const reply = document.createElement("div");
+//   reply.className = "message sent";
+//   reply.textContent = "✅ '" + msgText + "' added to prescription list.";
+//   chatMessages.appendChild(reply);
+//   chatMessages.scrollTop = chatMessages.scrollHeight;
+// }
 
 
 

@@ -42,6 +42,7 @@
             // fetch_all_entries(sessionId);
             resetSessionTimer();
             fetch_recently_contacted_doc(sessionId);
+            loadPrescriptions(sessionId);
 
           
            

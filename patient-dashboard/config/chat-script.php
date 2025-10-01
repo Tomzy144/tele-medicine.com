@@ -102,9 +102,28 @@ function refreshChat() {
                 });
             }
 
-            if (data.type === "prescription_added") {
-                console.log("📝 Prescription successfully saved.");
-            }
+           // ---------- PRESCRIPTION ADDED ----------
+                if (data.type === "prescription_added") {
+                    if (data.success) {
+                        console.log("📝 Prescription successfully saved:", data);
+
+                        // Format date nicely
+                        const formattedDate = new Date(data.date).toLocaleDateString("en-GB");
+
+                        // Append to prescriptions table
+                        const newRow = `
+                            <tr>
+                                <td>${formattedDate}</td>
+                                <td>Dr. ${data.doctor_id}</td>
+                                <td>${data.prescription}</td>
+                            </tr>
+                        `;
+                        $("#all-entries-body").prepend(newRow); // add to top of table
+                    } else {
+                        console.error("❌ Failed to save prescription:", data.error);
+                        alert("Error saving prescription. Try again.");
+                    }
+                }
         };
 
         ws.onclose = () => {
@@ -141,21 +160,41 @@ function refreshChat() {
         chatInput.val("");
     }
 
+
+       // --- Add to prescription ---
+       window.addToPrescription = function(btn) {
+            var messageText = $(btn).siblings(".text").text().trim();
+
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: "prescription_added",
+                    patient_id: patientId,
+                    doctor_id: doctorId,
+                    prescription: messageText
+                }));
+
+                // Change the button to checkmark
+                $(btn).text("✅");
+
+                // ✅ Give chat feedback
+                const reply = $("<div>")
+                    .addClass("message sent")
+                    .html("✅ '" + messageText + "' added to prescription list.");
+                
+                $("#chatMessages").append(reply);
+                $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+            } else {
+                alert("⚠️ Connection lost. Prescription not saved.");
+            }
+        };
+
+
+
+        
     chatInput.on("keydown", send_chat);
     $("#sendBtn").on("click", send_chat);
 
-    // --- Add to prescription ---
-    window.addToPrescription = (btn) => {
-        const messageText = $(btn).siblings(".text").text();
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify({
-                type: "add_to_prescription",
-                message: messageText,
-                patient_id: patientId,
-                doctor_id: doctorId
-            }));
-            $(btn).text("✅");
-        }
-    };
+     
+
 }
 </script>

@@ -70,42 +70,18 @@
                         <div class="table-div">
                             <table>
                                 <thead>
-                                    <tr>
+                                <tr>
                                     <th>Date</th>
                                     <th>Doctor</th>
                                     <th>Prescription</th>
-                                    </tr>
+                                </tr>
                                 </thead>
                                 <tbody id="all-entries-body">
-                                    <tr>
-                                        <td>2025-09-10</td>
-                                        <td>Dr. Adebayo Johnson</td>
-                                        <td>Paracetamol 500mg (2x daily)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2025-09-05</td>
-                                        <td>Dr. Chioma Okafor</td>
-                                        <td>Amoxicillin 250mg (3x daily)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2025-08-28</td>
-                                        <td>Dr. Musa Ibrahim</td>
-                                        <td>Cough Syrup (10ml, 2x daily)</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2025-08-15</td>
-                                        <td>Dr. Grace Oladipo</td>
-                                        <td>Vitamin D Supplements</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2025-07-30</td>
-                                        <td>Dr. Kelvin Mensah</td>
-                                        <td>Ibuprofen 400mg (as needed)</td>
-                                    </tr>
+                                <!-- Rows will be inserted here dynamically -->
                                 </tbody>
-
                             </table>
                         </div>
+
                     
                     </div>
                 </div>

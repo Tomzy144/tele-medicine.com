@@ -103,28 +103,43 @@ wss.on("connection", ws => {
         }
       }
 
-      // ---------- NEW CHAT MESSAGE ----------
-      if (data.type === "chat") {
-        const { doctor_id, patient_id, sender, message: msg, message_type } = data;
 
-        const [result] = await db.query(
-          "INSERT INTO chat_messages (doctor_id, patient_id, sender, message, message_type, status) VALUES (?, ?, ?, ?, ?, ?)",
-          [doctor_id, patient_id, sender, msg, message_type || "text", "sent"]
-        );
+          // ---------- SEND CHAT MESSAGE ----------
+        if (data.type === "chat") {
+          const { doctor_id, patient_id, sender, message: msg, message_type } = data;
 
-        console.log("✅ Chat saved with ID:", result.insertId);
+          // Save chat message
+          const [result] = await db.query(
+            `INSERT INTO chat_messages 
+              (doctor_id, patient_id, sender, message, message_type, status) 
+            VALUES (?, ?, ?, ?, ?, ?)`,
+            [doctor_id, patient_id, sender, msg, message_type || "text", "sent"]
+          );
 
-        let newMsg = {
-          type: "new_message",
-          sn: result.insertId,
-          doctor_id,
-          patient_id,
-          sender,
-          message: msg,
-          message_type: message_type || "text",
-          status: "sent",
-          created_at: new Date().toISOString()
-        };
+          console.log("✅ Chat saved with ID:", result.insertId);
+
+          // --- Maintain recent_chat_tab ---
+          await db.query(
+            `INSERT INTO recent_chat_tab (doctor_id, patient_id, last_time_contacted)
+            VALUES (?, ?, NOW())
+            ON DUPLICATE KEY UPDATE last_time_contacted = NOW()`,
+            [doctor_id, patient_id]
+          );
+
+          // Build new message object
+          let newMsg = {
+            type: "new_message",
+            sn: result.insertId,
+            doctor_id,
+            patient_id,
+            sender,
+            message: msg,
+            message_type: message_type || "text",
+            status: "sent",
+            created_at: new Date().toISOString()
+          };
+
+
 
         // Deliver to doctor
         const doctorWs = clients.get("doctor_" + doctor_id);
@@ -178,6 +193,40 @@ wss.on("connection", ws => {
           wss.clients.forEach(client => sendToClient(client, updateNotice));
         }
       }
+
+      // ---------- PRESCRIPTION ADDED ----------
+        if (data.type === "prescription_added") {
+          const { doctor_id, patient_id, prescription } = data;
+
+          try {
+            const [result] = await db.query(
+              "INSERT INTO prescriptions_tab (doctor_id, patient_id, prescription, date) VALUES (?, ?, ?, NOW())",
+              [doctor_id, patient_id, prescription]
+            );
+
+            console.log("📝 Prescription saved with ID:", result.insertId);
+
+            // Send confirmation back to sender
+            ws.send(JSON.stringify({
+              type: "prescription_added",
+              success: true,
+              sn: result.insertId,
+              doctor_id,
+              patient_id,
+              prescription,
+              date: new Date().toISOString()
+            }));
+
+          } catch (err) {
+            console.error("❌ Error saving prescription:", err);
+            ws.send(JSON.stringify({
+              type: "prescription_added",
+              success: false,
+              error: "Failed to save prescription"
+            }));
+          }
+        }
+
 
     } catch (err) {
       console.error("❌ Error handling message:", err);
