@@ -103,28 +103,43 @@ function refreshChat() {
             }
 
            // ---------- PRESCRIPTION ADDED ----------
-                if (data.type === "prescription_added") {
-                    if (data.success) {
-                        console.log("📝 Prescription successfully saved:", data);
+              if (data.type === "prescription_added") {
+                const { success, duplicate, error, doctor_id, prescription, date, tempId } = data;
 
-                        // Format date nicely
-                        const formattedDate = new Date(data.date).toLocaleDateString("en-GB");
+            // Find the corresponding chat feedback / button via tempId
+            const targetBtn = $(`.reaction-btn[data-tempid="${tempId}"]`);
 
-                        // Append to prescriptions table
-                        const newRow = `
-                            <tr>
-                                <td>${formattedDate}</td>
-                                <td>Dr. ${data.doctor_id}</td>
-                                <td>${data.prescription}</td>
-                            </tr>
-                        `;
-                        $("#all-entries-body").prepend(newRow); // add to top of table
-                    } else {
-                        console.error("❌ Failed to save prescription:", data.error);
-                        alert("Error saving prescription. Try again.");
-                    }
+            const feedback = $(`.message.sent[data-tempid="${tempId}"]`);
+
+            if (data.type === "prescription_added") {
+                const { success, duplicate, error, tempId } = data;
+
+                // Find the button and feedback div using tempId
+                const targetBtn = $(`.reaction-btn[data-tempid="${tempId}"]`);
+                const feedback = $(`.message.sent[data-tempid="${tempId}"]`);
+
+                if (success) {
+                    targetBtn.text("✅").prop("disabled", true);
+                    feedback.html("✅ Prescription added successfully.");
+
+                } else if (duplicate) {
+                    targetBtn.text("➕").prop("disabled", false);
+                    feedback.html("⚠️ Prescription already exists for today.");
+
+                } else if (error) {
+                    targetBtn.text("➕").prop("disabled", false);
+                    feedback.html("❌ Error saving prescription. Try again.");
                 }
-        };
+
+                // Scroll chat to bottom after update
+                $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+            }
+
+
+        }
+       // ---------- END PRESCRIPTION ADDED ----------
+
+    };
 
         ws.onclose = () => {
             console.warn("❌ WebSocket closed. Reconnecting in 5s...");
@@ -162,31 +177,37 @@ function refreshChat() {
 
 
        // --- Add to prescription ---
-       window.addToPrescription = function(btn) {
+            window.addToPrescription = function(btn) {
             var messageText = $(btn).siblings(".text").text().trim();
+            const tempId = Date.now() + "_" + Math.random().toString(36).substr(2, 5);
 
             if (ws && ws.readyState === WebSocket.OPEN) {
+                // Send prescription request with tempId
                 ws.send(JSON.stringify({
                     type: "prescription_added",
                     patient_id: patientId,
                     doctor_id: doctorId,
-                    prescription: messageText
+                    prescription: messageText,
+                    tempId
                 }));
 
-                // Change the button to checkmark
-                $(btn).text("✅");
+                // Save tempId on button
+                $(btn).attr("data-tempid", tempId).text("⏳");
 
-                // ✅ Give chat feedback
-                const reply = $("<div>")
+                // Create pending feedback div in chat
+                const pendingDiv = $("<div>")
                     .addClass("message sent")
-                    .html("✅ '" + messageText + "' added to prescription list.");
+                    .attr("data-tempid", tempId)   // link to tempId
+                    .html("⏳ Adding '" + messageText + "' to prescription list...");
                 
-                $("#chatMessages").append(reply);
+                $("#chatMessages").append(pendingDiv);
                 $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
             } else {
                 alert("⚠️ Connection lost. Prescription not saved.");
             }
         };
+
+
 
 
 

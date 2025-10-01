@@ -173,59 +173,51 @@ wss.on("connection", ws => {
         }
       }
 
-      // ---------- MARK MESSAGES AS SEEN ----------
-      if (data.type === "mark_seen") {
-        const { message_ids, seen_by } = data; // array of sn
+    if (data.type === "prescription_added") {
+    const { doctor_id, patient_id, prescription, tempId } = data; // ✅ receive tempId
 
-        if (Array.isArray(message_ids) && message_ids.length > 0) {
-          await db.query(
-            `UPDATE chat_messages SET status='seen' WHERE sn IN (?) AND sender!=?`,
-            [message_ids, seen_by]
-          );
+    try {
+      const [result] = await db.query(
+        "INSERT INTO prescriptions_tab (doctor_id, patient_id, prescription, date, created_at) VALUES (?, ?, ?, CURDATE(), NOW())",
+        [doctor_id, patient_id, prescription]
+      );
 
-          const updateNotice = {
-            type: "messages_seen",
-            message_ids,
-            seen_by
-          };
+      ws.send(JSON.stringify({
+        type: "prescription_added",
+        success: true,
+        sn: result.insertId,
+        doctor_id,
+        patient_id,
+        prescription,
+        date: new Date().toISOString(),
+        tempId   // ✅ send back tempId
+      }));
 
-          // Notify all connected clients
-          wss.clients.forEach(client => sendToClient(client, updateNotice));
-        }
+    } catch (err) {
+      if (err.code === "ER_DUP_ENTRY") {
+        ws.send(JSON.stringify({
+          type: "prescription_added",
+          success: false,
+          duplicate: true,
+          prescription,
+          tempId   // ✅ send back tempId
+        }));
+      } else {
+        ws.send(JSON.stringify({
+          type: "prescription_added",
+          success: false,
+          error: true,
+          prescription,
+          tempId   // ✅ send back tempId
+        }));
       }
+    }
+  }
 
-      // ---------- PRESCRIPTION ADDED ----------
-        if (data.type === "prescription_added") {
-          const { doctor_id, patient_id, prescription } = data;
 
-          try {
-            const [result] = await db.query(
-              "INSERT INTO prescriptions_tab (doctor_id, patient_id, prescription, date) VALUES (?, ?, ?, NOW())",
-              [doctor_id, patient_id, prescription]
-            );
 
-            console.log("📝 Prescription saved with ID:", result.insertId);
 
-            // Send confirmation back to sender
-            ws.send(JSON.stringify({
-              type: "prescription_added",
-              success: true,
-              sn: result.insertId,
-              doctor_id,
-              patient_id,
-              prescription,
-              date: new Date().toISOString()
-            }));
 
-          } catch (err) {
-            console.error("❌ Error saving prescription:", err);
-            ws.send(JSON.stringify({
-              type: "prescription_added",
-              success: false,
-              error: "Failed to save prescription"
-            }));
-          }
-        }
 
 
     } catch (err) {
