@@ -56,6 +56,19 @@ wss.on("connection", ws => {
         }
       }
 
+      if (data.type === "mark_seen") {
+        await db.query("UPDATE chat_messages SET status='seen' WHERE doctor_id=? AND patient_id=?", 
+          [data.doctor_id, data.patient_id]);
+
+        // notify patient that doctor has read their messages
+        const patientWs = clients.get("patient_" + data.patient_id);
+        if (patientWs) {
+          sendToClient(patientWs, { type: "messages_seen", doctor_id: data.doctor_id, patient_id: data.patient_id });
+        }
+      }
+
+
+
       // ---------- DOCTOR LOGOUT ----------
       if (data.type === "doctor_logout") {
         clients.delete("doctor_" + data.doctor_id);

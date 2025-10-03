@@ -513,7 +513,7 @@ function doctor_sign_in() {
             $('#success-div')
                 .html('<div><i class="bi-check"></i></div> WELCOME BACK!')
                 .fadeIn(500).delay(2000).fadeOut(100);
-
+                sessionStorage.setItem('session_id', data.session_id);
             setTimeout(() => {
                 window.location.href = data.redirect_url;
             }, 2000);
