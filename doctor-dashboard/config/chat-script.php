@@ -50,13 +50,14 @@ function refreshChat() {
         ws.onopen = () => {
             console.log("✅ WebSocket connected");
 
-            // login patient
-            ws.send(JSON.stringify({ type: "patient_login", patient_id: patientId }));
+            // login doctor ✅ correct variable
+            ws.send(JSON.stringify({ type: "doctor_login", doctor_id: doctorId }));
 
             // ask server for chat history & doctor status
             ws.send(JSON.stringify({ type: "get_history", doctor_id: doctorId, patient_id: patientId }));
             ws.send(JSON.stringify({ type: "get_status", doctor_id: doctorId }));
         };
+
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);

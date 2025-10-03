@@ -36,25 +36,88 @@ wss.on("connection", ws => {
       const data = JSON.parse(message);
       console.log("📥 Received:", data);
 
+     
       // ---------- DOCTOR LOGIN ----------
-      if (data.type === "doctor_login") {
-        clients.set("doctor_" + data.doctor_id, ws);
-        await db.query("UPDATE doctor_tab SET online_status='1' WHERE doctor_id=?", [data.doctor_id]);
+          if (data.type === "doctor_login") {
+        console.log("Doctor login attempt:", data.doctor_id);
+
+        // now check doctor status
+        if (data.type === "get_status") {
+          console.log("Doctor ID received for get_status:", data.doctor_id);
+
+          if (!data.doctor_id) {
+            console.error("get_status failed: doctor_id missing or empty");
+            sendToClient(ws, { type: "error", message: "doctor_id required" });
+            return;
+          }
+
+          const [rows] = await db.query(
+            "SELECT online_status FROM doctor_tab WHERE doctor_id = ?",
+            [data.doctor_id.trim()]
+          );
+
+          if (rows.length) {
+            sendToClient(ws, { 
+              type: "doctor_status", 
+              doctor_id: data.doctor_id, 
+              status: rows[0].online_status === 1 ? "online" : "offline" 
+            });
+          } else {
+            sendToClient(ws, { type: "doctor_status", doctor_id: data.doctor_id, status: "not_found" });
+          }
+        }
 
         // Broadcast status
         wss.clients.forEach(client => {
-          sendToClient(client, { type: "doctor_status_update", doctor_id: data.doctor_id, status: "online" });
+          sendToClient(client, { 
+            type: "doctor_status_update", 
+            doctor_id: data.doctor_id, 
+            status: "online" 
+          });
         });
 
-        // Send missed messages (sent or delivered)
+        // Send missed messages
         const [missed] = await db.query(
-          `SELECT * FROM chat_messages WHERE doctor_id=? AND status IN ('sent','delivered')`,
+          `SELECT * FROM chat_messages 
+          WHERE doctor_id=? AND status IN ('sent','delivered')`,
           [data.doctor_id]
         );
+
         if (missed.length) {
           sendToClient(ws, { type: "missed_messages", data: missed });
         }
       }
+
+
+      // ---------- GET DOCTOR STATUS ----------
+      if (data.type === "get_status") {
+        if (!data.doctor_id || data.doctor_id.trim() === "") {
+          console.error("get_status failed: doctor_id missing or empty");
+          sendToClient(ws, { type: "error", message: "doctor_id required" });
+          return;
+        }
+
+        const [rows] = await db.query(
+          "SELECT online_status FROM doctor_tab WHERE doctor_id=?",
+          [data.doctor_id]
+        );
+
+        if (rows.length) {
+          sendToClient(ws, { 
+            type: "doctor_status", 
+            doctor_id: data.doctor_id, 
+            status: rows[0].online_status == 1 ? "online" : "offline" 
+          });
+        } else {
+          sendToClient(ws, { 
+            type: "doctor_status", 
+            doctor_id: data.doctor_id, 
+            status: "unknown" 
+          });
+        }
+      }
+
+
 
       if (data.type === "mark_seen") {
         await db.query("UPDATE chat_messages SET status='seen' WHERE doctor_id=? AND patient_id=?", 
