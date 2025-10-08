@@ -487,21 +487,113 @@ header .header-inner-div ul{
 
 
 .dashboard-session .inner-div {
- max-width: 98%;
+  max-width: 98%;
   margin: auto;
-  display: flex;            /* main container uses flex */
-  align-items: flex-start;  /* align to the top */
+  display: flex;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 10px; 
+  gap: 20px;
+  flex-direction: column;
 }
 
-.dashboard-session .inner-div .left-column {
-  flex: 0 0 38.5%;   /* width for left column */
+.dashboard-session .inner-div .top-rows {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  overflow-x: auto;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+  gap: 15px;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  flex: 1;
+  min-width: 220px;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card.left-card {
+  flex: 0 0 250px;
+  background: linear-gradient(135deg, #007bff, #00aaff);
+  color: white;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card.right-card {
+  flex: 0 0 250px;
+  text-align: center;
+  background: #f8f9fa;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card.right-card .end-image {
+  width: 100px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .dynamic-cards {
+  display: flex;
+  flex: 1;
+  gap: 15px;
+  overflow-x: auto;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card .date {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 6px;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card .condition {
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 6px;
+}
+
+.dashboard-session .inner-div .top-rows .appointment-cards .appointment-card .status {
+  font-size: 14px;
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* --- BELOW TOP ROW: 2-COLUMN LAYOUT --- */
+.dashboard-session .inner-div .main-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+}
+
+/* --- Left Column --- */
+.dashboard-session .inner-div .main-content .left-column {
+  flex: 0 0 38.5%;
   display: flex;
   flex-direction: column;
-  gap: 10px;       /* spacing between the two small boxes */
+  gap: 10px;
 }
 
+/* --- Right Column (Activities) --- */
+.dashboard-session .inner-div .main-content .activities-div {
+  flex: 0 0 60%;
+  height: 81vh;
+  border-radius: 5px;
+  font-size: 18px;
+  color: #2894d2;
+  font-weight: bold;
+  background: #fff;
+  text-align: center;
+}
+
+/* --- Box Styling (Profile + Recent Info) --- */
 .dashboard-session .inner-div .left-column .profile-info-div,
 .dashboard-session .inner-div .left-column .recent-info-div {
   height: 40vh;
@@ -509,42 +601,23 @@ header .header-inner-div ul{
   font-size: 18px;
   color: #2894d2;
   font-weight: bold;
-  font-family: body-font;
   background: #fff;
   text-align: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  font-family: body-font;
-  color: #2894d2;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
-
-  
 }
 
-
-.dashboard-session .inner-div .activities-div {
-  flex: 0 0 60%;
-  height: 81vh;   /* full height */
-  border-radius: 5px;
-  font-size: 18px;
-  color: #2894d2;
-  font-weight: bold;
-  font-family: body-font;
-  background: #fff;
-  text-align: center;
-}
+/* --- Inner content wrappers --- */
 .dashboard-session .inner-div .left-column .profile-info-div .inner-div,
 .dashboard-session .inner-div .left-column .recent-info-div .inner-div,
-.dashboard-session .inner-div .activities-div .inner-div,
-.dashboard-session .inner-div .chat-div .inner-div {
+.dashboard-session .inner-div .activities-div .inner-div {
   margin: auto;
   height: 90%;
   width: 90%;
   padding: 20px;
-
-
 }
 
-
+/* --- Profile Card --- */
 .dashboard-session .inner-div .left-column .profile-info-div .profile-card {
   display: flex;
   align-items: center;

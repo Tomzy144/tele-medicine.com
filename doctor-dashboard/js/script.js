@@ -11,6 +11,24 @@ function _close_menu(){
 }
 
 
+function updateDateTime() {
+  const dateElement = document.getElementById('currentDate');
+  const now = new Date();
+
+  const options = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  };
+
+  const dateString = now.toLocaleDateString('en-US', options);
+  const timeString = now.toLocaleTimeString('en-US', { hour12: true }); // shows hh:mm:ss AM/PM
+
+  dateElement.textContent = `${dateString} | ${timeString}`;
+}
+
+
 
 function _get_page(page){
     $('#more-info').html('<div class="ajax-loader"><img src="all-images/images/ajax-loader.gif"/></div>').fadeIn('fast');
@@ -206,6 +224,8 @@ function get_doctor_details(sessionId) {
                 document.getElementById('full_name').value = doctorName;
                 document.getElementById('doctor-name').textContent = doctorName;
                 document.getElementById('doctor_name').textContent = doctorName;
+                document.getElementById('doctorFirstName').textContent = doctorName; // Set only the first name in the span with id
+                
 
                 // Handle passport image(s)
                 var defaultImg = rootUrl + 'uploaded_files/doctor_profile_pix/doc_default.jpeg';

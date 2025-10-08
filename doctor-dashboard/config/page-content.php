@@ -16,102 +16,126 @@
 
         <section class="dashboard-session">
             <div class="inner-div">
-                <div class="left-column">
-                        <div class="profile-info-div">
-                            <div class="heading-div">
-                            <h3>Doctor Info</h3>
+                 <!-- 100% wide Top Row -->
+                <div class="top-rows">
+                    <div class="appointment-cards">
+                        
+                        <!-- Left (fixed) -->
+                        <div class="appointment-card left-card">
+                            <h3>Welcome back, <span id="doctorFirstName">xxxxxx</span></h3>
+                            <p id="currentDate"></p>
                         </div>
-                        <div class="inner-div">
-                            <div class="profile-card">
-                                <div class="img-div">
-                                <?php if ($passport==''){?>
-                                    <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" 
-                                        id="my_passport2" alt="profile picture"/>
-                                <?php } else { ?>
-                                    <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/<?php echo $passport; ?>" 
-                                        id="my_passport" alt="profile picture"/>
-                                <?php } ?>
-                                </div>
-                                <div class="text-div">
-                                <h3 id="doctor-name">xxxxxxx</h3>
-                                <!-- <p><b>doctor ID:</b> ?php echo $member_id; ?></p>
-                                <p><b>Age:</b> ?php echo $member_age; ?> Years</p> -->
+
+                        <!-- Dynamic cards (JS appends here) -->
+                        <div id="dynamicCards" class="dynamic-cards"></div>
+
+                        <!-- Right (fixed illustration) -->
+                        <div class="appointment-card right-card">
+                        <img src="illustration.png" alt="End of appointments" class="end-image">
+                        <p>All appointments completed!</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="main-content">
+                    <div class="left-column">
+                            <div class="profile-info-div">
+                                <div class="heading-div">
+                                <h3>Doctor Info</h3>
+                            </div>
+                            <div class="inner-div">
+                                <div class="profile-card">
+                                    <div class="img-div">
+                                    <?php if ($passport==''){?>
+                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/doc_default.jpeg" 
+                                            id="my_passport2" alt="profile picture"/>
+                                    <?php } else { ?>
+                                        <img src="<?php echo $website_url; ?>/uploaded_files/doctor_profile_pix/<?php echo $passport; ?>" 
+                                            id="my_passport" alt="profile picture"/>
+                                    <?php } ?>
+                                    </div>
+                                    <div class="text-div">
+                                    <h3 id="doctor-name">xxxxxxx</h3>
+                                    <!-- <p><b>doctor ID:</b> ?php echo $member_id; ?></p>
+                                    <p><b>Age:</b> ?php echo $member_age; ?> Years</p> -->
+                                    </div>
                                 </div>
                             </div>
+                        </div>
+
+
+                        <div class="recent-info-div">
+                            <div class="inner-div">
+                                <div class="heading-div">
+                                    <h3>Recently Contacted Doctors</h3>
+                                </div>
+
+                            <div class="recent-scroll">
+                                    <ul class="recent-list">
+                                        <!-- Populated by JS -->
+                                    </ul>
+                                </div>
+
+                                
+                            </div>
+                        
+                        </div>
+                    </div>
+
+                    <!-- Big right column -->
+                    <div class="activities-div">
+                        <div class="right-inner-div">
+                            <div class="heading-div">
+                                <h3>Activities Log</h3>
+                                <hr>
+                            </div>
+                            <div class="table-div">
+                                <table>
+                                    <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Doctor</th>
+                                        <th>Prescription</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody id="all-entries-body">
+                                    <!-- Rows will be inserted here dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        
                         </div>
                     </div>
 
 
-                    <div class="recent-info-div">
-                        <div class="inner-div">
-                            <div class="heading-div">
-                                <h3>Recently Contacted Doctors</h3>
+                    <div class="chat-div">
+                        <div class="chat-header">
+                            <div class="chat-user">
+                                <strong id="chatDoctorName">Dr. John Doe</strong><br>
+                                <span class="status" id="doctorStatus">Offline</span>
                             </div>
-
-                          <div class="recent-scroll">
-                                <ul class="recent-list">
-                                    <!-- Populated by JS -->
-                                </ul>
+                            <div class="chat-actions">
+                                <button class="icon-btn" title="Video Call">
+                                    <i class="bi bi-camera-video"></i>
+                                </button>
                             </div>
+                        </div>
 
+                        <div class="chat-messages" id="chatMessages">
+                            <!-- Messages will load dynamically -->
+                        </div>
+                
+                        <div class="chat-input">
+                            <textarea id="chatInput" placeholder="Type a message..."></textarea>
+                                <input class="input" type="hidden" value="" id="patient_id"  /><br><br>
+                                <input class="input" type="hidden" value="" id="doctor_id"  />
+                            <button onclick="send_chat();" id="sendBtn">Send</button>
                             
                         </div>
-                    
                     </div>
                 </div>
-
-                <!-- Big right column -->
-                <div class="activities-div">
-                    <div class="right-inner-div">
-                        <div class="heading-div">
-                            <h3>Activities Log</h3>
-                            <hr>
-                        </div>
-                        <div class="table-div">
-                            <table>
-                                <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Doctor</th>
-                                    <th>Prescription</th>
-                                </tr>
-                                </thead>
-                                <tbody id="all-entries-body">
-                                <!-- Rows will be inserted here dynamically -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                    
-                    </div>
-                </div>
-
-
-              <div class="chat-div">
-                <div class="chat-header">
-                    <div class="chat-user">
-                        <strong id="chatDoctorName">Dr. John Doe</strong><br>
-                        <span class="status" id="doctorStatus">Offline</span>
-                    </div>
-                    <div class="chat-actions">
-                        <button class="icon-btn" title="Video Call">
-                            <i class="bi bi-camera-video"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="chat-messages" id="chatMessages">
-                    <!-- Messages will load dynamically -->
-                </div>
-        
-                <div class="chat-input">
-                    <textarea id="chatInput" placeholder="Type a message..."></textarea>
-                         <input class="input" type="hidden" value="" id="patient_id"  /><br><br>
-                        <input class="input" type="hidden" value="" id="doctor_id"  />
-                    <button onclick="send_chat();" id="sendBtn">Send</button>
-                    
-                </div>
-            </div>
 
 
 

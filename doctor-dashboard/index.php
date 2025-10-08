@@ -44,6 +44,13 @@
             fetch_recently_contacted_doc(sessionId);
             loadPrescriptions(sessionId);
 
+            // update immediately
+            updateDateTime();
+
+            // then update every second
+            setInterval(updateDateTime, 1000);
+
+
           
            
        
