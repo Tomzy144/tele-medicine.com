@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: tele-medicine-app
+    env: docker           # <‑‑‑ THIS makes Render build your Dockerfile
+    plan: free
+    dockerfilePath: Dockerfile
+    branch: main
+    envVars:
+      - key: PORT
+        value: 10000

@@ -23,8 +23,8 @@
         // $SERVER_USERNAME = '410215';
         // $SERVER_PASSWORD = 'Tomzzzyy';
         // $DATABASE_NAME = 'hospital-management-system_hms';
-        $website_url = 'https://yemas-consult-ng.onrender.com/';
-        $website_redirect_url = 'https://yemas-consult-ng.onrender.com/';
+        $website_url = 'https:/tele-medicine.com/';
+        $website_redirect_url = 'https://tele-medicine.com/';
     }
 
     // Create Connection To Database
