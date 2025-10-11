@@ -1,6 +1,16 @@
-var endPoint='http://localhost/tele-medicine-base-api/';
+var rootUrl = "";
+var endPoint = "";
+var activity_endPoint = "";
 
-
-//var endPoint='http://192.168.149.156/tele-medicine-base-api/';
-
-var rootUrl='http://localhost/tele-medicine.com/';
+// Auto-detect environment (localhost vs Render)
+if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+    // Local development setup
+    endPoint = "http://localhost/tele-medicine-base-api/";
+    activity_endPoint = "http://localhost/tele-medicine-base-api/config/activity.php";
+    rootUrl = "http://localhost/tele-medicine.com/";
+} else {
+    // Render or production setup
+    endPoint = "https://tele-medicine-base-api.onrender.com/";
+    activity_endPoint = "https://tele-medicine-base-api.onrender.com/config/activity.php";
+    rootUrl = "https://tele-medicine-base-api.onrender.com/";
+}
