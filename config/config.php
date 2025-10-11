@@ -19,12 +19,12 @@
         $website_url = 'http://localhost/tele-medicine.com/';
         $website_redirect_url = 'http://localhost/';
     } else {
-        // $HOST_NAME = 'mysql-hospital-management-system.alwaysdata.net';
+        $HOST_NAME = 'mysql-hospital-management-system.alwaysdata.net';
         // $SERVER_USERNAME = '410215';
         // $SERVER_PASSWORD = 'Tomzzzyy';
-        // $DATABASE_NAME = 'hospital-management-system_hms';
-        $website_url = 'https:/tele-medicine.com/';
-        $website_redirect_url = 'https://tele-medicine.com/';
+        // $DATABASE_NAME = 'hospital-management-system_telemedicine';
+        $website_url = 'https://tele-medicine.onrender.com/';
+        $website_redirect_url = 'https://tele-medicine.onrender.com/';
     }
 
     // Create Connection To Database
