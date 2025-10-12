@@ -1,9 +1,7 @@
 <?php
     // error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
 
-    ini_set('session.use_only_cookies', 1);
-
-    session_regenerate_id();
+   
     error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
     header('Content-Type: application/json; charset=UTF-8');
 
