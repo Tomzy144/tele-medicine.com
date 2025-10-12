@@ -1,6 +1,6 @@
 <?php
     error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
-    header('Content-Type: application/json; charset=UTF-8');
+    
 
     // Detect environment
     $environment = (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false) ? 'local' : 'production';
