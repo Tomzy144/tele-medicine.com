@@ -1,5 +1,25 @@
 <?php
+    // error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
+
+    ini_set('session.use_only_cookies', 1);
+
+    session_regenerate_id();
     error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
+    header('Content-Type: application/json; charset=UTF-8');
+
+    // Detect environment
+    $environment = (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false) ? 'local' : 'production';
+
+    // Handle CORS properly
+    if ($environment === 'local') {
+        header("Access-Control-Allow-Origin: http://localhost/tele-medicine.com");
+    } else {
+        header("Access-Control-Allow-Origin: https://tele-medicine-base-api.onrender.com");
+    }
+
+    header("Access-Control-Allow-Credentials: true");
+    header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+    header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
     $thename='Tele-Medicine'; 
     $page = basename($_SERVER['SCRIPT_NAME']);
