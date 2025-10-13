@@ -1,6 +1,10 @@
 <?php
     error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED ^ E_WARNING);
     
+     $thename='Tele-Medicine'; 
+    $page = basename($_SERVER['SCRIPT_NAME']);
+    $website_auto_url =(isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+   
 
     // Detect environment
     $environment = (strpos($_SERVER['HTTP_HOST'], 'localhost') !== false || strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false) ? 'local' : 'production';
@@ -16,9 +20,6 @@
     header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
     header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-    $thename='Tele-Medicine'; 
-    $page = basename($_SERVER['SCRIPT_NAME']);
-    $website_auto_url =(isset($_SERVER['HTTPS']) ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
    
     /////////////////////////////////////////////////////////////////
 
