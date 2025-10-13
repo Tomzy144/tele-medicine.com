@@ -1,6 +1,6 @@
 var rootUrl = "";
 var endPoint = "";
-var activity_endPoint = "";
+
 
 // Auto-detect environment
 if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
