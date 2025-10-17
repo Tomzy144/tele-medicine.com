@@ -267,13 +267,13 @@ function logout() {
  
 }
 
-function fetch_recently_contacted_doc(patient_id) {
+function fetch_recently_contacted_pat(doctor_id) {
     $.ajax({
         url: endPoint,
         type: "POST",
         data: {  
-            action: "fetch_recently_contacted_doc",
-            patient_id: patient_id 
+            action: "fetch_recently_contacted_patients",
+            doctor_id: doctor_id 
         },
         dataType: "json",
         success: function(doctors) {
@@ -293,13 +293,13 @@ function fetch_recently_contacted_doc(patient_id) {
                     `;
                 });
             } else {
-                html = `<li><p>No recent contacts found</p></li>`;
+                html = `<li><p> No recent contacts found</p></li>`;
             }
 
             $(".recent-list").html(html);
         },
         error: function() {
-            $(".recent-list").html("<li><p>Error loading recent doctors</p></li>");
+            $(".recent-list").html("<li><p>Error loading recent patients</p></li>");
         }
     });
 }

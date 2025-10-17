@@ -68,7 +68,7 @@
                         <div class="recent-info-div">
                             <div class="inner-div">
                                 <div class="heading-div">
-                                    <h3>Recently Contacted Doctors</h3>
+                                    <h3>Recently Contacted Patients</h3>
                                 </div>
 
                             <div class="recent-scroll">

@@ -41,7 +41,7 @@
             get_doctor_details(sessionId);
             // fetch_all_entries(sessionId);
             resetSessionTimer();
-            fetch_recently_contacted_doc(sessionId);
+            fetch_recently_contacted_pat(sessionId);
             loadPrescriptions(sessionId);
 
             // update immediately
