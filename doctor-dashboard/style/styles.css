@@ -610,18 +610,23 @@ header .header-inner-div ul{
 /* --- Inner content wrappers --- */
 .dashboard-session .inner-div .left-column .profile-info-div .inner-div,
 .dashboard-session .inner-div .left-column .recent-info-div .inner-div,
-.dashboard-session .inner-div .activities-div .inner-div {
+.dashboard-session .inner-div .activities-div .inner-div{
   margin: auto;
   height: 90%;
   width: 90%;
   padding: 20px;
 }
+.dashboard-session .inner-div .left-column .profile-info-div .inner-div-ineer{
+  display: flex;
+}
 
 /* --- Profile Card --- */
-.dashboard-session .inner-div .left-column .profile-info-div .profile-card {
-  display: flex;
+.dashboard-session .inner-div .left-column .profile-info-div .inner-div-inner .profile-card {
+  display: inline-flex;
   align-items: center;
   gap: 20px;
+  width: 90%;
+  margin: auto;
 }
 
 .dashboard-session .inner-div .left-column .profile-info-div .profile-card .img-div img {
@@ -658,6 +663,14 @@ header .header-inner-div ul{
   font-weight: 600;
 }
 
+.dashboard-session .inner-div .left-column .profile-info-div .inner-div-inner .achievements-div {
+  display: inline-flex;
+  align-items: center;
+   gap: 20px;
+  width: 90%;
+  margin: auto;
+  
+}
 
 .dashboard-session .inner-div .left-column .recent-info-div {
   background: #fff;
@@ -668,6 +681,143 @@ header .header-inner-div ul{
   position: relative; 
  
 }
+.dashboard-session .inner-div .bottom-contents {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  margin: auto;
+  margin-bottom: 1%;
+  color: #2894d2;
+  flex-wrap: wrap;
+}
+
+/* ===== CALENDAR SECTION ===== */
+.dashboard-session .inner-div .bottom-contents .calender {
+  flex: 0 0 38.5%;
+  height: 45vh;
+  border-radius: 10px;
+  background: #fff;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 20px;
+}
+
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div {
+  margin: auto;
+  height: 90%;
+  width: 90%;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calender-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #2894d2;
+  font-weight: bold;
+  font-size: 18px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calender-heading h3 {
+  flex: 1;
+  text-align: center;
+  margin: 0;
+  font-size: 17px;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calender-heading button {
+  border: none;
+  background: none;
+  font-size: 20px;
+  color: #2894d2;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calender-heading button:hover {
+  color: #007bff;
+}
+
+/* Days of the week row */
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-weight: bold;
+  background: #eee;
+  border-radius: 6px;
+  padding: 8px 0;
+  margin-top: 8px;
+  width: 100%;
+}
+
+/* Date numbers grid */
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calendar-dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  gap: 6px;
+  margin-top: 8px;
+  width: 100%;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calendar-dates div {
+  padding: 8px 0;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calendar-dates div:hover {
+  background: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calendar-dates div.current-day {
+  background: #007bff;
+  color: #fff;
+  border-radius: 6px;
+}
+
+/* Dimmed previous/next month days */
+.dashboard-session .inner-div .bottom-contents .calender .inner-div .calendar-dates div.inactive {
+  opacity: 0.4;
+}
+
+/* ===== APPOINTMENTS LIST SECTION ===== */
+.dashboard-session .inner-div .bottom-contents .last-appointments-list {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  height: 45vh;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar-thumb {
+  background: #2894d2;
+  border-radius: 5px;
+}
+
+.dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+
 
 .dashboard-session .inner-div .left-column .recent-info-div .recent-scroll {
   padding-top: 30px;
@@ -760,6 +910,10 @@ header .header-inner-div ul{
   font-size: 12px;
   color: #777;
 }
+
+
+
+
 
 .dashboard-session .inner-div .activities-div  .right-inner-div{
 
@@ -978,6 +1132,7 @@ header .header-inner-div ul{
   align-self: flex-end;
   border-bottom-right-radius: 0;
   color: #fff;
+   box-shadow: 0 0 12px #0b93f6(40, 148, 210, 0.3);
 }
 
 
@@ -1057,8 +1212,6 @@ header .header-inner-div ul{
 .chat-input button:hover {
   background: #1DA1F2;
 }
-
-
 
 
 

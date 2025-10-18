@@ -47,6 +47,8 @@
             // update immediately
             updateDateTime();
 
+            renderCalendar();
+
             // then update every second
             setInterval(updateDateTime, 1000);
 

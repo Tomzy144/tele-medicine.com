@@ -44,7 +44,7 @@
                                 <div class="heading-div">
                                 <h3>Doctor Info</h3>
                             </div>
-                            <div class="inner-div">
+                            <div class="inner-div-inner">
                                 <div class="profile-card">
                                     <div class="img-div">
                                     <?php if ($passport==''){?>
@@ -57,9 +57,13 @@
                                     </div>
                                     <div class="text-div">
                                     <h3 id="doctor-name">xxxxxxx</h3>
-                                    <!-- <p><b>doctor ID:</b> ?php echo $member_id; ?></p>
-                                    <p><b>Age:</b> ?php echo $member_age; ?> Years</p> -->
+                                 
+                                       
                                     </div>
+                                </div>
+                                <div class="achievements-div">
+                                    <p>Appointments: <span> 500</span> </p>
+                                    <p>Total Consualts:  <span> 100</span></p>
                                 </div>
                             </div>
                         </div>
@@ -95,7 +99,7 @@
                                     <thead>
                                     <tr>
                                         <th>Date</th>
-                                        <th>Doctor</th>
+                                        <th>Patient</th>
                                         <th>Prescription</th>
                                     </tr>
                                     </thead>
@@ -136,6 +140,26 @@
                         </div>
                     </div>
                 </div>
+                <div class="bottom-contents">
+                    <div class="calender">
+                        <div class="inner-div">
+                            <div class="calender-heading">
+                                <button id="prevMonth">&#10094;</button>
+                                <h3 id="calendar-header">Nearest Treatment - Month Year</h3>
+                                <button id="nextMonth">&#10095;</button>
+                            </div>
+
+                            <div class="calendar-days" id="calendar-days"></div>
+                            <div class="calendar-dates" id="calendar-dates"></div>
+                        </div>
+                    </div>
+
+                    <div class="last-appointments-list">
+                        <!-- Appointment list table or items go here -->
+                    </div>
+                </div>
+
+
 
 
 
@@ -392,14 +416,83 @@
             }
         });
 
-
-
-
-
-
-
-
     </script>
+
+
+       <script>
+           document.addEventListener("DOMContentLoaded", function () {
+            const calendarHeader = document.getElementById("calendar-header");
+            const calendarDays = document.getElementById("calendar-days");
+            const calendarDates = document.getElementById("calendar-dates");
+            const prevMonthBtn = document.getElementById("prevMonth");
+            const nextMonthBtn = document.getElementById("nextMonth");
+
+            const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            calendarDays.innerHTML = daysOfWeek.map(day => `<div>${day}</div>`).join("");
+
+            let currentDate = new Date();
+
+            function renderCalendar() {
+                calendarDates.innerHTML = "";
+
+                const year = currentDate.getFullYear();
+                const month = currentDate.getMonth();
+                const firstDay = new Date(year, month, 1);
+                const lastDay = new Date(year, month + 1, 0);
+                const prevLastDay = new Date(year, month, 0);
+
+                const prevDays = prevLastDay.getDate();
+                const lastDate = lastDay.getDate();
+                const firstDayIndex = firstDay.getDay();
+                const lastDayIndex = lastDay.getDay();
+                const nextDays = 6 - lastDayIndex;
+
+                calendarHeader.textContent = `Nearest Treatment - ${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+
+                for (let x = firstDayIndex; x > 0; x--) {
+                const div = document.createElement("div");
+                div.textContent = prevDays - x + 1;
+                div.classList.add("inactive");
+                calendarDates.appendChild(div);
+                }
+
+                for (let i = 1; i <= lastDate; i++) {
+                const div = document.createElement("div");
+                div.textContent = i;
+                if (
+                    i === new Date().getDate() &&
+                    month === new Date().getMonth() &&
+                    year === new Date().getFullYear()
+                ) {
+                    div.classList.add("current-day");
+                }
+                calendarDates.appendChild(div);
+                }
+
+                for (let j = 1; j <= nextDays; j++) {
+                const div = document.createElement("div");
+                div.textContent = j;
+                div.classList.add("inactive");
+                calendarDates.appendChild(div);
+                }
+            }
+
+            prevMonthBtn.onclick = () => {
+                currentDate.setMonth(currentDate.getMonth() - 1);
+                renderCalendar();
+            };
+
+            nextMonthBtn.onclick = () => {
+                currentDate.setMonth(currentDate.getMonth() + 1);
+                renderCalendar();
+            };
+
+            renderCalendar();
+            });
+
+        </script>
+
+
 
 
 <!-- <script>
