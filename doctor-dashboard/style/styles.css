@@ -483,7 +483,32 @@ header .header-inner-div ul{
   text-align: center;
   float: right;
   overflow: auto;
+
+
+ /* Firefox scrollbar */
+  scrollbar-width: thin;
+  scrollbar-color: #2894d2 #e0e0e0; /* thumb | track */
 }
+
+/* Chrome, Edge, Safari scrollbar */
+.dashboard-session::-webkit-scrollbar {
+  width: 8px;
+}
+
+.dashboard-session::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+.dashboard-session::-webkit-scrollbar-thumb {
+  background: #2894d2;
+  border-radius: 10px;
+}
+
+.dashboard-session::-webkit-scrollbar-thumb:hover {
+  background: #1f7bb5;
+}
+
 
 
 .dashboard-session .inner-div {
@@ -681,6 +706,84 @@ header .header-inner-div ul{
   position: relative; 
  
 }
+
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-scroll {
+  padding-top: 30px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;          
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 8px;        
+  scrollbar-width: thin;
+  scrollbar-color: #2894d2 #f1f1f1;
+  width: 100%;
+  white-space: nowrap; 
+}
+
+
+
+
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list {
+  display: flex;
+  gap: 15px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list li {
+  flex: 0 0 auto;
+  width: 200px;
+  background: #fafafa;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list li:hover {
+  background: #f9fcff;
+  transform: translateY(-3px);
+  cursor: pointer;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .recent-list img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #2894d2;
+  margin-bottom: 10px;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info {
+  text-align: center;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .name {
+  margin: 0;
+  font-weight: bold;
+  color: #222;
+  font-size: 15px;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .specialty {
+  margin: 3px 0;
+  font-size: 13px;
+  color: #555;
+}
+
+.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .date {
+  font-size: 12px;
+  color: #777;
+}
+
+
+
 .dashboard-session .inner-div .bottom-contents {
   display: flex;
   justify-content: space-between;
@@ -804,112 +907,76 @@ header .header-inner-div ul{
   padding-bottom: 20px;
 }
 
+.dashboard-session .inner-div .bottom-contents .last-appointments-list {
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #2894d2 #e0e0e0; /* thumb | track */
+}
+
+/* Chrome, Edge, Safari */
 .dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
+}
+
+.dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar-track {
+  background: #e0e0e0;
+  border-radius: 10px;
 }
 
 .dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar-thumb {
   background: #2894d2;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
-.dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-
-
-.dashboard-session .inner-div .left-column .recent-info-div .recent-scroll {
-  padding-top: 30px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;          
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 8px;        
-  scrollbar-width: thin;
-  scrollbar-color: #2894d2 #f1f1f1;
-  width: 100%;
-  white-space: nowrap; 
+.dashboard-session .inner-div .bottom-contents .last-appointments-list::-webkit-scrollbar-thumb:hover {
+  background: #1f7bb5;
 }
 
 
-/* Sticky heading */
-.dashboard-session .inner-div .left-column .recent-info-div .heading-div {
-  position: sticky;
-  top: 0;
-  background: #fff;
-  z-index: 3;
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-  width: 100%;
-  position: absolute;
+
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div{
+  margin: auto;
+  height: 90%;
+  width: 90%;
 }
 
-.dashboard-session .inner-div .left-column .recent-info-div .heading-div h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: bold;
+
+/* Appointments list header */
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div .appointments-heading {
   color: #2894d2;
-}
-
-
-
-.dashboard-session .inner-div .left-column .recent-info-div .recent-list {
-  display: flex;
-  gap: 15px;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
-
-.dashboard-session .inner-div .left-column .recent-info-div .recent-list li {
-  flex: 0 0 auto;
-  width: 200px;
-  background: #fafafa;
-  border: 1px solid #eee;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.2s ease, background 0.2s ease;
-}
-.dashboard-session .inner-div .left-column .recent-info-div .recent-list li:hover {
-  background: #f9fcff;
-  transform: translateY(-3px);
-  cursor: pointer;
-}
-
-.dashboard-session .inner-div .left-column .recent-info-div .recent-list img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #2894d2;
-  margin-bottom: 10px;
-}
-
-.dashboard-session .inner-div .left-column .recent-info-div .doctor-info {
-  text-align: center;
-}
-
-.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .name {
-  margin: 0;
   font-weight: bold;
-  color: #222;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border-bottom: 2px solid #2894d2;
+  padding-bottom: 6px;
+  width: 100%;
+}
+
+/* Table styling */
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div .appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
   font-size: 15px;
 }
 
-.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .specialty {
-  margin: 3px 0;
-  font-size: 13px;
-  color: #555;
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div .appointments-table thead {
+  background: #2894d2;
+  color: #fff;
 }
 
-.dashboard-session .inner-div .left-column .recent-info-div .doctor-info .date {
-  font-size: 12px;
-  color: #777;
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div .appointments-table th,
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div .appointments-table td {
+  padding: 10px 6px;
+  border-bottom: 1px solid #eee;
 }
+
+.dashboard-session .inner-div .bottom-contents .last-appointments-list .inner-div .appointments-table tbody tr:hover {
+  background: #f5faff;
+  transition: background 0.2s ease;
+}
+
 
 
 

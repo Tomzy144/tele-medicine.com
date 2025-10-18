@@ -154,9 +154,60 @@
                         </div>
                     </div>
 
-                    <div class="last-appointments-list">
-                        <!-- Appointment list table or items go here -->
+                   <div class="last-appointments-list">
+                    <div class="inner-div">
+                        <h3 class="appointments-heading">New Appointments</h3>
+                            <table class="appointments-table">
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Date</th>
+                                        <th>Timing</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Petey Cruiser</td>
+                                        <td>20/02/2020</td>
+                                        <td>8:00 AM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anna Sthesia</td>
+                                        <td>25/02/2020</td>
+                                        <td>8:30 AM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paul Molive</td>
+                                        <td>25/02/2020</td>
+                                        <td>9:45 AM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Anna Mull</td>
+                                        <td>27/02/2020</td>
+                                        <td>11:30 AM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Paige Turner</td>
+                                        <td>28/02/2020</td>
+                                        <td>3:30 PM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Don Stairs</td>
+                                        <td>28/02/2020</td>
+                                        <td>4:30 PM</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pat Agonia</td>
+                                        <td>29/02/2020</td>
+                                        <td>5:00 PM</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                      
+
                     </div>
+
                 </div>
 
 
