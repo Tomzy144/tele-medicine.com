@@ -1622,7 +1622,7 @@ header .header-inner-div ul{
   display: flex;
   justify-content: center;
   position: relative;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .setting-section .inner-div {
@@ -1636,9 +1636,9 @@ header .header-inner-div ul{
   border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.07);
   padding: 12px 15px;
-  position: fixed;        /* <── stays fixed on screen */
+  /* position: relative;        <── stays fixed on screen */
   top: 110px;             /* <── adjust to your page header height */
-  width: 85%;             /* match wrapper width */
+  width: 98%;             /* match wrapper width */
   z-index: 100;
 }
 
