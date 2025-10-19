@@ -377,98 +377,130 @@
 
 
 
-    <div class="fill-form-div login-div"  id="next_3">
-      <section class="setting-section">
-        <div class="inner-div">
 
-            <!-- Card: Account Settings -->
-            <div class="card clickable" id="open-profile-modal">
-            <h3 class="card-heading">Account Settings</h3>
-            <p>Update your profile picture and full name.</p>
-            </div>
+      <div class="fill-form-div login-div" id="next_3">
+            <section class="setting-section">
+                <div class="inner-div">
 
-            <!-- Card: Change Password -->
-            <div class="card clickable" id="open-password-modal">
-            <h3 class="card-heading">Change Password</h3>
-            <p>Update your account password securely.</p>
-            </div>
-        </div>
-        </section>
+                <!-- Horizontal Tab Header -->
+                <div class="settings-header">
+                    <ul>
+                    <li class="active" data-target="profile-tab">Edit Profile</li>
+                    <li data-target="password-tab">Change Password</li>
+                    <li data-target="email-tab">Email Notifications</li>
+                    <li data-target="contact-tab">Manage Contact Info</li>
+                    </ul>
+                </div>
 
-        <!-- Profile Modal -->
-        <div class="modal" id="profile-modal">
-            <div class="modal-content">
-                <span class="close" data-close="profile-modal">&times;</span>
-                <h3>Profile Settings</h3>
-                <hr>
-                <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
-                    <div class="form-group">
+                <!-- Tab Contents -->
+                <div class="settings-content">
+
+                    <!-- Edit Profile -->
+                    <div id="profile-tab" class="tab-pane active">
+                    <h3>Edit Profile</h3>
+                    <hr>
+                    <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
+                        <div class="form-group">
                         <label for="my_passport">Profile Picture</label>
                         <div class="profile-pic-div">
-                        <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'doctor_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
-                            id="change-btn" alt="Profile Picture"/>
-                        <button type ="button" onclick="open_file()" class="upload-btn">Change Picture</button>
+                            <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'doctor_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
+                                id="change-btn" alt="Profile Picture"/>
+                            <button type="button" onclick="open_file()" class="upload-btn">Change Picture</button>
                         </div>
-                    </div>
-                    <div class="form-group">
+                        </div>
+                        <div class="form-group">
                         <label for="full-name">Full Name</label>
                         <input type="text" id="full_name" name="full_name" value="<?php echo $member_fullname; ?>" required>
+                        </div>
+                        <button type="button" onclick="update_profile();" class="save-btn">Save Changes</button>
+                    </form>
                     </div>
-                    <button type="button" onclick="update_profile();" class="save-btn">Save Changes</button>
-                </form>
-            </div>
-        </div>
 
-      
-        <!-- Password Modal -->
-        <div class="modal" id="password-modal">
-            <div class="modal-content">
-                <span class="close" data-close="password-modal">&times;</span>
-                <h3>Change Password</h3>
-                <form id="password-form" method="post" class="form-div">
-                    <div class="form-group">
+                    <!-- Change Password -->
+                    <div id="password-tab" class="tab-pane">
+                    <h3>Change Password</h3>
+                    <hr>
+                    <form id="password-form" method="post" class="form-div">
+                        <div class="form-group">
                         <label for="old-password">Old Password</label>
                         <input type="password" id="old_password" name="old_password" required>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
+                        <div class="form-group">
                         <label for="new-password">New Password</label>
                         <input type="password" id="new_password" onkeyup="checkPasswordStrength()" name="new_password" required>
-                    </div>
+                        </div>
 
-                    <div class="form-group">
+                        <div class="form-group">
                         <label for="confirm-password">Confirm New Password</label>
                         <input type="password" id="confirm_new_password" onkeyup="checkPasswordMatch()" name="confirm_new_password" required>
-                    </div>
+                        </div>
 
-                    <!-- Eye icons -->
-                    <div class="form-group" style="margin-top:5px;">
+                        <div class="form-group" style="margin-top:5px;">
                         <i id="togglePassword" class="bi bi-eye" onclick="icon_toggle()" style="cursor:pointer; font-size:16px;"></i>
                         <i id="togglePassword2" class="bi bi-eye-slash" onclick="icon_toggle()" style="cursor:pointer; font-size:16px; display:none;"></i>
-                    </div>
-
-                    <!-- Password Strength -->
-                    <div class="pswd_info3" style="display:none; margin-top:5px;">
-                        <div class="strength-bar-container2" style="width:100%; height:5px; background:#eee; border-radius:5px; overflow:hidden;">
-                            <div class="strength-bar2" style="width:0%; height:100%; border-radius:5px; transition:width 0.3s;"></div>
                         </div>
-                        <p class="strength-text2" style="font-size:12px; margin-top:6px; color:#2894d2;">
-                            Password strength: Weak
-                        </p>
-                        <small class="strength-requirements2" style="font-size:11px; color:#2894d2; display:block;">
+
+                        <div class="pswd_info3" style="display:none; margin-top:5px;">
+                        <div class="strength-bar-container2">
+                            <div class="strength-bar2"></div>
+                        </div>
+                        <p class="strength-text2">Password strength: Weak</p>
+                        <small class="strength-requirements2">
                             At least 8 characters required including upper & lower cases, numbers, and special characters
                         </small>
+                        </div>
+
+                        <p id="matchMessage" style="font-size:12px; margin-top:5px; color:red; display:none;">Passwords do not match</p>
+                        <button type="button" onclick="update_password();" class="save-btn" style="margin-top:10px;">Update Password</button>
+                    </form>
                     </div>
 
-                    <!-- Password Match Message -->
-                    <p id="matchMessage" style="font-size:12px; margin-top:5px; color:red; display:none;">Passwords do not match</p>
+                    <!-- Email Notifications -->
+                    <div id="email-tab" class="tab-pane">
+                    <h3>Email Notifications</h3>
+                    <hr>
+                    <div class="form-group">
+                        <label>Receive Notification Emails</label>
+                        <label class="switch">
+                        <input type="checkbox" id="email_toggle" checked>
+                        <span class="slider round"></span>
+                        </label>
+                    </div>
+                    <button type="button" class="save-btn">Save Preference</button>
+                    </div>
 
-                    <button type="button" onclick="update_password();" class="save-btn" style="margin-top:10px;">Update Password</button>
-                </form>
-            </div>
+                    <!-- Manage Contact Info -->
+                    <div id="contact-tab" class="tab-pane">
+                    <h3>Manage Contact Info</h3>
+                    <hr>
+                    <form id="contact-form" class="form-div">
+                        <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" value="<?php echo $member_email; ?>" required>
+                        </div>
+                        <div class="form-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="phone_number" value="<?php echo $member_phone; ?>" required>
+                        </div>
+                        <div class="form-group">
+                        <label>Address</label>
+                        <textarea id="address" rows="3"><?php echo $member_address; ?></textarea>
+                        </div>
+                        <button type="button" onclick="update_contact();" class="save-btn">Save Changes</button>
+                    </form>
+                    </div>
+
+                </div>
+                </div>
+            </section>
         </div>
 
-    </div>
+
+
+
+
+  
 
      <!-- <div class="fill-form-div login-div"  id="next_4">
         <section class="chat-section">
@@ -652,8 +684,27 @@
             renderCalendar();
             });
 
+
+
+
+
+    
+
+
+
         </script>
 
+
+       <script>
+document.querySelectorAll('.settings-header li').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.settings-header li').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(content => content.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById(this.dataset.target).classList.add('active');
+  });
+});
+</script>
 
 
 
