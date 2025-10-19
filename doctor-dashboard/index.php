@@ -86,8 +86,8 @@
                         </p>
                     </li>
                      <li>
-                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'), remove_heading(), fetch_all_doctors();">
-                            <i class="bi-people"></i> Doctors List
+                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'), remove_heading();">
+                            <i class="bi-book"></i> Doctor Profile
                         </p>
                     </li>
                     <li>

@@ -221,21 +221,132 @@
     </div>  
 
     <div class="fill-form-div login-div"  id="next_2"> 
-        <section class="doctor-list-section">
+       <section class="doctor-profile-section">
             <div class="inner-div">
-                <div class="doctor-list-heading">
-                <div class="div-in">
-                    <h3>Doctors List</h3>
-                    <p>Browse and connect with our experienced doctors.</p>
+
+                <!-- Profile Overview -->
+                <div class="profile-overview">
+                    <div class="profile-card">
+                        <div class="profile-top">
+                            <div class="profile-image">
+                                <img src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor" alt="Doctor Photo">
+                            </div>
+                            <div class="profile-info">
+                                <h3 class="doctor-name">Dr. John Doe</h3>
+                                <p class="doctor-title">Consultant Cardiologist</p>
+                                <div class="badge">Active</div>
+                            </div>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-box">
+                                <h4>120</h4>
+                                <p>Appointments</p>
+                            </div>
+                            <div class="stat-box">
+                                <h4>95</h4>
+                                <p>Patients</p>
+                            </div>
+                            <div class="stat-box">
+                                <h4>12</h4>
+                                <p>Years Exp.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="info-card">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-user"></i> Personal Information</h4>
+                    </div>
+                    <div class="info-grid">
+                    <div><strong>First Name:</strong> John</div>
+                    <div><strong>Last Name:</strong> Doe</div>
+                    <div><strong>Age:</strong> 38</div>
+                    <div><strong>Position:</strong> Consultant Cardiologist</div>
+                    <div><strong>Email:</strong> johndoe@gmail.com</div>
+                    <div><strong>Phone:</strong> +234 801 234 5678</div>
+                    <div><strong>Location:</strong> Lagos, Nigeria</div>
+                    </div>
                 </div>
                 </div>
-                <div class="doctor-list-div">
-                <div class="doctor-card-container" id="doctors_list">
-                    <!-- Doctor cards will be injected here -->
+
+                <!-- Specialty | Notifications | Schedule -->
+                <div class="triple-card-row">
+                <div class="card-box">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-stethoscope"></i> Specialty</h4>
+                    </div>
+                    <ul class="list-dashed">
+                    <li>Heart Disease</li>
+                    <li>Hypertension</li>
+                    <li>Cardiac Surgery</li>
+                    <li>Preventive Cardiology</li>
+                    </ul>
+                </div>
+
+                <div class="card-box">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-bell"></i> Notifications</h4>
+                    </div>
+                    <ul class="list-striped">
+                    <li>New message from patient</li>
+                    <li>Appointment reminder</li>
+                    <li>Lab results ready for review</li>
+                    </ul>
+                </div>
+
+                <div class="card-box">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-calendar-days"></i> Schedule</h4>
+                    </div>
+                    <table class="schedule-table">
+                    <tr><td>Mon - Fri</td><td>8am - 5pm</td></tr>
+                    <tr><td>Sat</td><td>9am - 2pm</td></tr>
+                    <tr><td>Sun</td><td>Off</td></tr>
+                    </table>
                 </div>
                 </div>
+
+                <!-- Notes | Education | Experience -->
+                <div class="triple-card-row">
+                <div class="card-box">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-notes-medical"></i> Patient Notes</h4>
+                    </div>
+                    <div class="notes">
+                    <blockquote>“Very kind and thorough.”</blockquote>
+                    <blockquote>“Explained diagnosis clearly.”</blockquote>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
+                    </div>
+                    <div class="edu-item">
+                    <div><strong>Year:</strong> 2010</div>
+                    <div><strong>Degree:</strong> MBBS</div>
+                    <div><strong>Institute:</strong> University of Lagos</div>
+                    <div><strong>Result:</strong> Distinction</div>
+                    </div>
+                </div>
+
+                <div class="card-box">
+                    <div class="card-header">
+                    <h4><i class="fa-solid fa-briefcase-medical"></i> Experience</h4>
+                    </div>
+                    <div class="exp-item">
+                    <div><strong>Year:</strong> 2015 - Present</div>
+                    <div><strong>Department:</strong> Cardiology</div>
+                    <div><strong>Position:</strong> Consultant</div>
+                    <div><strong>Hospital:</strong> Lagos General Hospital</div>
+                    <div><strong>Feedback:</strong> Excellent patient reviews.</div>
+                    </div>
+                </div>
+                </div>
+
             </div>
-        </section>
+            </section>
+
 
        <!-- Doctor Profile Modal -->
         <div id="doctorProfileModal" class="modal">
