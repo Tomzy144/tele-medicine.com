@@ -395,145 +395,163 @@
                 <!-- Tab Contents -->
                 <div class="settings-content">
 
-                  <!-- Edit Profile -->
-                    <div id="profile-tab" class="tab-pane active">
-                    <h3>Edit Profile</h3>
-                    <hr>
+                
+                <!-- Edit Profile -->
+                <div id="profile-tab" class="tab-pane active">
+                <h3>Edit Profile</h3>
+                <hr>
 
-                    <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
+                <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
 
-                        <!-- ================= SECTION 1: PERSONAL INFORMATION ================= -->
-                        <h4>SECTION 1: PERSONAL INFORMATION</h4>
-                        <div class="form-group">
+                    <!-- ===== STEP 1: PERSONAL INFORMATION ===== -->
+                    <div class="form-step active">
+                    <h4>SECTION 1: PERSONAL INFORMATION</h4>
+                    <div class="form-group">
                         <label>Profile Photo</label>
                         <div class="profile-pic-div">
-                            <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'doctor_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
+                        <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'doctor_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
                             id="change-btn" alt="Profile Picture"/>
-                            <button type="button" onclick="open_file()" class="upload-btn">Change Picture</button>
+                        <button type="button" onclick="open_file()" class="upload-btn">Change Picture</button>
                         </div>
-                        </div>
+                    </div>
 
-                        <div class="form-group"><label>Full Name *</label><input type="text" id="full_name" name="full_name" value="<?php echo $member_fullname; ?>" required></div>
-                        <div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" name="dob" required></div>
-                        <div class="form-group"><label>Email Address *</label><input type="email" id="email" name="email" required></div>
-                        <div class="form-group"><label>Phone Number *</label><input type="tel" id="phone" name="phone" required></div>
-                        <div class="form-group"><label>Residential Address *</label><input type="text" id="address" name="address" required></div>
-                        <div class="form-row">
+                    <div class="form-group"><label>Full Name *</label><input type="text" id="full_name" name="full_name" value="<?php echo $member_fullname; ?>" required></div>
+                    <div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" name="dob" required></div>
+                    <div class="form-group"><label>Email Address *</label><input type="email" id="email" name="email" required></div>
+                    <div class="form-group"><label>Phone Number *</label><input type="tel" id="phone" name="phone" required></div>
+                    <div class="form-group"><label>Residential Address *</label><input type="text" id="address" name="address" required></div>
+                    <div class="form-row">
                         <input type="text" id="city" name="city" placeholder="City" required>
                         <input type="text" id="state" name="state" placeholder="State" required>
                         <input type="text" id="zip" name="zip" placeholder="ZIP" required>
-                        </div>
+                    </div>
+                    <button type="button" class="next-btn">Next</button>
+                    </div>
 
-                        <hr>
-
-                        <!-- ================= SECTION 2: PROFESSIONAL CREDENTIALS ================= -->
-                        <h4>SECTION 2: PROFESSIONAL CREDENTIALS</h4>
-                        <div class="form-group"><label>Medical License Number *</label><input type="text" id="license_number" name="license_number" required></div>
-                        <div class="form-group"><label>License Issuing State/Country *</label><input type="text" id="license_country" name="license_country" required></div>
-                        <div class="form-group"><label>License Expiration Date *</label><input type="date" id="license_expiry" name="license_expiry" required></div>
-                        <div class="form-group"><label>Board Certification *</label><input type="text" id="board_cert" name="board_cert" required></div>
-                        <div class="form-group"><label>Primary Specialty *</label><input type="text" id="primary_specialty" name="primary_specialty" required></div>
-                        <div class="form-group"><label>Sub-specialties</label><input type="text" id="sub_specialties" name="sub_specialties"></div>
-                        <div class="form-group"><label>Medical School *</label><input type="text" id="medical_school" name="medical_school" required></div>
-                        <div class="form-row">
+                    <!-- ===== STEP 2: PROFESSIONAL CREDENTIALS ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 2: PROFESSIONAL CREDENTIALS</h4>
+                    <div class="form-group"><label>Medical License Number *</label><input type="text" id="license_number" name="license_number" required></div>
+                    <div class="form-group"><label>License Issuing State/Country *</label><input type="text" id="license_country" name="license_country" required></div>
+                    <div class="form-group"><label>License Expiration Date *</label><input type="date" id="license_expiry" name="license_expiry" required></div>
+                    <div class="form-group"><label>Board Certification *</label><input type="text" id="board_cert" name="board_cert" required></div>
+                    <div class="form-group"><label>Primary Specialty *</label><input type="text" id="primary_specialty" name="primary_specialty" required></div>
+                    <div class="form-group"><label>Sub-specialties</label><input type="text" id="sub_specialties" name="sub_specialties"></div>
+                    <div class="form-group"><label>Medical School *</label><input type="text" id="medical_school" name="medical_school" required></div>
+                    <div class="form-row">
                         <input type="text" id="grad_year" name="grad_year" placeholder="Year of Graduation" required>
                         <input type="text" id="residency" name="residency" placeholder="Residency/Fellowship" required>
                         <input type="number" id="experience" name="experience" placeholder="Years of Experience" required>
-                        </div>
+                    </div>
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    </div>
 
-                        <hr>
+                    <!-- ===== STEP 3: PRACTICE INFO ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 3: PROFESSIONAL PRACTICE INFORMATION</h4>
+                    <div class="form-group"><label>Current Hospital Affiliations *</label><input type="text" id="hospital_affiliations" name="hospital_affiliations" required></div>
+                    <div class="form-group"><label>Practice Name (if applicable)</label><input type="text" id="practice_name" name="practice_name"></div>
+                    <div class="form-group"><label>Practice Address *</label><input type="text" id="practice_address" name="practice_address" required></div>
+                    <div class="form-group"><label>Languages Spoken *</label><input type="text" id="languages" name="languages" required></div>
+                    <div class="form-group"><label>Areas of Expertise *</label><input type="text" id="expertise" name="expertise" required></div>
+                    <div class="form-group"><label>Consultation Fee ($)</label><input type="number" id="consultation_fee" name="consultation_fee"></div>
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    </div>
 
-                        <!-- ================= SECTION 3: PROFESSIONAL PRACTICE INFORMATION ================= -->
-                        <h4>SECTION 3: PROFESSIONAL PRACTICE INFORMATION</h4>
-                        <div class="form-group"><label>Current Hospital Affiliations *</label><input type="text" id="hospital_affiliations" name="hospital_affiliations" required></div>
-                        <div class="form-group"><label>Practice Name (if applicable)</label><input type="text" id="practice_name" name="practice_name"></div>
-                        <div class="form-group"><label>Practice Address *</label><input type="text" id="practice_address" name="practice_address" required></div>
-                        <div class="form-group"><label>Languages Spoken *</label><input type="text" id="languages" name="languages" required></div>
-                        <div class="form-group"><label>Areas of Expertise *</label><input type="text" id="expertise" name="expertise" required></div>
-                        <div class="form-group"><label>Consultation Fee ($)</label><input type="number" id="consultation_fee" name="consultation_fee"></div>
-
-                        <hr>
-
-                        <!-- ================= SECTION 4: TECHNICAL REQUIREMENTS ================= -->
-                        <h4>SECTION 4: TECHNICAL REQUIREMENTS</h4>
-                        <div class="form-row">
+                    <!-- ===== STEP 4: TECHNICAL + LEGAL ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 4 & 5: TECHNICAL + LEGAL</h4>
+                    <div class="form-row">
                         <label>Primary Device:</label>
                         <select id="device" name="device">
-                            <option value="">Select Device</option>
-                            <option>Desktop</option><option>Laptop</option><option>Tablet</option><option>Smartphone</option>
+                        <option value="">Select Device</option>
+                        <option>Desktop</option><option>Laptop</option><option>Tablet</option><option>Smartphone</option>
                         </select>
-                        </div>
-                        <div class="form-row">
+                    </div>
+                    <div class="form-row">
                         <label>Webcam Available:</label>
                         <select id="webcam" name="webcam"><option>Yes</option><option>No</option></select>
                         <label>Microphone Available:</label>
                         <select id="microphone" name="microphone"><option>Yes</option><option>No</option></select>
-                        </div>
+                    </div>
 
-                        <hr>
+                    <h5>Legal & Compliance</h5>
+                    <label><input type="checkbox" required> I agree to HIPAA compliance requirements</label><br>
+                    <label><input type="checkbox" required> I acknowledge telemedicine regulations in my state</label><br>
+                    <label><input type="checkbox" required> I consent to background verification</label>
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    </div>
 
-                        <!-- ================= SECTION 5: LEGAL & COMPLIANCE ================= -->
-                        <h4>SECTION 5: LEGAL & COMPLIANCE</h4>
-                        <div class="checkbox-group">
-                        <label><input type="checkbox" id="hipaa" name="hipaa" required> I agree to HIPAA compliance requirements</label><br>
-                        <label><input type="checkbox" id="regulations" name="regulations" required> I acknowledge telemedicine regulations in my state</label><br>
-                        <label><input type="checkbox" id="background_check" name="background_check" required> I consent to background verification</label>
-                        </div>
-
-                        <hr>
-
-                        <!-- ================= SECTION 6: AVAILABILITY & PREFERENCES ================= -->
-                        <h4>SECTION 6: AVAILABILITY & PREFERENCES</h4>
-                        <div class="form-group"><label>Time Zone *</label><input type="text" id="timezone" name="timezone" required></div>
-                        <div class="form-group"><label>Preferred Consultation Hours *</label><input type="text" id="consultation_hours" name="consultation_hours" required></div>
-                        <div class="checkbox-group">
+                    <!-- ===== STEP 5: AVAILABILITY ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 6: AVAILABILITY & PREFERENCES</h4>
+                    <div class="form-group"><label>Time Zone *</label><input type="text" id="timezone" name="timezone" required></div>
+                    <div class="form-group"><label>Preferred Consultation Hours *</label><input type="text" id="consultation_hours" name="consultation_hours" required></div>
+                    <div class="checkbox-group">
                         <label><input type="checkbox" name="consultation_types[]" value="Video"> Video</label>
                         <label><input type="checkbox" name="consultation_types[]" value="Phone"> Phone</label>
                         <label><input type="checkbox" name="consultation_types[]" value="Messaging"> Messaging</label>
-                        </div>
-                        <div class="form-group"><label>Maximum Patients Per Day *</label><input type="number" id="max_patients" name="max_patients" required></div>
-                        <div class="form-group"><label>Emergency Contact *</label><input type="text" id="emergency_contact" name="emergency_contact" required></div>
-
-                        <hr>
-
-                        <!-- ================= SECTION 7: PAYMENT INFORMATION ================= -->
-                        <h4>SECTION 7: PAYMENT INFORMATION</h4>
-                        <div class="form-group"><label>Bank Name *</label><input type="text" id="bank_name" name="bank_name" required></div>
-                        <div class="form-group"><label>Account Number *</label><input type="text" id="account_number" name="account_number" required></div>
-                        <div class="form-group"><label>Routing Number *</label><input type="text" id="routing_number" name="routing_number" required></div>
-                        <div class="form-group"><label>Tax ID (SSN/EIN) *</label><input type="text" id="tax_id" name="tax_id" required></div>
-                        <div class="form-group"><label>Insurance Plans Accepted</label><input type="text" id="insurance" name="insurance"></div>
-
-                        <hr>
-
-                        <!-- ================= SECTION 8: DOCUMENT UPLOAD ================= -->
-                        <h4>SECTION 8: DOCUMENT UPLOAD</h4>
-                        <label><input type="checkbox" id="id_upload_chk"> Government Issued ID</label>
-                        <input type="file" id="id_upload" name="id_upload" accept=".pdf,.jpg,.png"><br>
-
-                        <label><input type="checkbox" id="license_upload_chk"> Medical License</label>
-                        <input type="file" id="license_upload" name="license_upload" accept=".pdf,.jpg,.png"><br>
-
-                        <label><input type="checkbox" id="board_upload_chk"> Board Certification</label>
-                        <input type="file" id="board_upload" name="board_upload" accept=".pdf,.jpg,.png">
-
-                        <hr>
-
-                        <!-- ================= SECTION 9: AGREEMENT ================= -->
-                        <h4>SECTION 9: AGREEMENT</h4>
-                        <div class="checkbox-group">
-                        <label><input type="checkbox" id="terms" name="terms" required> I accept the Terms of Service</label><br>
-                        <label><input type="checkbox" id="privacy" name="privacy" required> I acknowledge the Privacy Policy</label>
-                        </div>
-                        <div class="form-group"><label>Electronic Signature *</label><input type="text" id="signature" name="signature" required></div>
-                        <div class="form-group"><label>Date *</label><input type="date" id="agreement_date" name="agreement_date" required></div>
-
-                        <hr>
-
-                        <!-- SUBMIT -->
-                        <button type="button" onclick="update_profile();" class="save-btn">Save Changes</button>
-                    </form>
                     </div>
+                    <div class="form-group"><label>Maximum Patients Per Day *</label><input type="number" id="max_patients" name="max_patients" required></div>
+                    <div class="form-group"><label>Emergency Contact *</label><input type="text" id="emergency_contact" name="emergency_contact" required></div>
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    </div>
+
+                    <!-- ===== STEP 6: PAYMENT ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 7: PAYMENT INFORMATION</h4>
+                    <div class="form-group"><label>Bank Name *</label><input type="text" id="bank_name" name="bank_name" required></div>
+                    <div class="form-group"><label>Account Number *</label><input type="text" id="account_number" name="account_number" required></div>
+                    <div class="form-group"><label>Routing Number *</label><input type="text" id="routing_number" name="routing_number" required></div>
+                    <div class="form-group"><label>Tax ID (SSN/EIN) *</label><input type="text" id="tax_id" name="tax_id" required></div>
+                    <div class="form-group"><label>Insurance Plans Accepted</label><input type="text" id="insurance" name="insurance"></div>
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    </div>
+
+                    <!-- ===== STEP 7: DOCUMENT UPLOAD ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 8: DOCUMENT UPLOAD</h4>
+                    <label>Government Issued ID</label><input type="file" id="id_upload" name="id_upload" accept=".pdf,.jpg,.png"><br>
+                    <label>Medical License</label><input type="file" id="license_upload" name="license_upload" accept=".pdf,.jpg,.png"><br>
+                    <label>Board Certification</label><input type="file" id="board_upload" name="board_upload" accept=".pdf,.jpg,.png"><br>
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="button" class="next-btn">Next</button>
+                    </div>
+                    </div>
+
+                    <!-- ===== STEP 8: AGREEMENT ===== -->
+                    <div class="form-step">
+                    <h4>SECTION 9: AGREEMENT</h4>
+                    <label><input type="checkbox" id="terms" name="terms" required> I accept the Terms of Service</label><br>
+                    <label><input type="checkbox" id="privacy" name="privacy" required> I acknowledge the Privacy Policy</label>
+                    <div class="form-group"><label>Electronic Signature *</label><input type="text" id="signature" name="signature" required></div>
+                    <div class="form-group"><label>Date *</label><input type="date" id="agreement_date" name="agreement_date" required></div>
+
+                    <div class="form-navigation">
+                        <button type="button" class="prev-btn">Previous</button>
+                        <button type="submit" onclick="update_profile();" class="save-btn">Submit</button>
+                    </div>
+                    </div>
+
+                </form>
+                </div>
+
 
 
                     <!-- Change Password -->
@@ -824,8 +842,41 @@ document.querySelectorAll('.settings-header li').forEach(tab => {
     document.getElementById(this.dataset.target).classList.add('active');
   });
 });
+
+
+
+
+
 </script>
 
+<script>
+const steps = document.querySelectorAll('.form-step');
+let currentStep = 0;
+
+function showStep(index) {
+  steps.forEach((step, i) => step.classList.toggle('active', i === index));
+}
+
+document.querySelectorAll('.next-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (currentStep < steps.length - 1) {
+      currentStep++;
+      showStep(currentStep);
+    }
+  });
+});
+
+document.querySelectorAll('.prev-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (currentStep > 0) {
+      currentStep--;
+      showStep(currentStep);
+    }
+  });
+});
+
+showStep(currentStep);
+</script>
 
 
 <!-- <script>
