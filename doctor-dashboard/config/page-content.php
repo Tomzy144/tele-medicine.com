@@ -751,7 +751,84 @@
     </script>
 
 
+       
+
+
        <script>
+document.querySelectorAll('.settings-header li').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.settings-header li').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(content => content.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById(this.dataset.target).classList.add('active');
+  });
+});
+
+
+
+
+
+</script>
+
+        <script>
+        const steps = document.querySelectorAll('.form-step');
+        let currentStep = 0;
+
+        function showStep(index) {
+        steps.forEach((step, i) => step.classList.toggle('active', i === index));
+        }
+
+        document.querySelectorAll('.next-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep < steps.length - 1) {
+            currentStep++;
+            showStep(currentStep);
+            }
+        });
+        });
+
+        document.querySelectorAll('.prev-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (currentStep > 0) {
+            currentStep--;
+            showStep(currentStep);
+            }
+        });
+        });
+
+        showStep(currentStep);
+        </script>
+
+
+<!-- <script>
+    $(function() {
+        var Test = {
+            UpdatePreview: function(obj) {
+                if (!window.FileReader) {
+                    // Browser doesn't support FileReader
+                    return;
+                }
+
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    // Update the src of the image to show the preview
+                    $('#change-btn').prop("src", e.target.result);
+                };
+
+                reader.readAsDataURL(obj.files[0]); // Read the selected file
+            }
+        };
+
+        // Example usage: Assuming there's a file input with id="file-input"
+        $('#my_passport').on('change', function() {
+            Test.UpdatePreview(this);
+        });
+    });
+</script> -->
+
+
+<script>
            document.addEventListener("DOMContentLoaded", function () {
             const calendarHeader = document.getElementById("calendar-header");
             const calendarDays = document.getElementById("calendar-days");
@@ -831,80 +908,6 @@
 
 
         </script>
-
-
-       <script>
-document.querySelectorAll('.settings-header li').forEach(tab => {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.settings-header li').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(content => content.classList.remove('active'));
-    this.classList.add('active');
-    document.getElementById(this.dataset.target).classList.add('active');
-  });
-});
-
-
-
-
-
-</script>
-
-<script>
-const steps = document.querySelectorAll('.form-step');
-let currentStep = 0;
-
-function showStep(index) {
-  steps.forEach((step, i) => step.classList.toggle('active', i === index));
-}
-
-document.querySelectorAll('.next-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (currentStep < steps.length - 1) {
-      currentStep++;
-      showStep(currentStep);
-    }
-  });
-});
-
-document.querySelectorAll('.prev-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    if (currentStep > 0) {
-      currentStep--;
-      showStep(currentStep);
-    }
-  });
-});
-
-showStep(currentStep);
-</script>
-
-
-<!-- <script>
-    $(function() {
-        var Test = {
-            UpdatePreview: function(obj) {
-                if (!window.FileReader) {
-                    // Browser doesn't support FileReader
-                    return;
-                }
-
-                var reader = new FileReader();
-                
-                reader.onload = function(e) {
-                    // Update the src of the image to show the preview
-                    $('#change-btn').prop("src", e.target.result);
-                };
-
-                reader.readAsDataURL(obj.files[0]); // Read the selected file
-            }
-        };
-
-        // Example usage: Assuming there's a file input with id="file-input"
-        $('#my_passport').on('change', function() {
-            Test.UpdatePreview(this);
-        });
-    });
-</script> -->
 
 
 <?php }?>
