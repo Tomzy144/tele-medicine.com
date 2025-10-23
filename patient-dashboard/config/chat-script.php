@@ -44,38 +44,23 @@ function refreshChat() {
 
     // --- WebSocket connection ---
     let ws;
-    let reconnectTimeout;
+            function connectWebSocket() {
+            const isLocal = window.location.hostname === "localhost";
+            const wsUrl = isLocal
+                ? "ws://localhost:8080"
+                : "wss://tele-medicine.onrender.com"; // same Render domain
 
-    function connectWebSocket() {
-        // Dynamically detect environment
-        const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+            ws = new WebSocket(wsUrl);
 
-        const wsUrl = isLocal
-            ? "ws://localhost:8080"
-            : "wss://tele-medicine.onrender.com"; // Render automatically upgrades to secure WebSocket (wss)
+            ws.onopen = () => console.log("✅ WebSocket connected");
+            ws.onerror = (err) => console.error("⚠️ WebSocket error:", err);
+            ws.onclose = () => {
+                console.log("❌ WebSocket closed. Reconnecting in 5s...");
+                setTimeout(connectWebSocket, 5000);
+            };
 
-        ws = new WebSocket(wsUrl);
+            connectWebSocket();
 
-        ws.onopen = () => {
-            console.log("✅ WebSocket connected to:", wsUrl);
-
-            // Login patient
-            ws.send(JSON.stringify({ type: "patient_login", patient_id: patientId }));
-
-            // Request chat history and doctor status
-            ws.send(JSON.stringify({ type: "get_history", doctor_id: doctorId, patient_id: patientId }));
-            ws.send(JSON.stringify({ type: "get_status", doctor_id: doctorId }));
-        };
-
-        ws.onerror = (err) => {
-            console.error("⚠️ WebSocket error:", err);
-        };
-
-        ws.onclose = () => {
-            console.warn("❌ WebSocket disconnected. Reconnecting in 5s...");
-            clearTimeout(reconnectTimeout);
-            reconnectTimeout = setTimeout(connectWebSocket, 5000);
-        };
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);

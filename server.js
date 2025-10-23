@@ -1,47 +1,32 @@
 const WebSocket = require("ws");
 const mysql = require("mysql2/promise");
-const http = require("http");
-const fs = require("fs");
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 8080;
+const wss = new WebSocket.Server({ port: PORT });
 
-// Create an HTTP server (so WS can share same port)
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { "Content-Type": "text/plain" });
-  res.end("Telemedicine WebSocket server running");
-});
-
-// Create WebSocket server on same port
-const wss = new WebSocket.Server({ server });
-
-// MySQL connection (same as before)
 let db;
-const isProduction = process.env.NODE_ENV === "production";
-const dbConfig = isProduction
-  ? {
-      host: process.env.DB_HOST || "mysql-hospital-management-system.alwaysdata.net",
-      user: process.env.DB_USER || "410215_tele_med",
-      password: process.env.DB_PASSWORD || "Tomzzzyy",
-      database: process.env.DB_NAME || "hospital-management-system_telemedicine",
-      port: 3306
-    }
-  : {
-      host: "localhost",
-      user: "root",
-      password: "",
-      database: "tele_medicine_db"
-    };
+const clients = new Map();
 
-async function connectDB() {
+// Connect to MySQL
+(async () => {
   try {
-    db = await mysql.createConnection(dbConfig);
+    db = await mysql.createConnection({
+      host: process.env.DB_HOST || "localhost",
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASS || "",
+      database: process.env.DB_NAME || "tele_medicine_db"
+    });
     console.log("✅ MySQL connected.");
   } catch (err) {
-    console.error("❌ MySQL connection failed:", err.message);
-    setTimeout(connectDB, 5000);
+    console.error("❌ MySQL connection failed:", err);
+    process.exit(1);
   }
-}
-connectDB();
+})();
+
+
+
+console.log(`🚀 WebSocket server running on port ${PORT}`);
+
 
 // WebSocket logic
 wss.on("connection", (ws) => {
