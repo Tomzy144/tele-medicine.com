@@ -1,23 +1,38 @@
 const WebSocket = require("ws");
 const mysql = require("mysql2/promise");
 
+// Create WebSocket server
 const wss = new WebSocket.Server({ port: 8080 });
 
 let db;
 const clients = new Map(); // key = userId, value = ws
 
-// Connect to MySQL
-(async () => {
-  try {
-    db = await mysql.createConnection({
+// Determine environment
+const isProduction = process.env.NODE_ENV === "production";
+
+// Database configuration
+const dbConfig = isProduction
+  ? {
+      host: process.env.DB_HOST || "mysql-hospital-management-system.alwaysdata.net",
+      user: process.env.DB_USER || "410215_tele_med",
+      password: process.env.DB_PASSWORD || "Tomzzzyy",
+      database: process.env.DB_NAME || "hospital-management-system_telemedicine",
+      port: 3306
+    }
+  : {
       host: "localhost",
       user: "root",
       password: "",
       database: "tele_medicine_db"
-    });
-    console.log("✅ MySQL connected.");
+    };
+
+// Connect to MySQL
+(async () => {
+  try {
+    db = await mysql.createConnection(dbConfig);
+    console.log("✅ MySQL connected to " + (isProduction ? "AlwaysData (Production)" : "Localhost (Development)"));
   } catch (err) {
-    console.error("❌ MySQL connection failed:", err);
+    console.error("❌ MySQL connection failed:", err.message);
     process.exit(1);
   }
 })();
