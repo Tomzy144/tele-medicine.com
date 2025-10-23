@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: tele-medicine-app
+    name: tele-medicine
     env: docker             # Render builds using your Dockerfile
     dockerfilePath: Dockerfile
     plan: free
