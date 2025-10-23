@@ -44,19 +44,46 @@ function refreshChat() {
 
     // --- WebSocket connection ---
     let ws;
+    let reconnectTimeout;
+
     function connectWebSocket() {
-        ws = new WebSocket("ws://localhost:8080");
+        // Dynamically detect environment
+        const isLocal = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+
+        const wsUrl = isLocal
+            ? "ws://localhost:8080"
+            : "wss://tele-medicine.onrender.com"; // Render automatically upgrades to secure WebSocket (wss)
+
+        ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
-            console.log("✅ WebSocket connected");
+            console.log("✅ WebSocket connected to:", wsUrl);
 
-            // login patient
+            // Login patient
             ws.send(JSON.stringify({ type: "patient_login", patient_id: patientId }));
 
-            // ask server for chat history & doctor status
+            // Request chat history and doctor status
             ws.send(JSON.stringify({ type: "get_history", doctor_id: doctorId, patient_id: patientId }));
             ws.send(JSON.stringify({ type: "get_status", doctor_id: doctorId }));
         };
+
+        ws.onerror = (err) => {
+            console.error("⚠️ WebSocket error:", err);
+        };
+
+        ws.onclose = () => {
+            console.warn("❌ WebSocket disconnected. Reconnecting in 5s...");
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = setTimeout(connectWebSocket, 5000);
+        };
+
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            console.log("📩 Message from server:", data);
+            // handle data here...
+        };
+
+
 
         ws.onmessage = (event) => {
             const data = JSON.parse(event.data);
