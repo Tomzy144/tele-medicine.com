@@ -1305,7 +1305,7 @@ header .header-inner-div ul{
 }
 
 /* --- Base Card Style --- */
-.profile-card, .info-card {
+.profile-card2, .info-card {
   background: #fff;
   border-radius: 5px;
   padding: 20px;
@@ -1324,7 +1324,7 @@ header .header-inner-div ul{
 .profile-overview {
   display: flex;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 1%;
   align-items: stretch;
 }
 

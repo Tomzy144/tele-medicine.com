@@ -23,7 +23,7 @@
                         <!-- Left (fixed) -->
                         <div class="appointment-card left-card">
                             <h3>Welcome back, <span id="doctorFirstName">xxxxxx</span></h3>
-                            <p id="currentDate"></p>
+                            <p id="currentDateTime"></p>
                         </div>
 
                         <!-- Dynamic cards (JS appends here) -->
@@ -226,7 +226,7 @@
 
                 <!-- Profile Overview -->
                 <div class="profile-overview">
-                    <div class="profile-card">
+                    <div class="profile-card2">
                         <div class="profile-top">
                             <div class="profile-image">
                                 <img src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor" alt="Doctor Photo">
@@ -654,32 +654,6 @@
 
            // --- Initialize WebSocket globally ---
         const ws = new WebSocket("ws://localhost:8080");
-
-        
-        function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            reader.onload = function(e) {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('preview-img').style.display = 'block';
-            }
-            reader.readAsDataURL(input.files[0]);
-        }
-        }
-
-        // Handle profile form submit
-        document.getElementById('profile-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log("Profile form submitted with picture and name");
-        // AJAX request here
-        });
-
-        // Handle password form submit
-        document.getElementById('password-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        console.log("Password form submitted with old/new/confirm");
-        // AJAX request here
-        });
     </script>
 
     <script>

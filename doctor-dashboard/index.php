@@ -49,8 +49,7 @@
 
             renderCalendar();
 
-            // then update every second
-            setInterval(updateDateTime, 1000);
+            
 
 
           
@@ -61,6 +60,9 @@
             document.addEventListener('mousemove', resetSessionTimer);
             document.addEventListener('keypress', resetSessionTimer);
         };
+
+        // then update every second
+            setInterval(updateDateTime, 1000);
 
       
     </script>

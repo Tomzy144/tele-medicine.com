@@ -12,7 +12,7 @@ function _close_menu(){
 
 
 function updateDateTime() {
-  const dateElement = document.getElementById('currentDate');
+  const dateElement = document.getElementById('currentDateTime');
   const now = new Date();
 
   const options = {
