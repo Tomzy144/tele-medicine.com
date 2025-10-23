@@ -26,16 +26,43 @@ const dbConfig = isProduction
       database: "tele_medicine_db"
     };
 
-// Connect to MySQL
-(async () => {
+// Auto-reconnect MySQL
+async function connectDB() {
   try {
     db = await mysql.createConnection(dbConfig);
     console.log("✅ MySQL connected to " + (isProduction ? "AlwaysData (Production)" : "Localhost (Development)"));
+
+    db.on("error", async (err) => {
+      console.error("⚠️ MySQL error:", err);
+      if (err.code === "PROTOCOL_CONNECTION_LOST" || err.fatal) {
+        console.log("🔄 Attempting to reconnect to MySQL...");
+        setTimeout(connectDB, 5000);
+      }
+    });
   } catch (err) {
     console.error("❌ MySQL connection failed:", err.message);
-    process.exit(1);
+    setTimeout(connectDB, 5000); // Retry every 5 seconds
   }
-})();
+}
+
+// Start DB connection
+connectDB();
+
+// WebSocket handling
+wss.on("connection", (ws) => {
+  console.log("✅ Client connected.");
+
+  ws.on("message", (msg) => {
+    console.log("📩 Message:", msg.toString());
+  });
+
+  ws.on("close", () => {
+    console.log("❌ Client disconnected.");
+  });
+});
+
+console.log("🚀 WebSocket server running on port 8080");
+
 
 function sendToClient(ws, data) {
   if (ws && ws.readyState === WebSocket.OPEN) {
