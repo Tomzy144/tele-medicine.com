@@ -1,16 +1,22 @@
 const WebSocket = require("ws");
 const mysql = require("mysql2/promise");
+const http = require("http");
+const fs = require("fs");
 
-// Create WebSocket server
-const wss = new WebSocket.Server({ port: 8080 });
+const PORT = process.env.PORT || 10000;
 
+// Create an HTTP server (so WS can share same port)
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
+  res.end("Telemedicine WebSocket server running");
+});
+
+// Create WebSocket server on same port
+const wss = new WebSocket.Server({ server });
+
+// MySQL connection (same as before)
 let db;
-const clients = new Map(); // key = userId, value = ws
-
-// Determine environment
 const isProduction = process.env.NODE_ENV === "production";
-
-// Database configuration
 const dbConfig = isProduction
   ? {
       host: process.env.DB_HOST || "mysql-hospital-management-system.alwaysdata.net",
@@ -26,42 +32,28 @@ const dbConfig = isProduction
       database: "tele_medicine_db"
     };
 
-// Auto-reconnect MySQL
 async function connectDB() {
   try {
     db = await mysql.createConnection(dbConfig);
-    console.log("✅ MySQL connected to " + (isProduction ? "AlwaysData (Production)" : "Localhost (Development)"));
-
-    db.on("error", async (err) => {
-      console.error("⚠️ MySQL error:", err);
-      if (err.code === "PROTOCOL_CONNECTION_LOST" || err.fatal) {
-        console.log("🔄 Attempting to reconnect to MySQL...");
-        setTimeout(connectDB, 5000);
-      }
-    });
+    console.log("✅ MySQL connected.");
   } catch (err) {
     console.error("❌ MySQL connection failed:", err.message);
-    setTimeout(connectDB, 5000); // Retry every 5 seconds
+    setTimeout(connectDB, 5000);
   }
 }
-
-// Start DB connection
 connectDB();
 
-// WebSocket handling
+// WebSocket logic
 wss.on("connection", (ws) => {
   console.log("✅ Client connected.");
-
-  ws.on("message", (msg) => {
-    console.log("📩 Message:", msg.toString());
-  });
-
-  ws.on("close", () => {
-    console.log("❌ Client disconnected.");
-  });
+  ws.on("message", (msg) => console.log("📩", msg.toString()));
+  ws.on("close", () => console.log("❌ Client disconnected."));
 });
 
-console.log("🚀 WebSocket server running on port 8080");
+// Start HTTP + WS on same Render port
+server.listen(PORT, () => {
+  console.log(`🚀 WebSocket + HTTP running on port ${PORT}`);
+});
 
 
 function sendToClient(ws, data) {
