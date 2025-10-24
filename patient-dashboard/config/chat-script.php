@@ -46,77 +46,33 @@ function refreshChat() {
     let ws;
     let reconnectAttempts = 0;
     const MAX_RECONNECT_ATTEMPTS = 5;
-    
+
     function connectWebSocket() {
-        // Get the current protocol (http/https)
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        // Get the current hostname
         const hostname = window.location.hostname;
-        // Get the port if it's localhost
-        const port = hostname === 'localhost' ? ':8082' : '';
-        // Construct the WebSocket URL
+        const port = hostname === 'localhost' ? ':8082' : ''; // Local dev only
         const wsUrl = `${protocol}//${hostname}${port}`;
 
         console.log("🔌 Connecting to WebSocket:", wsUrl);
 
-        // Close existing connection if any
-        if (ws) {
-            ws.close();
-        }
+        if (ws) ws.close();
 
-        // Create new WebSocket connection
         ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
             console.log("✅ WebSocket connected");
-            reconnectAttempts = 0; // Reset reconnect attempts on successful connection
-            
-            // Send initial patient login message
-            ws.send(JSON.stringify({
-                type: "patient_login",
-                patient_id: patientId
-            }));
+            reconnectAttempts = 0;
 
-            // Request chat history
-            ws.send(JSON.stringify({
-                type: "get_history",
-                doctor_id: doctorId,
-                patient_id: patientId
-            }));
-
-            // Request doctor's status
-            ws.send(JSON.stringify({
-                type: "get_status",
-                doctor_id: doctorId
-            }));
+            ws.send(JSON.stringify({ type: "patient_login", patient_id: patientId }));
+            ws.send(JSON.stringify({ type: "get_history", doctor_id: doctorId, patient_id: patientId }));
+            ws.send(JSON.stringify({ type: "get_status", doctor_id: doctorId }));
         };
-
-        ws.onerror = (err) => {
-            console.error("⚠️ WebSocket error:", err);
-        };
-
-        ws.onclose = (e) => {
-            console.log("❌ WebSocket closed. Code:", e.code, "Reason:", e.reason);
-            
-            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
-                const timeout = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
-                console.log(`🔄 Reconnecting in ${timeout/1000}s... (Attempt ${reconnectAttempts + 1}/${MAX_RECONNECT_ATTEMPTS})`);
-                setTimeout(() => {
-                    reconnectAttempts++;
-                    connectWebSocket();
-                }, timeout);
-            } else {
-                console.error("❌ Max reconnection attempts reached. Please refresh the page.");
-                alert("Connection lost. Please refresh the page to reconnect.");
-            }
-        };
-
 
         ws.onmessage = (event) => {
             let data;
             try {
                 data = JSON.parse(event.data);
-                console.log("� WS Message:", data);
+                console.log("📩 WS Message:", data);
             } catch (e) {
                 console.error("❌ Error parsing message:", e);
                 return;
@@ -128,12 +84,11 @@ function refreshChat() {
                     chatMessages.empty();
                     if (Array.isArray(data.data)) {
                         data.data.forEach(createMessage);
-                        
-                        // Mark messages as seen
+
                         const unseenIds = data.data
                             .filter(m => m.sender === "doctor" && m.status !== "seen")
                             .map(m => m.sn);
-                            
+
                         if (unseenIds.length) {
                             ws.send(JSON.stringify({
                                 type: "mark_seen",
@@ -147,12 +102,10 @@ function refreshChat() {
 
                 case "new_message":
                     createMessage(data);
-                    // Play notification sound for new messages
                     if (data.sender === "doctor") {
                         const audio = new Audio('/assets/notification.mp3');
                         audio.play().catch(e => console.log('Audio play failed:', e));
-                        
-                        // Mark as seen immediately
+
                         ws.send(JSON.stringify({
                             type: "mark_seen",
                             message_ids: [data.sn],
@@ -169,15 +122,19 @@ function refreshChat() {
                     break;
 
                 case "message_delivered":
-                    // Update tick marks for delivered messages
                     if (data.message_id) {
-                        $(`.message[data-id="${data.message_id}"] .ticks`).html(getTickHTML("delivered"));
+                        $(`.message[data-id="${data.message_id}"] .ticks`)
+                            .html(getTickHTML("delivered"));
                     }
                     break;
 
                 case "messages_seen":
-                    // Update tick marks for seen messages
-                    $(`.message[data-sender="patient"] .ticks`).html(getTickHTML("seen"));
+                    $(`.message[data-sender="patient"] .ticks`)
+                        .html(getTickHTML("seen"));
+                    break;
+
+                case "prescription_added":
+                    handlePrescriptionResponse(data);
                     break;
 
                 case "error":
@@ -187,70 +144,47 @@ function refreshChat() {
                 default:
                     console.log("📩 Unhandled message type:", data.type);
             }
+        };
 
-            if (data.type === "message_delivered") {
-                // update tick for patient's own messages
-                chatMessages.find(".message.sent").each(function() {
-                    const tick = $(this).find(".ticks");
-                    tick.html(getTickHTML("delivered"));
-                });
+        ws.onclose = (e) => {
+            console.log("❌ WebSocket closed.", e.reason || "No reason");
+            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                const timeout = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
+                console.log(`🔄 Reconnecting in ${timeout / 1000}s... (Attempt ${reconnectAttempts + 1}/${MAX_RECONNECT_ATTEMPTS})`);
+                setTimeout(() => {
+                    reconnectAttempts++;
+                    connectWebSocket();
+                }, timeout);
+            } else {
+                console.error("❌ Max reconnection attempts reached. Please refresh the page.");
+                alert("Connection lost. Please refresh the page to reconnect.");
             }
-
-            if (data.type === "messages_seen") {
-                // update tick to blue for messages seen by doctor
-                chatMessages.find(".message.sent").each(function() {
-                    const tick = $(this).find(".ticks");
-                    tick.html(getTickHTML("seen"));
-                });
-            }
-
-           // ---------- PRESCRIPTION ADDED ----------
-              if (data.type === "prescription_added") {
-                const { success, duplicate, error, doctor_id, prescription, date, tempId } = data;
-
-            // Find the corresponding chat feedback / button via tempId
-            const targetBtn = $(`.reaction-btn[data-tempid="${tempId}"]`);
-
-            const feedback = $(`.message.sent[data-tempid="${tempId}"]`);
-
-            if (data.type === "prescription_added") {
-                const { success, duplicate, error, tempId } = data;
-
-                // Find the button and feedback div using tempId
-                const targetBtn = $(`.reaction-btn[data-tempid="${tempId}"]`);
-                const feedback = $(`.message.sent[data-tempid="${tempId}"]`);
-
-                if (success) {
-                    targetBtn.text("✅").prop("disabled", true);
-                    feedback.html("✅ Prescription added successfully.");
-
-                } else if (duplicate) {
-                    targetBtn.text("➕").prop("disabled", false);
-                    feedback.html("⚠️ Prescription already exists for today.");
-
-                } else if (error) {
-                    targetBtn.text("➕").prop("disabled", false);
-                    feedback.html("❌ Error saving prescription. Try again.");
-                }
-
-                // Scroll chat to bottom after update
-                $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
-            }
-
-
-        }
-       // ---------- END PRESCRIPTION ADDED ----------
-
-    };
-
-        ws.onclose = () => {
-            console.warn("❌ WebSocket closed. Reconnecting in 5s...");
-            setTimeout(connectWebSocket, 5000);
         };
 
         ws.onerror = (err) => console.error("⚠️ WebSocket error:", err);
     }
-    connectWebSocket();
+
+function handlePrescriptionResponse(data) {
+    const { success, duplicate, error, tempId } = data;
+    const targetBtn = $(`.reaction-btn[data-tempid="${tempId}"]`);
+    const feedback = $(`.message.sent[data-tempid="${tempId}"]`);
+
+    if (success) {
+        targetBtn.text("✅").prop("disabled", true);
+        feedback.html("✅ Prescription added successfully.");
+    } else if (duplicate) {
+        targetBtn.text("➕").prop("disabled", false);
+        feedback.html("⚠️ Prescription already exists for today.");
+    } else if (error) {
+        targetBtn.text("➕").prop("disabled", false);
+        feedback.html("❌ Error saving prescription. Try again.");
+    }
+
+    $("#chatMessages").scrollTop($("#chatMessages")[0].scrollHeight);
+}
+
+connectWebSocket();
+
 
     // --- Send chat message ---
     function send_chat(event) {
