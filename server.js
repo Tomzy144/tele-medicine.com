@@ -31,7 +31,7 @@ let db;
       user: process.env.DB_USER || "410215_tele_med",
       password: process.env.DB_PASSWORD || "Tomzzzyy",
       database: process.env.DB_NAME || "hospital-management-system_telemedicine",
-      port: process.env.DB_PORT || 3306
+      port: process.env.DB_PORT || 10000
     });
     console.log("✅ MySQL connected to AlwaysData (Production)");
   } catch (err) {
