@@ -47,7 +47,7 @@ function refreshChat() {
             function connectWebSocket() {
             const isLocal = window.location.hostname === "localhost";
             const wsUrl = isLocal
-                ? "ws://localhost:8080"
+                ? "ws://localhost:8081"
                 : "wss://tele-medicine.onrender.com"; // same Render domain
 
             ws = new WebSocket(wsUrl);

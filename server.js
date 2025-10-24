@@ -1,7 +1,7 @@
 const WebSocket = require("ws");
 const mysql = require("mysql2/promise");
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 8082;
 const wss = new WebSocket.Server({ port: PORT });
 
 let db;
