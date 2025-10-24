@@ -44,58 +44,148 @@ function refreshChat() {
 
     // --- WebSocket connection ---
     let ws;
-            function connectWebSocket() {
-            const isLocal = window.location.hostname === "localhost";
-            const wsUrl = isLocal
-                ? "ws://localhost:8081"
-                : "wss://tele-medicine.onrender.com"; // same Render domain
+    let reconnectAttempts = 0;
+    const MAX_RECONNECT_ATTEMPTS = 5;
+    
+    function connectWebSocket() {
+        // Get the current protocol (http/https)
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        // Get the current hostname
+        const hostname = window.location.hostname;
+        // Get the port if it's localhost
+        const port = hostname === 'localhost' ? ':8082' : '';
+        // Construct the WebSocket URL
+        const wsUrl = `${protocol}//${hostname}${port}`;
 
-            ws = new WebSocket(wsUrl);
+        console.log("🔌 Connecting to WebSocket:", wsUrl);
 
-            ws.onopen = () => console.log("✅ WebSocket connected");
-            ws.onerror = (err) => console.error("⚠️ WebSocket error:", err);
-            ws.onclose = () => {
-                console.log("❌ WebSocket closed. Reconnecting in 5s...");
-                setTimeout(connectWebSocket, 5000);
-            };
+        // Close existing connection if any
+        if (ws) {
+            ws.close();
+        }
 
-            connectWebSocket();
+        // Create new WebSocket connection
+        ws = new WebSocket(wsUrl);
 
+        ws.onopen = () => {
+            console.log("✅ WebSocket connected");
+            reconnectAttempts = 0; // Reset reconnect attempts on successful connection
+            
+            // Send initial patient login message
+            ws.send(JSON.stringify({
+                type: "patient_login",
+                patient_id: patientId
+            }));
 
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("📩 Message from server:", data);
-            // handle data here...
+            // Request chat history
+            ws.send(JSON.stringify({
+                type: "get_history",
+                doctor_id: doctorId,
+                patient_id: patientId
+            }));
+
+            // Request doctor's status
+            ws.send(JSON.stringify({
+                type: "get_status",
+                doctor_id: doctorId
+            }));
+        };
+
+        ws.onerror = (err) => {
+            console.error("⚠️ WebSocket error:", err);
+        };
+
+        ws.onclose = (e) => {
+            console.log("❌ WebSocket closed. Code:", e.code, "Reason:", e.reason);
+            
+            if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
+                const timeout = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
+                console.log(`🔄 Reconnecting in ${timeout/1000}s... (Attempt ${reconnectAttempts + 1}/${MAX_RECONNECT_ATTEMPTS})`);
+                setTimeout(() => {
+                    reconnectAttempts++;
+                    connectWebSocket();
+                }, timeout);
+            } else {
+                console.error("❌ Max reconnection attempts reached. Please refresh the page.");
+                alert("Connection lost. Please refresh the page to reconnect.");
+            }
         };
 
 
-
         ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            console.log("📥 WS Message:", data);
-
-            if (data.type === "history" || data.type === "missed_messages") {
-                chatMessages.empty();
-                data.data.forEach(createMessage);
-
-                // mark all messages as seen after rendering
-                const unseenIds = data.data.filter(m => m.sender === "doctor" && m.status !== "seen").map(m => m.sn);
-                if (unseenIds.length) {
-                    ws.send(JSON.stringify({ type: "mark_seen", message_ids: unseenIds, seen_by: "patient" }));
-                }
+            let data;
+            try {
+                data = JSON.parse(event.data);
+                console.log("� WS Message:", data);
+            } catch (e) {
+                console.error("❌ Error parsing message:", e);
+                return;
             }
 
-            if (data.type === "new_message") {
-                createMessage(data);
+            switch (data.type) {
+                case "history":
+                case "missed_messages":
+                    chatMessages.empty();
+                    if (Array.isArray(data.data)) {
+                        data.data.forEach(createMessage);
+                        
+                        // Mark messages as seen
+                        const unseenIds = data.data
+                            .filter(m => m.sender === "doctor" && m.status !== "seen")
+                            .map(m => m.sn);
+                            
+                        if (unseenIds.length) {
+                            ws.send(JSON.stringify({
+                                type: "mark_seen",
+                                message_ids: unseenIds,
+                                doctor_id: doctorId,
+                                patient_id: patientId
+                            }));
+                        }
+                    }
+                    break;
 
-                // mark doctor's messages as seen immediately
-                if (data.sender === "doctor" && data.status !== "seen") {
-                    ws.send(JSON.stringify({ type: "mark_seen", message_ids: [data.sn], seen_by: "patient" }));
-                }
-            }
+                case "new_message":
+                    createMessage(data);
+                    // Play notification sound for new messages
+                    if (data.sender === "doctor") {
+                        const audio = new Audio('/assets/notification.mp3');
+                        audio.play().catch(e => console.log('Audio play failed:', e));
+                        
+                        // Mark as seen immediately
+                        ws.send(JSON.stringify({
+                            type: "mark_seen",
+                            message_ids: [data.sn],
+                            doctor_id: doctorId,
+                            patient_id: patientId
+                        }));
+                    }
+                    break;
 
-            if (data.type === "doctor_status_update" && data.doctor_id == doctorId) {
-                updateDoctorStatus(data.status === "online");
+                case "doctor_status_update":
+                    if (data.doctor_id == doctorId) {
+                        updateDoctorStatus(data.status === "online");
+                    }
+                    break;
+
+                case "message_delivered":
+                    // Update tick marks for delivered messages
+                    if (data.message_id) {
+                        $(`.message[data-id="${data.message_id}"] .ticks`).html(getTickHTML("delivered"));
+                    }
+                    break;
+
+                case "messages_seen":
+                    // Update tick marks for seen messages
+                    $(`.message[data-sender="patient"] .ticks`).html(getTickHTML("seen"));
+                    break;
+
+                case "error":
+                    console.error("⚠️ Server error:", data.message);
+                    break;
+
+                default:
+                    console.log("📩 Unhandled message type:", data.type);
             }
 
             if (data.type === "message_delivered") {

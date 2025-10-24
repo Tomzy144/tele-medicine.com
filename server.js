@@ -1,11 +1,25 @@
 const WebSocket = require("ws");
 const mysql = require("mysql2/promise");
+const http = require("http");
+const express = require("express");
 
+const app = express();
+const server = http.createServer(app);
+
+// Environment variables
 const PORT = process.env.PORT || 8082;
-const wss = new WebSocket.Server({ port: PORT });
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+// Initialize WebSocket server with the HTTP server
+const wss = new WebSocket.Server({ server });
 
 let db;
 const clients = new Map();
+
+// Basic HTTP endpoint for health check
+app.get('/', (req, res) => {
+  res.send('WebSocket server is running');
+});
 
 // Connect to MySQL
 (async () => {
@@ -25,19 +39,9 @@ const clients = new Map();
 
 
 
-console.log(`🚀 WebSocket server running on port ${PORT}`);
-
-
-// WebSocket logic
-wss.on("connection", (ws) => {
-  console.log("✅ Client connected.");
-  ws.on("message", (msg) => console.log("📩", msg.toString()));
-  ws.on("close", () => console.log("❌ Client disconnected."));
-});
-
-// Start HTTP + WS on same Render port
+// Start server
 server.listen(PORT, () => {
-  console.log(`🚀 WebSocket + HTTP running on port ${PORT}`);
+  console.log(`🚀 Server running in ${IS_PRODUCTION ? 'production' : 'development'} mode on port ${PORT}`);
 });
 
 
