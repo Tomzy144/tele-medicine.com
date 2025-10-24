@@ -273,7 +273,7 @@
     <script>
 
            // --- Initialize WebSocket globally ---
-        const ws = new WebSocket("ws://localhost:8080");
+        // const ws = new WebSocket("ws://localhost:8080");
 
         
         function readURL(input) {
