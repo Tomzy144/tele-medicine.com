@@ -6,93 +6,42 @@ const express = require("express");
 const app = express();
 const server = http.createServer(app);
 
-let PORT;
+// Environment variables
+const PORT = process.env.PORT || 8082;
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
 
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
-
-// Initialize WebSocket server
+// Initialize WebSocket server with the HTTP server
 const wss = new WebSocket.Server({ server });
 
-// Keep track of connected clients
+let db;
 const clients = new Map();
 
-// Health check endpoint
-app.get("/", (req, res) => {
-  res.send("✅ WebSocket + MySQL server is running");
+// Basic HTTP endpoint for health check
+app.get('/', (req, res) => {
+  res.send('WebSocket server is running');
 });
 
-let db;
-
-// --- Connect to MySQL (AlwaysData in production, localhost for dev) ---
+// Connect to MySQL
 (async () => {
   try {
     db = await mysql.createConnection({
-      host: process.env.DB_HOST || "mysql-hospital-management-system.alwaysdata.net",
-      user: process.env.DB_USER || "410215_tele_med",
-      password: process.env.DB_PASSWORD || "Tomzzzyy",
-      database: process.env.DB_NAME || "hospital-management-system_telemedicine",
-      port: process.env.DB_PORT || 10000
+      host: process.env.DB_HOST || "localhost",
+      user: process.env.DB_USER || "root",
+      password: process.env.DB_PASS || "",
+      database: process.env.DB_NAME || "tele_medicine_db"
     });
-    console.log("✅ MySQL connected to AlwaysData (Production)");
+    console.log("✅ MySQL connected.");
   } catch (err) {
-    console.error("❌ MySQL connection failed:", err.message);
+    console.error("❌ MySQL connection failed:", err);
     process.exit(1);
   }
 })();
 
-// --- WebSocket Handling ---
-wss.on("connection", (ws) => {
-  console.log("🔗 New WebSocket client connected");
 
-  ws.on("message", async (message) => {
-    try {
-      const data = JSON.parse(message);
-      console.log("📩 Received:", data);
 
-      switch (data.type) {
-        case "patient_login":
-          clients.set(data.patient_id, ws);
-          console.log(`👤 Patient ${data.patient_id} logged in`);
-          break;
-
-        case "get_history":
-          if (!db) return ws.send(JSON.stringify({ type: "error", message: "DB not connected" }));
-          const [rows] = await db.execute(
-            "SELECT * FROM chat_messages WHERE doctor_id = ? AND patient_id = ? ORDER BY created_at ASC",
-            [data.doctor_id, data.patient_id]
-          );
-          ws.send(JSON.stringify({ type: "history", data: rows }));
-          break;
-
-        case "send_message":
-          if (!db) return;
-          await db.execute(
-            "INSERT INTO chat_messages (doctor_id, patient_id, sender, message, status, created_at) VALUES (?, ?, ?, ?, ?, NOW())",
-            [data.doctor_id, data.patient_id, data.sender, data.message, "sent"]
-          );
-          ws.send(JSON.stringify({ type: "message_delivered" }));
-          break;
-
-        default:
-          console.log("⚠️ Unknown message type:", data.type);
-      }
-    } catch (err) {
-      console.error("❌ Error handling message:", err);
-      ws.send(JSON.stringify({ type: "error", message: "Invalid message format or DB error." }));
-    }
-  });
-
-  ws.on("close", () => {
-    console.log("❌ WebSocket client disconnected");
-    for (const [id, socket] of clients.entries()) {
-      if (socket === ws) clients.delete(id);
-    }
-  });
-});
-
-// --- Start the HTTP + WebSocket Server ---
+// Start server
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT} (${IS_PRODUCTION ? "Production" : "Development"})`);
+  console.log(`🚀 Server running in ${IS_PRODUCTION ? 'production' : 'development'} mode on port ${PORT}`);
 });
 
 

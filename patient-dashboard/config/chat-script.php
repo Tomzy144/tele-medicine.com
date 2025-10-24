@@ -48,14 +48,9 @@ function refreshChat() {
     const MAX_RECONNECT_ATTEMPTS = 5;
 
     function connectWebSocket() {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const hostname = window.location.hostname;
-        const port = hostname === 'localhost' ? ':10000' : ''; // Local dev only
-        const wsUrl = `${protocol}//${hostname}${port}`;
-
-        console.log("🔌 Connecting to WebSocket:", wsUrl);
-
-        if (ws) ws.close();
+      const wsUrl = window.location.hostname === "localhost"
+        ? "ws://localhost:8082"
+        : "wss://tele-medicine.onrender.com";
 
         ws = new WebSocket(wsUrl);
 
