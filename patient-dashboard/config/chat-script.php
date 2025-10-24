@@ -50,7 +50,7 @@ function refreshChat() {
     function connectWebSocket() {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
         const hostname = window.location.hostname;
-        const port = hostname === 'localhost' ? ':8082' : ''; // Local dev only
+        const port = hostname === 'localhost' ? ':1000' : ''; // Local dev only
         const wsUrl = `${protocol}//${hostname}${port}`;
 
         console.log("🔌 Connecting to WebSocket:", wsUrl);

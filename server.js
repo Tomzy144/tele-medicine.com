@@ -6,7 +6,8 @@ const express = require("express");
 const app = express();
 const server = http.createServer(app);
 
-const PORT = process.env.PORT || 8082;
+const PORT = process.env.PORT || 10000;
+
 const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 // Initialize WebSocket server
