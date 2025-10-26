@@ -43,6 +43,9 @@
             resetSessionTimer();
             fetch_recently_contacted_pat(sessionId);
             loadPrescriptions(sessionId);
+            total_appointments(sessionId);
+            fetch_total_consultants(sessionId);
+            fetch_all_appointments(sessionId);
 
             // update immediately
             updateDateTime();

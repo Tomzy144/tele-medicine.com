@@ -335,6 +335,90 @@ function loadPrescriptions(doctor_id) {
 }
 
 
+function total_appointments(doctor_id) {
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: "get_total_appointments", doctor_id: doctor_id },
+        dataType: "json",
+        cache: false,
+        success: function (response) {
+            if (response.success) {
+                document.getElementById("total_appointments").textContent = response.total_appointments;
+            } else {
+                document.getElementById("total_appointments").textContent = "0";
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching total appointments:", error);
+        }
+    });
+}
+
+function fetch_total_consultants(doctor_id){
+  $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: "get_total_patients", doctor_id: doctor_id },
+        dataType: "json",
+        cache: false,
+        success: function (response) {
+            if (response.success) {
+                document.getElementById("total_patients").textContent = response.total_patients;
+            } else {
+                document.getElementById("total_patients").textContent = "0";
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching total appointments:", error);
+        }
+    });
+
+}
+
+function fetch_all_appointments(doctor_id) {
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            action: 'fetch_all_appointments',
+            doctor_id: doctor_id
+        },
+        success: function(response) {
+            const tbody = $('#appointments_body');
+            tbody.empty(); // clear table body
+
+            if (response.success && response.data.length > 0) {
+                $.each(response.data, function(index, row) {
+                    const appointmentDate = new Date(row.appointment_date);
+                    const formattedDate = appointmentDate.toLocaleDateString();
+                    const appointmentTime = row.appointment_time || '-';
+
+                    const tr = `
+                        <tr>
+                            <td>${row.patient_name}</td>
+                            <td>${formattedDate}</td>
+                            <td>${appointmentTime}</td>
+                        </tr>
+                    `;
+                    tbody.append(tr);
+                });
+            } else {
+                tbody.html('<tr><td colspan="3">No appointments found</td></tr>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching appointments:', error);
+            $('#appointments_body').html('<tr><td colspan="3">Error loading appointments</td></tr>');
+        }
+    });
+}
+
+
+
+
+
 function fetch_all_doctors() {
     $.ajax({
         type: "POST",
@@ -421,6 +505,9 @@ function chat_up2(patient_id) {
         }
     });
 }
+
+
+
 
 
 function view_doctor_profile(doctor_id) {

@@ -62,8 +62,8 @@
                                     </div>
                                 </div>
                                 <div class="achievements-div">
-                                    <p>Appointments: <span> 500</span> </p>
-                                    <p>Total Consualts:  <span> 100</span></p>
+                                    <p>Appointments: <span id="total_appointments">xxx</span></p>
+                                    <p>Total Consualts:  <span id="total_patients"> xxx</span></p>
                                 </div>
                             </div>
                         </div>
@@ -157,7 +157,7 @@
                    <div class="last-appointments-list">
                     <div class="inner-div">
                         <h3 class="appointments-heading">New Appointments</h3>
-                            <table class="appointments-table">
+                          <table class="appointments-table" id="appointments_table">
                                 <thead>
                                     <tr>
                                         <th>Patient</th>
@@ -165,50 +165,39 @@
                                         <th>Timing</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Petey Cruiser</td>
-                                        <td>20/02/2020</td>
-                                        <td>8:00 AM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anna Sthesia</td>
-                                        <td>25/02/2020</td>
-                                        <td>8:30 AM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Paul Molive</td>
-                                        <td>25/02/2020</td>
-                                        <td>9:45 AM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Anna Mull</td>
-                                        <td>27/02/2020</td>
-                                        <td>11:30 AM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Paige Turner</td>
-                                        <td>28/02/2020</td>
-                                        <td>3:30 PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Don Stairs</td>
-                                        <td>28/02/2020</td>
-                                        <td>4:30 PM</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Pat Agonia</td>
-                                        <td>29/02/2020</td>
-                                        <td>5:00 PM</td>
-                                    </tr>
+                                <tbody id="appointments_body">
+                                    <tr><td colspan="3">Loading...</td></tr>
                                 </tbody>
                             </table>
+
                         </div>
                       
 
                     </div>
 
                 </div>
+
+
+                <!-- Appointment Modal -->
+                <div id="appointmentModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal">&times;</span>
+                    <h3 id="modal-date-title">Set Appointment for </h3>
+
+                    <form id="appointmentForm">
+                    <div id="appointmentFields">
+                        <div class="appointment-row">
+                        <input type="text" name="patient[]" placeholder="Patient Name" required>
+                        <input type="time" name="time[]" required>
+                        </div>
+                    </div>
+
+                    <button type="button" id="addMoreAppointment" class="btn">+ Add More</button>
+                    <button type="submit" class="btn save-btn">Save Appointment</button>
+                    </form>
+                </div>
+                </div>
+
 
 
 
@@ -804,74 +793,153 @@ document.querySelectorAll('.settings-header li').forEach(tab => {
 
 <script>
            document.addEventListener("DOMContentLoaded", function () {
-            const calendarHeader = document.getElementById("calendar-header");
-            const calendarDays = document.getElementById("calendar-days");
-            const calendarDates = document.getElementById("calendar-dates");
-            const prevMonthBtn = document.getElementById("prevMonth");
-            const nextMonthBtn = document.getElementById("nextMonth");
+  const calendarHeader = document.getElementById("calendar-header");
+  const calendarDays = document.getElementById("calendar-days");
+  const calendarDates = document.getElementById("calendar-dates");
+  const prevMonthBtn = document.getElementById("prevMonth");
+  const nextMonthBtn = document.getElementById("nextMonth");
+  const appointmentsBody = document.getElementById("appointments_body");
 
-            const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            calendarDays.innerHTML = daysOfWeek.map(day => `<div>${day}</div>`).join("");
+  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  calendarDays.innerHTML = daysOfWeek.map(day => `<div>${day}</div>`).join("");
 
-            let currentDate = new Date();
+  let currentDate = new Date();
 
-            function renderCalendar() {
-                calendarDates.innerHTML = "";
+  function renderCalendar() {
+    calendarDates.innerHTML = "";
 
-                const year = currentDate.getFullYear();
-                const month = currentDate.getMonth();
-                const firstDay = new Date(year, month, 1);
-                const lastDay = new Date(year, month + 1, 0);
-                const prevLastDay = new Date(year, month, 0);
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const prevLastDay = new Date(year, month, 0);
 
-                const prevDays = prevLastDay.getDate();
-                const lastDate = lastDay.getDate();
-                const firstDayIndex = firstDay.getDay();
-                const lastDayIndex = lastDay.getDay();
-                const nextDays = 6 - lastDayIndex;
+    const prevDays = prevLastDay.getDate();
+    const lastDate = lastDay.getDate();
+    const firstDayIndex = firstDay.getDay();
+    const lastDayIndex = lastDay.getDay();
+    const nextDays = 6 - lastDayIndex;
 
-                calendarHeader.textContent = `Nearest Treatment - ${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+    calendarHeader.textContent = `Nearest Treatment - ${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
 
-                for (let x = firstDayIndex; x > 0; x--) {
-                const div = document.createElement("div");
-                div.textContent = prevDays - x + 1;
-                div.classList.add("inactive");
-                calendarDates.appendChild(div);
-                }
+    for (let x = firstDayIndex; x > 0; x--) {
+      const div = document.createElement("div");
+      div.textContent = prevDays - x + 1;
+      div.classList.add("inactive");
+      calendarDates.appendChild(div);
+    }
 
-                for (let i = 1; i <= lastDate; i++) {
-                const div = document.createElement("div");
-                div.textContent = i;
-                if (
-                    i === new Date().getDate() &&
-                    month === new Date().getMonth() &&
-                    year === new Date().getFullYear()
-                ) {
-                    div.classList.add("current-day");
-                }
-                calendarDates.appendChild(div);
-                }
+    for (let i = 1; i <= lastDate; i++) {
+      const div = document.createElement("div");
+      div.textContent = i;
+      if (
+        i === new Date().getDate() &&
+        month === new Date().getMonth() &&
+        year === new Date().getFullYear()
+      ) {
+        div.classList.add("current-day");
+      }
+      calendarDates.appendChild(div);
+    }
 
-                for (let j = 1; j <= nextDays; j++) {
-                const div = document.createElement("div");
-                div.textContent = j;
-                div.classList.add("inactive");
-                calendarDates.appendChild(div);
-                }
-            }
+    for (let j = 1; j <= nextDays; j++) {
+      const div = document.createElement("div");
+      div.textContent = j;
+      div.classList.add("inactive");
+      calendarDates.appendChild(div);
+    }
+  }
 
-            prevMonthBtn.onclick = () => {
-                currentDate.setMonth(currentDate.getMonth() - 1);
-                renderCalendar();
-            };
+  prevMonthBtn.onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    renderCalendar();
+  };
 
-            nextMonthBtn.onclick = () => {
-                currentDate.setMonth(currentDate.getMonth() + 1);
-                renderCalendar();
-            };
+  nextMonthBtn.onclick = () => {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    renderCalendar();
+  };
 
-            renderCalendar();
-            });
+  renderCalendar();
+
+  // ==== Appointment Modal Logic ====
+  const modal = document.getElementById("appointmentModal");
+  const closeModal = document.querySelector(".close-modal");
+  const appointmentForm = document.getElementById("appointmentForm");
+  const appointmentFields = document.getElementById("appointmentFields");
+  const addMoreAppointment = document.getElementById("addMoreAppointment");
+  const modalTitle = document.getElementById("modal-date-title");
+
+  let selectedDate = null;
+
+  calendarDates.addEventListener("click", function (e) {
+    if (e.target.tagName === "DIV" && !e.target.classList.contains("inactive")) {
+      selectedDate = new Date(
+        currentDate.getFullYear(),
+        currentDate.getMonth(),
+        e.target.textContent
+      );
+      const formattedDate = selectedDate.toDateString();
+      modalTitle.textContent = "Set Appointment for " + formattedDate;
+      modal.style.display = "flex";
+    }
+  });
+
+  closeModal.onclick = () => (modal.style.display = "none");
+  window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
+
+  addMoreAppointment.onclick = () => {
+    const div = document.createElement("div");
+    div.classList.add("appointment-row");
+    div.innerHTML = `
+      <input type="text" name="patient[]" placeholder="Patient Name" required>
+      <input type="time" name="time[]" required>
+    `;
+    appointmentFields.appendChild(div);
+  };
+
+  appointmentForm.onsubmit = (e) => {
+    e.preventDefault();
+    const patientInputs = appointmentForm.querySelectorAll("input[name='patient[]']");
+    const timeInputs = appointmentForm.querySelectorAll("input[name='time[]']");
+    let html = "";
+
+    for (let i = 0; i < patientInputs.length; i++) {
+      const patient = patientInputs[i].value.trim();
+      const time = timeInputs[i].value;
+      if (patient && time) {
+        html += `
+          <tr>
+            <td>${patient}</td>
+            <td>${selectedDate.toDateString()}</td>
+            <td>${time}</td>
+          </tr>
+        `;
+      }
+    }
+
+    if (html) {
+      if (appointmentsBody.querySelector("td[colspan='3']")) {
+        appointmentsBody.innerHTML = "";
+      }
+      appointmentsBody.insertAdjacentHTML("beforeend", html);
+    }
+
+    appointmentForm.reset();
+    appointmentFields.innerHTML = `
+      <div class="appointment-row">
+        <input type="text" name="patient[]" placeholder="Patient Name" required>
+        <input type="time" name="time[]" required>
+      </div>`;
+    modal.style.display = "none";
+  };
+});
+
+
+
+
+
+            
 
 
 
