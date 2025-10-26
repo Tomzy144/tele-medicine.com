@@ -272,22 +272,21 @@ function fetch_recently_contacted_pat(doctor_id) {
         url: endPoint,
         type: "POST",
         data: {  
-            action: "fetch_recently_contacted_patients",
+            action: "fetch_recently_contacted_pat",
             doctor_id: doctor_id 
         },
         dataType: "json",
-        success: function(doctors) {
+        success: function(patients) {
             let html = "";
 
-            if (doctors.length > 0) {
-                doctors.forEach(doc => {
+            if (patients.length > 0) {
+                patients.forEach(pat => {
                     html += `
-                        <li onclick="open_chat('${doc.doctor_id}')">
-                            <img src="${doc.doctor_passport}" alt="Doctor">
+                        <li onclick="open_chat('${pat.patient_id}')">
+                            <img src="${pat.patient_passport}" alt="Patient">
                             <div class="doctor-info">
-                                <p class="name">${doc.doctor_fullname}</p>
-                                <p class="specialty">${doc.speciality}</p>
-                                <p class="date">Last contacted: ${doc.last_time_contacted}</p>
+                                <p class="name">${pat.patient_fullname}</p>
+                                <p class="date">Last contacted: ${pat.last_time_contacted}</p>
                             </div>
                         </li>
                     `;
@@ -305,11 +304,11 @@ function fetch_recently_contacted_pat(doctor_id) {
 }
 
 
-function loadPrescriptions(patient_id) {
+function loadPrescriptions(doctor_id) {
   $.ajax({
     type: "POST",
     url: endPoint,
-    data: { action: "fetch_prescriptions", patient_id: patient_id },
+    data: { action: "fetch_doc_prescriptions", doctor_id: doctor_id },
     dataType: "json",
     success: function(response) {
       const tbody = $("#all-entries-body");
@@ -320,7 +319,7 @@ function loadPrescriptions(patient_id) {
           tbody.append(`
             <tr>
               <td>${item.prescribed_at}</td>
-              <td>Dr. ${item.doctor_name}</td>
+              <td> ${item.patient_name}</td>
               <td>${item.prescription}</td>
             </tr>
           `);
@@ -385,7 +384,9 @@ function fetch_all_doctors() {
     });
 }
 
-function chat_up2(doctor_id) {
+
+
+function chat_up2(patient_id) {
     _next_page('next_1'), highlite2('first');
 
     var activities = document.querySelector('.activities-div');
@@ -400,7 +401,7 @@ function chat_up2(doctor_id) {
         dataType: "json",
         data: {
             action: "get_doctor_details",
-            doctor_id: doctor_id
+            patient_id: patient_id
         },
         cache: false,
         success: function (response) {
