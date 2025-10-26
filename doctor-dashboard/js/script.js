@@ -391,14 +391,14 @@ function fetch_all_appointments(doctor_id) {
 
             if (response.success && response.data.length > 0) {
                 $.each(response.data, function(index, row) {
-                    const appointmentDate = new Date(row.appointment_date);
-                    const formattedDate = appointmentDate.toLocaleDateString();
+                    const appointmentDate = row.appointment_date;
+             
                     const appointmentTime = row.appointment_time || '-';
 
                     const tr = `
-                        <tr>
+                        <tr onclick="openAppointmentModal('${row.appointment_id}')">
                             <td>${row.patient_name}</td>
-                            <td>${formattedDate}</td>
+                            <td>${appointmentDate}</td>
                             <td>${appointmentTime}</td>
                         </tr>
                     `;
@@ -415,7 +415,132 @@ function fetch_all_appointments(doctor_id) {
     });
 }
 
+function save_appointment() {
+    const doctor_id = document.getElementById('doctor_id').value;
+    const appointment_date = document.getElementById('appointment_date').value;
 
+    const patientNames = [];
+    const appointmentTimes = [];
+    const reasons = [];
+    const statuses = [];
+
+    // Collect data from all rows dynamically
+    document.querySelectorAll('#appointmentFields .appointment-row').forEach(row => {
+        const patient = row.querySelector('input[name="patient[]"]').value.trim();
+        const time = row.querySelector('input[name="time[]"]').value;
+        const reason = row.querySelector('input[name="reason[]"]').value.trim();
+        const status = row.querySelector('select[name="status[]"]').value;
+
+        if (patient && time && reason) {
+            patientNames.push(patient);
+            appointmentTimes.push(time);
+            reasons.push(reason);
+            statuses.push(status);
+        }
+    });
+
+    if (patientNames.length === 0) {
+        alert('Please enter at least one appointment.');
+        return;
+    }
+
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        data: {
+            action: 'save_appointment',
+            doctor_id: doctor_id,
+            appointment_date: appointment_date,
+            patient_name: patientNames,
+            appointment_time: appointmentTimes,
+            reason: reasons,
+            status: statuses
+        },
+        dataType: 'json',
+        success: function(response) {
+            if (response.success) {
+                alert('Appointment(s) saved successfully!');
+                fetch_all_appointments(doctor_id);
+                fetch_total_consultants(doctor_id);
+                total_appointments(doctor_id);
+            } else {
+                alert('Failed to save appointment: ' + response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            alert('An error occurred while saving the appointment.');
+        }
+    });
+}
+
+function openAppointmentModal(appointment_id) {
+    const modal = $('#viewAppointmentModal');
+    modal.show();
+
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            action: 'fetch_single_appointment',
+            appointment_id: appointment_id
+        },
+        success: function(data) {
+            if (data.success) {
+                $('#view_patient_name').text(data.data.patient_name);
+                $('#view_appointment_date').text(data.data.appointment_date);
+                $('#view_appointment_time').text(data.data.appointment_time);
+                $('#view_reason').text(data.data.reason);
+                $('#view_status').val(data.data.status);
+                $('#view_appointment_id').val(appointment_id);
+            } else {
+                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + data.message)
+                    .fadeIn(500).delay(5000).fadeOut(100);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Error fetching appointment.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+        }
+    });
+}
+
+function closeAppointmentModal() {
+    $('#viewAppointmentModal').hide();
+}
+
+function updateAppointmentStatus() {
+    const appointment_id = $('#view_appointment_id').val();
+    const status = $('#view_status').val();
+
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            action: 'update_appointment_status',
+            appointment_id: appointment_id,
+            status: status
+        },
+        success: function(data) {
+            if (data.success) {
+                $('#success-div').html('<div><i class="bi-check"></i></div> ' + data.message)
+                    .fadeIn(500).delay(5000).fadeOut(100);
+                closeAppointmentModal();
+            } else {
+                $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> ' + data.message)
+                    .fadeIn(500).delay(5000).fadeOut(100);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Error updating status.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+        }
+    });
+}
 
 
 

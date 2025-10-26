@@ -178,25 +178,66 @@
                 </div>
 
 
-                <!-- Appointment Modal -->
+               <!-- Appointment Modal -->
                 <div id="appointmentModal" class="modal">
                 <div class="modal-content">
                     <span class="close-modal">&times;</span>
                     <h3 id="modal-date-title">Set Appointment for </h3>
+                    <input id="appointment_date" type="hidden" value="" />
 
                     <form id="appointmentForm">
                     <div id="appointmentFields">
                         <div class="appointment-row">
-                        <input type="text" name="patient[]" placeholder="Patient Name" required>
-                        <input type="time" name="time[]" required>
+                        <input type="text" id="appointment_patient_name" name="patient[]" placeholder="Patient Name" required>
+                        <input type="time" id="appointment_patient_time" name="time[]" required>
+                        <input type="text" id="appointment_reason" name="reason[]" placeholder="Reason for Visit" required>
+                        <select id="appointment_status" name="status[]" required>
+                            <option value="pending" selected>Pending</option>
+                            <option value="approved">Approved</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                        </select>
                         </div>
                     </div>
 
                     <button type="button" id="addMoreAppointment" class="btn">+ Add More</button>
-                    <button type="submit" class="btn save-btn">Save Appointment</button>
+                    <button type="button" onclick="save_appointment();" class="btn save-btn">Save Appointment</button>
                     </form>
                 </div>
                 </div>
+
+
+                <!-- Single Appointment Modal -->
+                <div id="viewAppointmentModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeAppointmentModal()">&times;</span>
+                    <h3>Appointment Details</h3>
+
+                    <div id="appointmentDetails">
+                    <p><strong>Patient Name:</strong> <span id="view_patient_name"></span></p>
+                    <p><strong>Appointment Date:</strong> <span id="view_appointment_date"></span></p>
+                    <p><strong>Appointment Time:</strong> <span id="view_appointment_time"></span></p>
+                    <p><strong>Reason for Visit:</strong> <span id="view_reason"></span></p>
+
+                    <label for="view_status"><strong>Status:</strong></label>
+                    <select id="view_status">
+                        <option value="pending">Pending</option>
+                        <option value="approved">Approved</option>
+                        <option value="completed">Completed</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    </div>
+                     <input type="hidden" id="view_appointment_id">
+
+                    <div class="modal-actions">
+                    <button type="button" class="btn save-btn" onclick="updateAppointmentStatus()">Update Status</button>
+                    </div>
+                </div>
+                </div>
+
+
+
+
 
 
 
@@ -881,6 +922,7 @@ document.querySelectorAll('.settings-header li').forEach(tab => {
       );
       const formattedDate = selectedDate.toDateString();
       modalTitle.textContent = "Set Appointment for " + formattedDate;
+      document.getElementById("appointment_date").value = formattedDate;
       modal.style.display = "flex";
     }
   });
@@ -888,15 +930,24 @@ document.querySelectorAll('.settings-header li').forEach(tab => {
   closeModal.onclick = () => (modal.style.display = "none");
   window.onclick = e => { if (e.target === modal) modal.style.display = "none"; };
 
-  addMoreAppointment.onclick = () => {
-    const div = document.createElement("div");
-    div.classList.add("appointment-row");
-    div.innerHTML = `
-      <input type="text" name="patient[]" placeholder="Patient Name" required>
-      <input type="time" name="time[]" required>
+    document.getElementById("addMoreAppointment").addEventListener("click", function () {
+    const container = document.getElementById("appointmentFields");
+    const newRow = document.createElement("div");
+    newRow.classList.add("appointment-row");
+    newRow.innerHTML = `
+        <input type="text" name="patient[]" placeholder="Patient Name" required>
+        <input type="time" name="time[]" required>
+        <input type="text" name="reason[]" placeholder="Reason for Visit" required>
+        <select name="status[]" required>
+        <option value="pending" selected>Pending</option>
+        <option value="approved">Approved</option>
+        <option value="completed">Completed</option>
+        <option value="cancelled">Cancelled</option>
+        </select>
     `;
-    appointmentFields.appendChild(div);
-  };
+    container.appendChild(newRow);
+    });
+
 
   appointmentForm.onsubmit = (e) => {
     e.preventDefault();
