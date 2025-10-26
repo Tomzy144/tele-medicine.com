@@ -463,6 +463,7 @@ function save_appointment() {
                 fetch_all_appointments(doctor_id);
                 fetch_total_consultants(doctor_id);
                 total_appointments(doctor_id);
+                fetchDoctorAppointments(doctor_id);
             } else {
                 alert('Failed to save appointment: ' + response.message);
             }
@@ -473,6 +474,7 @@ function save_appointment() {
         }
     });
 }
+
 
 function openAppointmentModal(appointment_id) {
     const modal = $('#viewAppointmentModal');
@@ -541,6 +543,53 @@ function updateAppointmentStatus() {
         }
     });
 }
+
+
+function fetchDoctorAppointments(doctor_id) {
+    $.ajax({
+        url: endPoint,
+        type: 'POST',
+        dataType: 'json',
+        data: {
+            action: 'fetch_doctor_appointments',
+            doctor_id: doctor_id
+        },
+        success: function(data) {
+            const container = $('#dynamicCards');
+            container.empty();
+
+            if (data.success) {
+                data.data.forEach(app => {
+                    const statusClass =
+                        app.status === 'pending' ? 'pending-status' :
+                        app.status === 'approved' ? 'approved-status' :
+                        app.status === 'completed' ? 'completed-status' : 'cancelled-status';
+
+                    const card = `
+                        <div class="appointment-card">
+                            <p><strong>Patient:</strong> ${app.patient_name}</p>
+                            <p><strong>Date:</strong> ${app.appointment_date}</p>
+                            <p><strong>Time:</strong> ${app.appointment_time}</p>
+                            <p><strong>Reason:</strong> ${app.reason}</p>
+                            <p class="status ${statusClass}"><strong>Status:</strong> ${app.status}</p>
+                            <button class="btn view-btn" onclick="openAppointmentModal('${app.appointment_id}')">View</button>
+                        </div>
+                    `;
+                    container.append(card);
+                });
+            } else {
+                container.html('<p class="no-data">No appointments found.</p>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('AJAX Error:', error);
+            $('#warning-div').html('<div><i class="bi-exclamation-triangle"></i></div> Error fetching appointments.')
+                .fadeIn(500).delay(5000).fadeOut(100);
+        }
+    });
+}
+
+
 
 
 

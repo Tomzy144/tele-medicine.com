@@ -46,6 +46,7 @@
             total_appointments(sessionId);
             fetch_total_consultants(sessionId);
             fetch_all_appointments(sessionId);
+            fetchDoctorAppointments(sessionId);
 
             // update immediately
             updateDateTime();
