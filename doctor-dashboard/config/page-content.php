@@ -255,125 +255,149 @@
             <div class="inner-div">
 
                 <!-- Profile Overview -->
-              <div class="profile-overview" id="profile_overview">
-                <div class="profile-card2" id="profile_card2">
-                    <div class="profile-top" id="profile_top">
-                        <div class="profile-image" id="profile_image_div">
-                            <img src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" id="doctor_profile_passport" alt="Doctor Photo">
+                <div class="profile-overview" id="profile_overview">
+
+                    <div class="profile-card2" id="profile_card2">
+
+                        <div class="profile-top" id="profile_top">
+                            <div class="profile-image" id="profile_image_div">
+                                <img src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" 
+                                    id="doctor_profile_passport" alt="Doctor Photo">
+                            </div>
+
+                            <div class="profile-info" id="profile_info">
+                                <h3 class="doctor-name" id="doctor_name3">Dr. John Doe</h3>
+                                <p class="doctor-title" id="doctor_title">Consultant Cardiologist</p>
+                                <div class="badge" id="doctor_status">Active</div>
+                            </div>
                         </div>
-                        <div class="profile-info" id="profile_info">
-                            <h3 class="doctor-name" id="doctor_name3">Dr. John Doe</h3>
-                            <p class="doctor-title" id="doctor_title">Consultant Cardiologist</p>
-                            <div class="badge" id="doctor_status">Active</div>
+
+                        <div class="profile-stats" id="profile_stats">
+                            <div class="stat-box" id="appointments_box">
+                                <h4 id="appointments_count">120</h4>
+                                <p>Appointments</p>
+                            </div>
+                            <div class="stat-box" id="patients_box">
+                                <h4 id="patients_count">95</h4>
+                                <p>Patients</p>
+                            </div>
+                            <div class="stat-box" id="experience_box">
+                                <h4 id="experience_years">12</h4>
+                                <p>Years Exp.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="info-card" id="info_card">
+                        <div class="card-header" id="personal_info_header">
+                            <h4><i class="fa-solid fa-user"></i> Personal Information</h4>
+                        </div>
+
+                        <div class="info-grid" id="personal_info_grid">
+                            <div id="info_first_name"><strong>First Name:</strong> John</div>
+                            <div id="info_last_name"><strong>Last Name:</strong> Doe</div>
+                            <div id="info_age"><strong>Age:</strong> 38</div>
+                            <div id="info_position"><strong>Position:</strong> Consultant Cardiologist</div>
+                            <div id="info_email"><strong>Email:</strong> johndoe@gmail.com</div>
+                            <div id="info_phone"><strong>Phone:</strong> +234 801 234 5678</div>
+                            <div id="info_location"><strong>Location:</strong> Lagos, Nigeria</div>
                         </div>
                     </div>
 
-                    <div class="profile-stats" id="profile_stats">
-                        <div class="stat-box" id="appointments_box">
-                            <h4 id="appointments_count">120</h4>
-                            <p>Appointments</p>
+                </div>
+
+                <!-- Specialty | Notifications | Schedule -->
+                <div class="triple-card-row" id="first_triple_row">
+
+                    <!-- Specialty -->
+                    <div class="card-box" id="specialty_card">
+                        <div class="card-header" id="specialty_header">
+                            <h4><i class="fa-solid fa-stethoscope"></i> Specialty</h4>
                         </div>
-                        <div class="stat-box" id="patients_box">
-                            <h4 id="patients_count">95</h4>
-                            <p>Patients</p>
+
+                        <ul class="list-dashed" id="specialty_list">
+                            <li id="specialty_1">Heart Disease</li>
+                            <li id="specialty_2">Hypertension</li>
+                            <li id="specialty_3">Cardiac Surgery</li>
+                            <li id="specialty_4">Preventive Cardiology</li>
+                        </ul>
+                    </div>
+
+                    <!-- Notifications -->
+                    <div class="card-box" id="notifications_card">
+                        <div class="card-header" id="notifications_header">
+                            <h4><i class="fa-solid fa-bell"></i> Notifications</h4>
                         </div>
-                        <div class="stat-box" id="experience_box">
-                            <h4 id="experience_years">12</h4>
-                            <p>Years Exp.</p>
+
+                        <ul class="list-striped" id="notifications_list">
+                            <li id="notif_1">New message from patient</li>
+                            <li id="notif_2">Appointment reminder</li>
+                            <li id="notif_3">Lab results ready for review</li>
+                        </ul>
+                    </div>
+
+                    <!-- Schedule -->
+                    <div class="card-box" id="schedule_card">
+                        <div class="card-header" id="schedule_header">
+                            <h4><i class="fa-solid fa-calendar-days"></i> Schedule</h4>
+                        </div>
+
+                        <table class="schedule-table" id="schedule_table">
+                            <tr id="schedule_row1"><td>Mon - Fri</td><td>8am - 5pm</td></tr>
+                            <tr id="schedule_row2"><td>Sat</td><td>9am - 2pm</td></tr>
+                            <tr id="schedule_row3"><td>Sun</td><td>Off</td></tr>
+                        </table>
+                    </div>
+
+                </div>
+
+                <!-- Notes | Education | Experience -->
+                <div class="triple-card-row" id="second_triple_row">
+
+                    <!-- Notes -->
+                    <div class="card-box" id="notes_card">
+                        <div class="card-header" id="notes_header">
+                            <h4><i class="fa-solid fa-notes-medical"></i> Patient Notes</h4>
+                        </div>
+
+                        <div class="notes" id="patient_notes">
+                            <blockquote id="note_1">“Very kind and thorough.”</blockquote>
+                            <blockquote id="note_2">“Explained diagnosis clearly.”</blockquote>
                         </div>
                     </div>
+
+                    <!-- Education -->
+                    <div class="card-box" id="education_card">
+                        <div class="card-header" id="education_header">
+                            <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
+                        </div>
+
+                        <div class="edu-item" id="education_item">
+                            <div id="edu_year"><strong>Year:</strong> 2010</div>
+                            <div id="edu_degree"><strong>Degree:</strong> MBBS</div>
+                            <div id="edu_institute"><strong>Institute:</strong> University of Lagos</div>
+                            <div id="edu_result"><strong>Result:</strong> Distinction</div>
+                        </div>
+                    </div>
+
+                    <!-- Experience -->
+                    <div class="card-box" id="experience_card">
+                        <div class="card-header" id="experience_header">
+                            <h4><i class="fa-solid fa-briefcase-medical"></i> Experience</h4>
+                        </div>
+
+                        <div class="exp-item" id="experience_item">
+                            <div id="exp_year"><strong>Year:</strong> 2015 - Present</div>
+                            <div id="exp_department"><strong>Department:</strong> Cardiology</div>
+                            <div id="exp_position"><strong>Position:</strong> Consultant</div>
+                            <div id="exp_hospital"><strong>Hospital:</strong> Lagos General Hospital</div>
+                            <div id="exp_feedback"><strong>Feedback:</strong> Excellent patient reviews.</div>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div class="info-card" id="info_card">
-                    <div class="card-header" id="personal_info_header">
-                        <h4><i class="fa-solid fa-user"></i> Personal Information</h4>
-                    </div>
-                    <div class="info-grid" id="personal_info_grid">
-                        <div id="info_first_name"><strong>First Name:</strong> John</div>
-                        <div id="info_last_name"><strong>Last Name:</strong> Doe</div>
-                        <div id="info_age"><strong>Age:</strong> 38</div>
-                        <div id="info_position"><strong>Position:</strong> Consultant Cardiologist</div>
-                        <div id="info_email"><strong>Email:</strong> johndoe@gmail.com</div>
-                        <div id="info_phone"><strong>Phone:</strong> +234 801 234 5678</div>
-                        <div id="info_location"><strong>Location:</strong> Lagos, Nigeria</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Specialty | Notifications | Schedule -->
-            <div class="triple-card-row" id="first_triple_row">
-                <div class="card-box" id="specialty_card">
-                    <div class="card-header" id="specialty_header">
-                        <h4><i class="fa-solid fa-stethoscope"></i> Specialty</h4>
-                    </div>
-                    <ul class="list-dashed" id="specialty_list">
-                        <li id="specialty_1">Heart Disease</li>
-                        <li id="specialty_2">Hypertension</li>
-                        <li id="specialty_3">Cardiac Surgery</li>
-                        <li id="specialty_4">Preventive Cardiology</li>
-                    </ul>
-                </div>
-
-                <div class="card-box" id="notifications_card">
-                    <div class="card-header" id="notifications_header">
-                        <h4><i class="fa-solid fa-bell"></i> Notifications</h4>
-                    </div>
-                    <ul class="list-striped" id="notifications_list">
-                        <li id="notif_1">New message from patient</li>
-                        <li id="notif_2">Appointment reminder</li>
-                        <li id="notif_3">Lab results ready for review</li>
-                    </ul>
-                </div>
-
-                <div class="card-box" id="schedule_card">
-                    <div class="card-header" id="schedule_header">
-                        <h4><i class="fa-solid fa-calendar-days"></i> Schedule</h4>
-                    </div>
-                    <table class="schedule-table" id="schedule_table">
-                        <tr id="schedule_row1"><td>Mon - Fri</td><td>8am - 5pm</td></tr>
-                        <tr id="schedule_row2"><td>Sat</td><td>9am - 2pm</td></tr>
-                        <tr id="schedule_row3"><td>Sun</td><td>Off</td></tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Notes | Education | Experience -->
-            <div class="triple-card-row" id="second_triple_row">
-                <div class="card-box" id="notes_card">
-                    <div class="card-header" id="notes_header">
-                        <h4><i class="fa-solid fa-notes-medical"></i> Patient Notes</h4>
-                    </div>
-                    <div class="notes" id="patient_notes">
-                        <blockquote id="note_1">“Very kind and thorough.”</blockquote>
-                        <blockquote id="note_2">“Explained diagnosis clearly.”</blockquote>
-                    </div>
-                </div>
-
-                <div class="card-box" id="education_card">
-                    <div class="card-header" id="education_header">
-                        <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
-                    </div>
-                    <div class="edu-item" id="education_item">
-                        <div id="edu_year"><strong>Year:</strong> 2010</div>
-                        <div id="edu_degree"><strong>Degree:</strong> MBBS</div>
-                        <div id="edu_institute"><strong>Institute:</strong> University of Lagos</div>
-                        <div id="edu_result"><strong>Result:</strong> Distinction</div>
-                    </div>
-                </div>
-
-                <div class="card-box" id="experience_card">
-                    <div class="card-header" id="experience_header">
-                        <h4><i class="fa-solid fa-briefcase-medical"></i> Experience</h4>
-                    </div>
-                    <div class="exp-item" id="experience_item">
-                        <div id="exp_year"><strong>Year:</strong> 2015 - Present</div>
-                        <div id="exp_department"><strong>Department:</strong> Cardiology</div>
-                        <div id="exp_position"><strong>Position:</strong> Consultant</div>
-                        <div id="exp_hospital"><strong>Hospital:</strong> Lagos General Hospital</div>
-                        <div id="exp_feedback"><strong>Feedback:</strong> Excellent patient reviews.</div>
-                    </div>
-                </div>
-            </div>
 
 
             </div>
@@ -433,155 +457,271 @@
                 <h3>Edit Profile</h3>
                 <hr>
 
-                <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
+             <form id="profile-form" method="post" enctype="multipart/form-data" class="form-div">
 
-                    <!-- ===== STEP 1: PERSONAL INFORMATION ===== -->
-                    <div class="form-step active">
+                <!-- ===== STEP 1: PERSONAL INFORMATION ===== -->
+                <div class="form-step active">
                     <h4>SECTION 1: PERSONAL INFORMATION</h4>
+
                     <div class="form-group">
                         <label>Profile Photo</label>
                         <div class="profile-pic-div">
-                        <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'doctor_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
-                            id="change-btn" alt="Profile Picture"/>
-                        <button type="button" onclick="open_file()" class="upload-btn">Change Picture</button>
+                            <img src="<?php echo $website_url; ?>/uploaded_files/<?php echo $passport=='' ? 'doctor_profile_pix/001.png' : 'profile_pix/'.$passport; ?>" 
+                                id="profile_photo" alt="Profile Picture"/>
+                            <button type="button" onclick="open_file()" class="upload-btn">Change Picture</button>
                         </div>
                     </div>
 
-                    <div class="form-group"><label>Full Name *</label><input type="text" id="full_name" name="full_name" value="<?php echo $member_fullname; ?>" required></div>
-                    <div class="form-group"><label>Date of Birth *</label><input type="date" id="dob" name="dob" required></div>
-                    <div class="form-group"><label>Email Address *</label><input type="email" id="email" name="email" required></div>
-                    <div class="form-group"><label>Phone Number *</label><input type="tel" id="phone" name="phone" required></div>
-                    <div class="form-group"><label>Residential Address *</label><input type="text" id="address" name="address" required></div>
+                    <div class="form-group"><label>Full Name *</label>
+                        <input type="text" id="full_name" name="full_name" required>
+                    </div>
+
+                    <div class="form-group"><label>Date of Birth *</label>
+                        <input type="date" id="dob" name="dob" required>
+                    </div>
+
+                    <div class="form-group"><label>Email Address *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+
+                    <div class="form-group"><label>Phone Number *</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+
+                    <div class="form-group"><label>Residential Address *</label>
+                        <input type="text" id="address" name="address" required>
+                    </div>
+
                     <div class="form-row">
                         <input type="text" id="city" name="city" placeholder="City" required>
                         <input type="text" id="state" name="state" placeholder="State" required>
                         <input type="text" id="zip" name="zip" placeholder="ZIP" required>
                     </div>
+
                     <button type="button" class="next-btn">Next</button>
+                </div>
+
+                <!-- ===== STEP 2: PROFESSIONAL CREDENTIALS ===== -->
+                <div class="form-step">
+                    <h4>SECTION 2: PROFESSIONAL CREDENTIALS</h4>
+
+                    <div class="form-group"><label>Medical License Number *</label>
+                        <input type="text" id="license_number" name="license_number" required>
                     </div>
 
-                    <!-- ===== STEP 2: PROFESSIONAL CREDENTIALS ===== -->
-                    <div class="form-step">
-                    <h4>SECTION 2: PROFESSIONAL CREDENTIALS</h4>
-                    <div class="form-group"><label>Medical License Number *</label><input type="text" id="license_number" name="license_number" required></div>
-                    <div class="form-group"><label>License Issuing State/Country *</label><input type="text" id="license_country" name="license_country" required></div>
-                    <div class="form-group"><label>License Expiration Date *</label><input type="date" id="license_expiry" name="license_expiry" required></div>
-                    <div class="form-group"><label>Board Certification *</label><input type="text" id="board_cert" name="board_cert" required></div>
-                    <div class="form-group"><label>Primary Specialty *</label><input type="text" id="primary_specialty" name="primary_specialty" required></div>
-                    <div class="form-group"><label>Sub-specialties</label><input type="text" id="sub_specialties" name="sub_specialties"></div>
-                    <div class="form-group"><label>Medical School *</label><input type="text" id="medical_school" name="medical_school" required></div>
+                    <div class="form-group"><label>License Issuing State/Country *</label>
+                        <input type="text" id="license_country" name="license_country" required>
+                    </div>
+
+                    <div class="form-group"><label>License Expiration Date *</label>
+                        <input type="date" id="license_expiry" name="license_expiry" required>
+                    </div>
+
+                    <div class="form-group"><label>Board Certification *</label>
+                        <input type="text" id="board_cert" name="board_cert" required>
+                    </div>
+
+                    <div class="form-group"><label>Primary Specialty *</label>
+                        <input type="text" id="primary_specialty" name="primary_specialty" required>
+                    </div>
+
+                    <div class="form-group"><label>Sub-specialties</label>
+                        <input type="text" id="sub_specialties" name="sub_specialties">
+                    </div>
+
+                    <div class="form-group"><label>Medical School *</label>
+                        <input type="text" id="medical_school" name="medical_school" required>
+                    </div>
+
                     <div class="form-row">
                         <input type="text" id="grad_year" name="grad_year" placeholder="Year of Graduation" required>
                         <input type="text" id="residency" name="residency" placeholder="Residency/Fellowship" required>
                         <input type="number" id="experience" name="experience" placeholder="Years of Experience" required>
                     </div>
+
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="button" class="next-btn">Next</button>
                     </div>
-                    </div>
+                </div>
 
-                    <!-- ===== STEP 3: PRACTICE INFO ===== -->
-                    <div class="form-step">
+                <!-- ===== STEP 3: PRACTICE INFO ===== -->
+                <div class="form-step">
                     <h4>SECTION 3: PROFESSIONAL PRACTICE INFORMATION</h4>
-                    <div class="form-group"><label>Current Hospital Affiliations *</label><input type="text" id="hospital_affiliations" name="hospital_affiliations" required></div>
-                    <div class="form-group"><label>Practice Name (if applicable)</label><input type="text" id="practice_name" name="practice_name"></div>
-                    <div class="form-group"><label>Practice Address *</label><input type="text" id="practice_address" name="practice_address" required></div>
-                    <div class="form-group"><label>Languages Spoken *</label><input type="text" id="languages" name="languages" required></div>
-                    <div class="form-group"><label>Areas of Expertise *</label><input type="text" id="expertise" name="expertise" required></div>
-                    <div class="form-group"><label>Consultation Fee ($)</label><input type="number" id="consultation_fee" name="consultation_fee"></div>
+
+                    <div class="form-group"><label>Current Hospital Affiliations *</label>
+                        <input type="text" id="hospital_affiliations" name="hospital_affiliations" required>
+                    </div>
+
+                    <div class="form-group"><label>Practice Name (if applicable)</label>
+                        <input type="text" id="practice_name" name="practice_name">
+                    </div>
+
+                    <div class="form-group"><label>Practice Address *</label>
+                        <input type="text" id="practice_address" name="practice_address" required>
+                    </div>
+
+                    <div class="form-group"><label>Languages Spoken *</label>
+                        <input type="text" id="languages" name="languages" required>
+                    </div>
+
+                    <div class="form-group"><label>Areas of Expertise *</label>
+                        <input type="text" id="expertise" name="expertise" required>
+                    </div>
+
+                    <div class="form-group"><label>Consultation Fee ($)</label>
+                        <input type="number" id="consultation_fee" name="consultation_fee">
+                    </div>
+
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="button" class="next-btn">Next</button>
                     </div>
-                    </div>
+                </div>
 
-                    <!-- ===== STEP 4: TECHNICAL + LEGAL ===== -->
-                    <div class="form-step">
+                <!-- ===== STEP 4: TECHNICAL + LEGAL ===== -->
+                <div class="form-step">
                     <h4>SECTION 4 & 5: TECHNICAL + LEGAL</h4>
+
                     <div class="form-row">
                         <label>Primary Device:</label>
                         <select id="device" name="device">
-                        <option value="">Select Device</option>
-                        <option>Desktop</option><option>Laptop</option><option>Tablet</option><option>Smartphone</option>
+                            <option value="">Select Device</option>
+                            <option>Desktop</option>
+                            <option>Laptop</option>
+                            <option>Tablet</option>
+                            <option>Smartphone</option>
                         </select>
                     </div>
+
                     <div class="form-row">
                         <label>Webcam Available:</label>
-                        <select id="webcam" name="webcam"><option>Yes</option><option>No</option></select>
+                        <select id="webcam" name="webcam">
+                            <option>Yes</option><option>No</option>
+                        </select>
+
                         <label>Microphone Available:</label>
-                        <select id="microphone" name="microphone"><option>Yes</option><option>No</option></select>
+                        <select id="microphone" name="microphone">
+                            <option>Yes</option><option>No</option>
+                        </select>
                     </div>
 
                     <h5>Legal & Compliance</h5>
-                    <label><input type="checkbox" required> I agree to HIPAA compliance requirements</label><br>
-                    <label><input type="checkbox" required> I acknowledge telemedicine regulations in my state</label><br>
-                    <label><input type="checkbox" required> I consent to background verification</label>
+
+                    <label><input type="checkbox" id="hipaa" name="hipaa" required> I agree to HIPAA compliance requirements</label><br>
+                    <label><input type="checkbox" id="telemedicine_rules" name="telemedicine_rules" required> I acknowledge telemedicine regulations in my state</label><br>
+                    <label><input type="checkbox" id="background_check" name="background_check" required> I consent to background verification</label>
+
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="button" class="next-btn">Next</button>
                     </div>
-                    </div>
+                </div>
 
-                    <!-- ===== STEP 5: AVAILABILITY ===== -->
-                    <div class="form-step">
+                <!-- ===== STEP 5: AVAILABILITY ===== -->
+                <div class="form-step">
                     <h4>SECTION 6: AVAILABILITY & PREFERENCES</h4>
-                    <div class="form-group"><label>Time Zone *</label><input type="text" id="timezone" name="timezone" required></div>
-                    <div class="form-group"><label>Preferred Consultation Hours *</label><input type="text" id="consultation_hours" name="consultation_hours" required></div>
+
+                    <div class="form-group"><label>Time Zone *</label>
+                        <input type="text" id="timezone" name="timezone" required>
+                    </div>
+
+                    <div class="form-group"><label>Preferred Consultation Hours *</label>
+                        <input type="text" id="consultation_hours" name="consultation_hours" required>
+                    </div>
+
                     <div class="checkbox-group">
-                        <label><input type="checkbox" name="consultation_types[]" value="Video"> Video</label>
-                        <label><input type="checkbox" name="consultation_types[]" value="Phone"> Phone</label>
-                        <label><input type="checkbox" name="consultation_types[]" value="Messaging"> Messaging</label>
+                        <label><input type="checkbox" id="consult_video" name="consultation_types[]" value="Video"> Video</label>
+                        <label><input type="checkbox" id="consult_phone" name="consultation_types[]" value="Phone"> Phone</label>
+                        <label><input type="checkbox" id="consult_message" name="consultation_types[]" value="Messaging"> Messaging</label>
                     </div>
-                    <div class="form-group"><label>Maximum Patients Per Day *</label><input type="number" id="max_patients" name="max_patients" required></div>
-                    <div class="form-group"><label>Emergency Contact *</label><input type="text" id="emergency_contact" name="emergency_contact" required></div>
+
+                    <div class="form-group"><label>Maximum Patients Per Day *</label>
+                        <input type="number" id="max_patients" name="max_patients" required>
+                    </div>
+
+                    <div class="form-group"><label>Emergency Contact *</label>
+                        <input type="text" id="emergency_contact" name="emergency_contact" required>
+                    </div>
+
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="button" class="next-btn">Next</button>
                     </div>
-                    </div>
+                </div>
 
-                    <!-- ===== STEP 6: PAYMENT ===== -->
-                    <div class="form-step">
+                <!-- ===== STEP 6: PAYMENT ===== -->
+                <div class="form-step">
                     <h4>SECTION 7: PAYMENT INFORMATION</h4>
-                    <div class="form-group"><label>Bank Name *</label><input type="text" id="bank_name" name="bank_name" required></div>
-                    <div class="form-group"><label>Account Number *</label><input type="text" id="account_number" name="account_number" required></div>
-                    <div class="form-group"><label>Routing Number *</label><input type="text" id="routing_number" name="routing_number" required></div>
-                    <div class="form-group"><label>Tax ID (SSN/EIN) *</label><input type="text" id="tax_id" name="tax_id" required></div>
-                    <div class="form-group"><label>Insurance Plans Accepted</label><input type="text" id="insurance" name="insurance"></div>
+
+                    <div class="form-group"><label>Bank Name *</label>
+                        <input type="text" id="bank_name" name="bank_name" required>
+                    </div>
+
+                    <div class="form-group"><label>Account Number *</label>
+                        <input type="text" id="account_number" name="account_number" required>
+                    </div>
+
+                    <div class="form-group"><label>Routing Number *</label>
+                        <input type="text" id="routing_number" name="routing_number" required>
+                    </div>
+
+                    <div class="form-group"><label>Tax ID (SSN/EIN) *</label>
+                        <input type="text" id="tax_id" name="tax_id" required>
+                    </div>
+
+                    <div class="form-group"><label>Insurance Plans Accepted</label>
+                        <input type="text" id="insurance" name="insurance">
+                    </div>
+
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="button" class="next-btn">Next</button>
                     </div>
-                    </div>
+                </div>
 
-                    <!-- ===== STEP 7: DOCUMENT UPLOAD ===== -->
-                    <div class="form-step">
+                <!-- ===== STEP 7: DOCUMENT UPLOAD ===== -->
+                <div class="form-step">
                     <h4>SECTION 8: DOCUMENT UPLOAD</h4>
-                    <label>Government Issued ID</label><input type="file" id="id_upload" name="id_upload" accept=".pdf,.jpg,.png"><br>
-                    <label>Medical License</label><input type="file" id="license_upload" name="license_upload" accept=".pdf,.jpg,.png"><br>
-                    <label>Board Certification</label><input type="file" id="board_upload" name="board_upload" accept=".pdf,.jpg,.png"><br>
+
+                    <label>Government Issued ID</label>
+                    <input type="file" id="id_upload" name="id_upload" accept=".pdf,.jpg,.png"><br>
+
+                    <label>Medical License</label>
+                    <input type="file" id="license_upload" name="license_upload" accept=".pdf,.jpg,.png"><br>
+
+                    <label>Board Certification</label>
+                    <input type="file" id="board_upload" name="board_upload" accept=".pdf,.jpg,.png"><br>
+
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="button" class="next-btn">Next</button>
                     </div>
-                    </div>
+                </div>
 
-                    <!-- ===== STEP 8: AGREEMENT ===== -->
-                    <div class="form-step">
+                <!-- ===== STEP 8: AGREEMENT ===== -->
+                <div class="form-step">
                     <h4>SECTION 9: AGREEMENT</h4>
+
                     <label><input type="checkbox" id="terms" name="terms" required> I accept the Terms of Service</label><br>
                     <label><input type="checkbox" id="privacy" name="privacy" required> I acknowledge the Privacy Policy</label>
-                    <div class="form-group"><label>Electronic Signature *</label><input type="text" id="signature" name="signature" required></div>
-                    <div class="form-group"><label>Date *</label><input type="date" id="agreement_date" name="agreement_date" required></div>
+
+                    <div class="form-group"><label>Electronic Signature *</label>
+                        <input type="text" id="signature" name="signature" required>
+                    </div>
+
+                    <div class="form-group"><label>Date *</label>
+                        <input type="date" id="agreement_date" name="agreement_date" required>
+                    </div>
 
                     <div class="form-navigation">
                         <button type="button" class="prev-btn">Previous</button>
                         <button type="submit" onclick="update_profile();" class="save-btn">Submit</button>
                     </div>
-                    </div>
+                </div>
 
-                </form>
+            </form>
+
                 </div>
 
 

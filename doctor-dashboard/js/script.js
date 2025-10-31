@@ -812,21 +812,88 @@ function get_doctor_total_profile(doctor_id) {
         dataType: "json",
         success: function(response) {
             if (response.success) {
-                let d = response.data;
 
-                // document.getElementById("doctorName").textContent = "Dr. " + d.firstname + " " + d.lastname;
-                // document.getElementById("doctorSpeciality").textContent = d.speciality || "N/A";
-                // document.getElementById("doctorExperience").textContent = d.years_experience + " years";
-                // document.getElementById("doctorLicense").textContent = d.medical_license;
-                // document.getElementById("doctorCountry").textContent = d.country;
+        let d = response.data || {};
 
-                // let img = d.doctor_passport ? "../uploaded_files/doctor_profile_pix/" + d.doctor_passport : "../uploaded_files/doctor_profile_pix/doc_default.jpeg";
-                // document.getElementById("doctorImage").src = img;
+        // === TOP PROFILE ===
+        $("#doctor_profile_passport").attr("src", d.passport || "../uploaded_files/doctor_profile_pix/doc_default.jpeg");
+        $("#doctor_name3").text(d.full_name || "N/A");
+        $("#doctor_title").text(d.title || "N/A");
+        $("#doctor_status").text(d.status || "N/A");
 
-                // document.getElementById("doctorProfileModal").style.display = "block";
-            } else {
-                alert("Doctor profile not found.");
+        // === STATS ===
+        $("#appointments_count").text(d.total_appointments || 0);
+        $("#patients_count").text(d.total_patients || 0);
+        $("#experience_years").text(d.years_experience || 0);
+
+        // === PERSONAL INFO ===
+        $("#info_first_name").html(`<strong>First Name:</strong> ${d.first_name || "N/A"}`);
+        $("#info_last_name").html(`<strong>Last Name:</strong> ${d.last_name || "N/A"}`);
+        $("#info_age").html(`<strong>Age:</strong> ${d.age || "N/A"}`);
+        $("#info_position").html(`<strong>Position:</strong> ${d.position || "N/A"}`);
+        $("#info_email").html(`<strong>Email:</strong> ${d.email || "N/A"}`);
+        $("#info_phone").html(`<strong>Phone:</strong> ${d.phone || "N/A"}`);
+        $("#info_location").html(`<strong>Location:</strong> ${d.location || "N/A"}`);
+
+        // === SPECIALTIES ===
+        $("#specialty_list").empty();
+        if (Array.isArray(d.specialties) && d.specialties.length > 0) {
+            d.specialties.forEach((sp, i) => {
+                $("#specialty_list").append(`<li id="specialty_${i+1}">${sp}</li>`);
+            });
+        } else {
+            $("#specialty_list").append(`<li>No specialty listed</li>`);
+        }
+
+        // === NOTIFICATIONS ===
+        $("#notifications_list").empty();
+        if (Array.isArray(d.notifications) && d.notifications.length > 0) {
+            d.notifications.forEach((n, i) => {
+                $("#notifications_list").append(`<li id="notif_${i+1}">${n}</li>`);
+            });
+        } else {
+            $("#notifications_list").append(`<li>No notifications</li>`);
+        }
+
+        // === SCHEDULE ===
+        let s = d.schedule || {};
+        $("#schedule_row1 td:nth-child(1)").text(s.weekdays_label || "Mon - Fri");
+        $("#schedule_row1 td:nth-child(2)").text(s.weekdays_time || "N/A");
+
+        $("#schedule_row2 td:nth-child(1)").text(s.sat_label || "Sat");
+        $("#schedule_row2 td:nth-child(2)").text(s.sat_time || "N/A");
+
+        $("#schedule_row3 td:nth-child(1)").text(s.sun_label || "Sun");
+        $("#schedule_row3 td:nth-child(2)").text(s.sun_time || "N/A");
+
+        // === NOTES ===
+        $("#patient_notes").empty();
+        if (Array.isArray(d.notes) && d.notes.length > 0) {
+            d.notes.forEach((note, i) => {
+                $("#patient_notes").append(`<blockquote id="note_${i+1}">${note}</blockquote>`);
+            });
+        } else {
+            $("#patient_notes").append(`<blockquote>No notes available</blockquote>`);
+        }
+
+        // === EDUCATION ===
+        let edu = d.education || {};
+        $("#edu_year").html(`<strong>Year:</strong> ${edu.year || "N/A"}`);
+        $("#edu_degree").html(`<strong>Degree:</strong> ${edu.degree || "N/A"}`);
+        $("#edu_institute").html(`<strong>Institute:</strong> ${edu.institute || "N/A"}`);
+        $("#edu_result").html(`<strong>Result:</strong> ${edu.result || "N/A"}`);
+
+        // === EXPERIENCE ===
+        let exp = d.experience || {};
+        $("#exp_year").html(`<strong>Year:</strong> ${exp.year || "N/A"}`);
+        $("#exp_department").html(`<strong>Department:</strong> ${exp.department || "N/A"}`);
+        $("#exp_position").html(`<strong>Position:</strong> ${exp.position || "N/A"}`);
+        $("#exp_hospital").html(`<strong>Hospital:</strong> ${exp.hospital || "N/A"}`);
+        $("#exp_feedback").html(`<strong>Feedback:</strong> ${exp.feedback || "N/A"}`);
+
             }
+
+
         },
         error: function() {
             alert("Error loading profile.");
