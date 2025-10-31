@@ -255,124 +255,126 @@
             <div class="inner-div">
 
                 <!-- Profile Overview -->
-                <div class="profile-overview">
-                    <div class="profile-card2">
-                        <div class="profile-top">
-                            <div class="profile-image">
-                                <img src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" alt="Doctor" alt="Doctor Photo">
-                            </div>
-                            <div class="profile-info">
-                                <h3 class="doctor-name">Dr. John Doe</h3>
-                                <p class="doctor-title">Consultant Cardiologist</p>
-                                <div class="badge">Active</div>
-                            </div>
+              <div class="profile-overview" id="profile_overview">
+                <div class="profile-card2" id="profile_card2">
+                    <div class="profile-top" id="profile_top">
+                        <div class="profile-image" id="profile_image_div">
+                            <img src="../uploaded_files/doctor_profile_pix/doc_default.jpeg" id="doctor_profile_passport" alt="Doctor Photo">
                         </div>
-                        <div class="profile-stats">
-                            <div class="stat-box">
-                                <h4>120</h4>
-                                <p>Appointments</p>
-                            </div>
-                            <div class="stat-box">
-                                <h4>95</h4>
-                                <p>Patients</p>
-                            </div>
-                            <div class="stat-box">
-                                <h4>12</h4>
-                                <p>Years Exp.</p>
-                            </div>
+                        <div class="profile-info" id="profile_info">
+                            <h3 class="doctor-name" id="doctor_name3">Dr. John Doe</h3>
+                            <p class="doctor-title" id="doctor_title">Consultant Cardiologist</p>
+                            <div class="badge" id="doctor_status">Active</div>
                         </div>
                     </div>
 
-                <div class="info-card">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-user"></i> Personal Information</h4>
+                    <div class="profile-stats" id="profile_stats">
+                        <div class="stat-box" id="appointments_box">
+                            <h4 id="appointments_count">120</h4>
+                            <p>Appointments</p>
+                        </div>
+                        <div class="stat-box" id="patients_box">
+                            <h4 id="patients_count">95</h4>
+                            <p>Patients</p>
+                        </div>
+                        <div class="stat-box" id="experience_box">
+                            <h4 id="experience_years">12</h4>
+                            <p>Years Exp.</p>
+                        </div>
                     </div>
-                    <div class="info-grid">
-                    <div><strong>First Name:</strong> John</div>
-                    <div><strong>Last Name:</strong> Doe</div>
-                    <div><strong>Age:</strong> 38</div>
-                    <div><strong>Position:</strong> Consultant Cardiologist</div>
-                    <div><strong>Email:</strong> johndoe@gmail.com</div>
-                    <div><strong>Phone:</strong> +234 801 234 5678</div>
-                    <div><strong>Location:</strong> Lagos, Nigeria</div>
-                    </div>
-                </div>
                 </div>
 
-                <!-- Specialty | Notifications | Schedule -->
-                <div class="triple-card-row">
-                <div class="card-box">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-stethoscope"></i> Specialty</h4>
+                <div class="info-card" id="info_card">
+                    <div class="card-header" id="personal_info_header">
+                        <h4><i class="fa-solid fa-user"></i> Personal Information</h4>
                     </div>
-                    <ul class="list-dashed">
-                    <li>Heart Disease</li>
-                    <li>Hypertension</li>
-                    <li>Cardiac Surgery</li>
-                    <li>Preventive Cardiology</li>
+                    <div class="info-grid" id="personal_info_grid">
+                        <div id="info_first_name"><strong>First Name:</strong> John</div>
+                        <div id="info_last_name"><strong>Last Name:</strong> Doe</div>
+                        <div id="info_age"><strong>Age:</strong> 38</div>
+                        <div id="info_position"><strong>Position:</strong> Consultant Cardiologist</div>
+                        <div id="info_email"><strong>Email:</strong> johndoe@gmail.com</div>
+                        <div id="info_phone"><strong>Phone:</strong> +234 801 234 5678</div>
+                        <div id="info_location"><strong>Location:</strong> Lagos, Nigeria</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Specialty | Notifications | Schedule -->
+            <div class="triple-card-row" id="first_triple_row">
+                <div class="card-box" id="specialty_card">
+                    <div class="card-header" id="specialty_header">
+                        <h4><i class="fa-solid fa-stethoscope"></i> Specialty</h4>
+                    </div>
+                    <ul class="list-dashed" id="specialty_list">
+                        <li id="specialty_1">Heart Disease</li>
+                        <li id="specialty_2">Hypertension</li>
+                        <li id="specialty_3">Cardiac Surgery</li>
+                        <li id="specialty_4">Preventive Cardiology</li>
                     </ul>
                 </div>
 
-                <div class="card-box">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-bell"></i> Notifications</h4>
+                <div class="card-box" id="notifications_card">
+                    <div class="card-header" id="notifications_header">
+                        <h4><i class="fa-solid fa-bell"></i> Notifications</h4>
                     </div>
-                    <ul class="list-striped">
-                    <li>New message from patient</li>
-                    <li>Appointment reminder</li>
-                    <li>Lab results ready for review</li>
+                    <ul class="list-striped" id="notifications_list">
+                        <li id="notif_1">New message from patient</li>
+                        <li id="notif_2">Appointment reminder</li>
+                        <li id="notif_3">Lab results ready for review</li>
                     </ul>
                 </div>
 
-                <div class="card-box">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-calendar-days"></i> Schedule</h4>
+                <div class="card-box" id="schedule_card">
+                    <div class="card-header" id="schedule_header">
+                        <h4><i class="fa-solid fa-calendar-days"></i> Schedule</h4>
                     </div>
-                    <table class="schedule-table">
-                    <tr><td>Mon - Fri</td><td>8am - 5pm</td></tr>
-                    <tr><td>Sat</td><td>9am - 2pm</td></tr>
-                    <tr><td>Sun</td><td>Off</td></tr>
+                    <table class="schedule-table" id="schedule_table">
+                        <tr id="schedule_row1"><td>Mon - Fri</td><td>8am - 5pm</td></tr>
+                        <tr id="schedule_row2"><td>Sat</td><td>9am - 2pm</td></tr>
+                        <tr id="schedule_row3"><td>Sun</td><td>Off</td></tr>
                     </table>
                 </div>
-                </div>
+            </div>
 
-                <!-- Notes | Education | Experience -->
-                <div class="triple-card-row">
-                <div class="card-box">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-notes-medical"></i> Patient Notes</h4>
+            <!-- Notes | Education | Experience -->
+            <div class="triple-card-row" id="second_triple_row">
+                <div class="card-box" id="notes_card">
+                    <div class="card-header" id="notes_header">
+                        <h4><i class="fa-solid fa-notes-medical"></i> Patient Notes</h4>
                     </div>
-                    <div class="notes">
-                    <blockquote>“Very kind and thorough.”</blockquote>
-                    <blockquote>“Explained diagnosis clearly.”</blockquote>
-                    </div>
-                </div>
-
-                <div class="card-box">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
-                    </div>
-                    <div class="edu-item">
-                    <div><strong>Year:</strong> 2010</div>
-                    <div><strong>Degree:</strong> MBBS</div>
-                    <div><strong>Institute:</strong> University of Lagos</div>
-                    <div><strong>Result:</strong> Distinction</div>
+                    <div class="notes" id="patient_notes">
+                        <blockquote id="note_1">“Very kind and thorough.”</blockquote>
+                        <blockquote id="note_2">“Explained diagnosis clearly.”</blockquote>
                     </div>
                 </div>
 
-                <div class="card-box">
-                    <div class="card-header">
-                    <h4><i class="fa-solid fa-briefcase-medical"></i> Experience</h4>
+                <div class="card-box" id="education_card">
+                    <div class="card-header" id="education_header">
+                        <h4><i class="fa-solid fa-graduation-cap"></i> Education</h4>
                     </div>
-                    <div class="exp-item">
-                    <div><strong>Year:</strong> 2015 - Present</div>
-                    <div><strong>Department:</strong> Cardiology</div>
-                    <div><strong>Position:</strong> Consultant</div>
-                    <div><strong>Hospital:</strong> Lagos General Hospital</div>
-                    <div><strong>Feedback:</strong> Excellent patient reviews.</div>
+                    <div class="edu-item" id="education_item">
+                        <div id="edu_year"><strong>Year:</strong> 2010</div>
+                        <div id="edu_degree"><strong>Degree:</strong> MBBS</div>
+                        <div id="edu_institute"><strong>Institute:</strong> University of Lagos</div>
+                        <div id="edu_result"><strong>Result:</strong> Distinction</div>
                     </div>
                 </div>
+
+                <div class="card-box" id="experience_card">
+                    <div class="card-header" id="experience_header">
+                        <h4><i class="fa-solid fa-briefcase-medical"></i> Experience</h4>
+                    </div>
+                    <div class="exp-item" id="experience_item">
+                        <div id="exp_year"><strong>Year:</strong> 2015 - Present</div>
+                        <div id="exp_department"><strong>Department:</strong> Cardiology</div>
+                        <div id="exp_position"><strong>Position:</strong> Consultant</div>
+                        <div id="exp_hospital"><strong>Hospital:</strong> Lagos General Hospital</div>
+                        <div id="exp_feedback"><strong>Feedback:</strong> Excellent patient reviews.</div>
+                    </div>
                 </div>
+            </div>
+
 
             </div>
             </section>

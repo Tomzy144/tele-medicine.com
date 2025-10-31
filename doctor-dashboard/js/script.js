@@ -802,6 +802,40 @@ function show_system_setting() {
 }
 
 
+
+function get_doctor_total_profile(doctor_id) {
+    // Example fetch from DB or API
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: "get_doctor_profile", doctor_id: doctor_id },
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+                let d = response.data;
+
+                // document.getElementById("doctorName").textContent = "Dr. " + d.firstname + " " + d.lastname;
+                // document.getElementById("doctorSpeciality").textContent = d.speciality || "N/A";
+                // document.getElementById("doctorExperience").textContent = d.years_experience + " years";
+                // document.getElementById("doctorLicense").textContent = d.medical_license;
+                // document.getElementById("doctorCountry").textContent = d.country;
+
+                // let img = d.doctor_passport ? "../uploaded_files/doctor_profile_pix/" + d.doctor_passport : "../uploaded_files/doctor_profile_pix/doc_default.jpeg";
+                // document.getElementById("doctorImage").src = img;
+
+                // document.getElementById("doctorProfileModal").style.display = "block";
+            } else {
+                alert("Doctor profile not found.");
+            }
+        },
+        error: function() {
+            alert("Error loading profile.");
+        }
+    });
+}
+
+
+
 function open_chat(doctor_id) {
     var activities = document.querySelector('.activities-div');
     var chat_div = document.querySelector('.chat-div');

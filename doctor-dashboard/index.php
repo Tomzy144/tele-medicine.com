@@ -92,7 +92,7 @@
                         </p>
                     </li>
                      <li>
-                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'), remove_heading();">
+                        <p id="second" class="second" onclick="_next_page('next_2'), highlite2('second'),get_doctor_total_profile(sessionId), remove_heading();">
                             <i class="bi-book"></i> Doctor Profile
                         </p>
                     </li>
