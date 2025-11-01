@@ -497,9 +497,10 @@
                             <input type="text" id="state" name="state" placeholder="State" required>
                             <input type="text" id="zip" name="zip" placeholder="ZIP" required>
                         </div>
-
-                        <button type="button" class="save-btn" onclick="save_progress(1)">Save Progress</button>
-                        <button type="button" class="next-btn">Next</button>
+                        <div class="form-navigation">
+                            <button type="button" class="save-btn" onclick="save_progress(1)">Save Progress</button>
+                            <button type="button" class="next-btn">Next</button>
+                        </div>
                     </div>
 
                     <!-- ===== STEP 2: PROFESSIONAL CREDENTIALS ===== -->

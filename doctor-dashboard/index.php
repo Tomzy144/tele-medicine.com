@@ -97,7 +97,7 @@
                         </p>
                     </li>
                     <li>
-                        <p id="third" class="third" onclick="_next_page('next_3'), restore_div(), highlite2('third');">
+                        <p id="third" class="third" onclick="_next_page('next_3'), restore_div(),populate_doctor_form(); highlite2('third');">
                             <i class="bi-person-gear"></i> Setting
                         </p>
                     </li>

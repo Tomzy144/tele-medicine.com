@@ -891,12 +891,93 @@ function get_doctor_total_profile(doctor_id) {
         $("#exp_hospital").html(`<strong>Hospital:</strong> ${exp.hospital || "N/A"}`);
         $("#exp_feedback").html(`<strong>Feedback:</strong> ${exp.feedback || "N/A"}`);
 
-            }
+        
+        }
+
+
 
 
         },
         error: function() {
             alert("Error loading profile.");
+        }
+    });
+}
+
+function populate_doctor_form() {
+doctor_id = document.getElementById("doctor_id").value;
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: { action: "get_doctor_profile", doctor_id: doctor_id },
+        dataType: "json",
+        success: function(response) {
+            if (response.success) {
+
+                let d = response.data || {};
+
+                $("#profile_photo").attr("src", d.profile_photo || "../uploaded_files/doctor_profile_pix/doc_default.jpeg");
+                $("#full_name").val(d.full_name || "");
+                $("#dob").val(d.dob || "");
+                $("#email").val(d.email || "");
+                $("#phone").val(d.phone || "");
+                $("#address").val(d.address || "");
+                $("#city").val(d.city || "");
+                $("#state").val(d.state || "");
+                $("#zip").val(d.zip || "");
+
+                $("#license_number").val(d.license_number || "");
+                $("#license_country").val(d.license_country || "");
+                $("#license_expiry").val(d.license_expiry || "");
+                $("#board_cert").val(d.board_cert || "");
+                $("#primary_specialty").val(d.primary_specialty || "");
+                $("#sub_specialties").val(d.sub_specialties || "");
+                $("#medical_school").val(d.medical_school || "");
+                $("#grad_year").val(d.grad_year || "");
+                $("#residency").val(d.residency || "");
+                $("#experience").val(d.experience || "");
+
+                $("#hospital_affiliations").val(d.hospital_affiliations || "");
+                $("#practice_name").val(d.practice_name || "");
+                $("#practice_address").val(d.practice_address || "");
+                $("#languages").val(d.languages || "");
+                $("#expertise").val(d.expertise || "");
+                $("#consultation_fee").val(d.consultation_fee || "");
+
+                $("#device").val(d.device || "");
+                $("#webcam").val(d.webcam || "");
+                $("#microphone").val(d.microphone || "");
+
+                $("#hipaa").prop("checked", d.hipaa == 1);
+                $("#telemedicine_rules").prop("checked", d.telemedicine_rules == 1);
+                $("#background_check").prop("checked", d.background_check == 1);
+
+                $("#timezone").val(d.timezone || "");
+                $("#consultation_hours").val(d.consultation_hours || "");
+
+                let consultTypes = d.consultation_types || [];
+                $("#consult_video").prop("checked", consultTypes.includes("Video"));
+                $("#consult_phone").prop("checked", consultTypes.includes("Phone"));
+                $("#consult_message").prop("checked", consultTypes.includes("Messaging"));
+
+                $("#max_patients").val(d.max_patients || "");
+                $("#emergency_contact").val(d.emergency_contact || "");
+
+                $("#bank_name").val(d.bank_name || "");
+                $("#account_number").val(d.account_number || "");
+                $("#routing_number").val(d.routing_number || "");
+                $("#tax_id").val(d.tax_id || "");
+                $("#insurance").val(d.insurance || "");
+
+                if (d.id_upload_name) $("#id_upload").attr("data-existing", d.id_upload_name);
+                if (d.license_upload_name) $("#license_upload").attr("data-existing", d.license_upload_name);
+                if (d.board_upload_name) $("#board_upload").attr("data-existing", d.board_upload_name);
+
+                $("#terms").prop("checked", d.terms == 1);
+                $("#privacy").prop("checked", d.privacy == 1);
+                $("#signature").val(d.signature || "");
+                $("#agreement_date").val(d.agreement_date || "");
+            }
         }
     });
 }
