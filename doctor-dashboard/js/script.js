@@ -903,6 +903,61 @@ function get_doctor_total_profile(doctor_id) {
 
 
 
+function save_progress(step) {
+
+    let form = document.getElementById("profile-form");
+    let formData = new FormData(form);
+
+    formData.append("action", "save_progress");
+    formData.append("doctor_id", doctor_id); // must be defined globally (from session)
+    formData.append("step", step);
+
+    $.ajax({
+        type: "POST",
+        url: endPoint,
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+
+            // Try parsing JSON
+            let res;
+            try {
+                res = typeof response === "string" ? JSON.parse(response) : response;
+            } catch (e) {
+                console.log("Invalid JSON response:", response);
+                $('#warning-div')
+                    .html('<div><i class="bi-exclamation-triangle"></i></div> Unexpected server response')
+                    .fadeIn(500).delay(5000).fadeOut(100);
+                return;
+            }
+
+            if (res.success) {
+                $('#success-div')
+                    .html('<div><i class="bi-check"></i></div> Progress saved successfully')
+                    .fadeIn(500).delay(5000).fadeOut(100);
+            } else {
+                $('#warning-div')
+                    .html('<div><i class="bi-exclamation-triangle"></i></div> ' + res.message)
+                    .fadeIn(500).delay(5000).fadeOut(100);
+            }
+        },
+
+        error: function(xhr, status, error) {
+            $('#warning-div')
+                .html('<div><i class="bi-exclamation-triangle"></i></div> Network error. Try again!')
+                .fadeIn(500).delay(5000).fadeOut(100);
+
+            console.log("AJAX Error:", error);
+        }
+    });
+}
+
+
+
+
+
 function open_chat(doctor_id) {
     var activities = document.querySelector('.activities-div');
     var chat_div = document.querySelector('.chat-div');
