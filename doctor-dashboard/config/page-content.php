@@ -472,8 +472,12 @@
                             </div>
                         </div>
 
-                        <div class="form-group"><label>Full Name *</label>
-                            <input type="text" id="full_name" name="full_name" required>
+                        <div class="form-group"><label>First Name *</label>
+                            <input type="text" id="first_name" name="first_name" required>
+                        </div>
+
+                          <div class="form-group"><label>Last Name *</label>
+                            <input type="text" id="last_name" name="last_name" required>
                         </div>
 
                         <div class="form-group"><label>Date of Birth *</label>

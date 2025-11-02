@@ -221,7 +221,7 @@ function get_doctor_details(sessionId) {
                 document.getElementById('doctor_id').value = sessionId;
 
                 // Display the doctor's name
-                document.getElementById('full_name').value = doctorName;
+                // document.getElementById('full_name').value = doctorName;
                 document.getElementById('doctor-name').textContent = doctorName;
                 document.getElementById('doctor_name').textContent = doctorName;
                 document.getElementById('doctorFirstName').textContent = doctorName; // Set only the first name in the span with id
@@ -917,7 +917,8 @@ doctor_id = document.getElementById("doctor_id").value;
                 let d = response.data || {};
 
                 $("#profile_photo").attr("src", d.profile_photo || "../uploaded_files/doctor_profile_pix/doc_default.jpeg");
-                $("#full_name").val(d.full_name || "");
+                $("#first_name").val(d.first_name || "");
+                $("#last_name").val(d.last_name || "");
                 $("#dob").val(d.dob || "");
                 $("#email").val(d.email || "");
                 $("#phone").val(d.phone || "");
