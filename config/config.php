@@ -41,6 +41,7 @@
         // $DATABASE_NAME = 'hospital-management-system_telemedicine';
         $website_url = 'https://tele-medicine.onrender.com/';
         $website_redirect_url = 'https://tele-medicine.onrender.com/';
+        $website_urlhttps= "https://tele-medicinecom--main.autogen.nodeops.network/";
     }
 
     // Create Connection To Database

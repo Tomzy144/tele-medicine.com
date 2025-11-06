@@ -11,6 +11,7 @@ if (window.location.hostname === "localhost" || window.location.hostname === "12
 } else {
     // Production
     endPoint = "https://tele-medicine-base-api.onrender.com/";
+    //endPoint = "https://tele-medicine-base-api.onrender.com/";
     
     rootUrl = "https://tele-medicine.onrender.com/"; 
 }
