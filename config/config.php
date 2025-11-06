@@ -39,7 +39,7 @@
         // $SERVER_USERNAME = '410215';
         // $SERVER_PASSWORD = 'Tomzzzyy';
         // $DATABASE_NAME = 'hospital-management-system_telemedicine';
-        $website_url = 'https://tele-medicine.onrender.com/';
+        //$website_url = 'https://tele-medicine.onrender.com/';
         $website_redirect_url = 'https://tele-medicine.onrender.com/';
         $website_url= "https://tele-medicinecom--main.autogen.nodeops.network/";
     }
