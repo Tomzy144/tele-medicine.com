@@ -14,6 +14,7 @@
         header("Access-Control-Allow-Origin: http://localhost/tele-medicine.com");
     } else {
         header("Access-Control-Allow-Origin: https://tele-medicine-base-api.onrender.com");
+         header("Access-Control-Allow-Origin: https://tele-medicinecom--main.autogen.nodeops.network/");
     }
 
     header("Access-Control-Allow-Credentials: true");
@@ -39,9 +40,10 @@
         // $SERVER_USERNAME = '410215';
         // $SERVER_PASSWORD = 'Tomzzzyy';
         // $DATABASE_NAME = 'hospital-management-system_telemedicine';
-        $website_url = 'https://tele-medicine.onrender.com/';
-        $website_redirect_url = 'https://tele-medicine.onrender.com/';
-        // $website_url= "https://tele-medicinecom--main.autogen.nodeops.network/";
+        // $website_url = 'https://tele-medicine.onrender.com/';
+        // $website_redirect_url = 'https://tele-medicine.onrender.com/';
+        $website_url= "https://tele-medicinecom--main.autogen.nodeops.network/";
+        $website_redirect_url= "https://tele-medicinecom--main.autogen.nodeops.network/";
     }
 
     // Create Connection To Database
