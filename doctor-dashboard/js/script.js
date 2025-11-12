@@ -1040,7 +1040,7 @@ function save_progress(step) {
 
 
 
-function open_chat(doctor_id) {
+function open_chat(patient_id) {
     var activities = document.querySelector('.activities-div');
     var chat_div = document.querySelector('.chat-div');
     activities.style.display = 'none';
@@ -1051,26 +1051,30 @@ function open_chat(doctor_id) {
         url: endPoint,
         dataType: "json",
         data: {
-            action: "get_doctor_details",
-            doctor_id: doctor_id
+            action: "get_patient_details",
+            patient_id: patient_id
         },
         cache: false,
         success: function (response) {
             if (response.success) {
-                var doctor = response.data;
+                var patient = response.data;
                 // update the chat header
-                document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
-                document.querySelector(".chat-user .status").textContent = doctor.online_status == 1 ? "Online" : "Offline";
-                document.getElementById('doctor_id').value = doctor_id;
+                document.querySelector(".chat-user strong").textContent =  patient.patient_name;
+                document.querySelector(".chat-user .status").textContent = patient.online_status == 1 ? "Online" : "Offline";
+                document.getElementById('patient_id').value = patient_id;
                 refreshChat();
             } else {
-                console.log("Doctor not found");
+                console.log("Patient not found");
             }
         },
         error: function (xhr, status, error) {
             console.error("Error fetching doctor:", error);
         }
     });
+}
+
+function open_videocall(patient_id){
+
 }
 
 

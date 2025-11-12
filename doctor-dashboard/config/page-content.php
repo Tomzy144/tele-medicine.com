@@ -121,7 +121,7 @@
                                 <span class="status" id="doctorStatus">Offline</span>
                             </div>
                             <div class="chat-actions">
-                                <button class="icon-btn" title="Video Call">
+                                <button onclick="open_videocall();" class="icon-btn" title="Video Call">
                                     <i class="bi bi-camera-video"></i>
                                 </button>
                             </div>
