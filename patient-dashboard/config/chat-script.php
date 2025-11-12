@@ -48,9 +48,10 @@ function refreshChat() {
     const MAX_RECONNECT_ATTEMPTS = 5;
 
     function connectWebSocket() {
-      const wsUrl = window.location.hostname === "localhost"
+     const wsUrl = window.location.hostname === "localhost"
         ? "ws://localhost:8082"
-        : "wss://tele-medicine.onrender.com";
+        : "wss://tele-medicine-chat-server.onrender.com";
+
 
         ws = new WebSocket(wsUrl);
 
