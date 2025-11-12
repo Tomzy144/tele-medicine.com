@@ -139,7 +139,12 @@
                             
                         </div>
                     </div>
+
+                    
+
                 </div>
+
+              
                 <div class="bottom-contents">
                     <div class="calender">
                         <div class="inner-div">
@@ -240,7 +245,16 @@
 
 
 
-
+                    <div id="videoCallPopup" class="video-call-popup">
+                        <div class="video-call-header" id="videoCallHeader">
+                            <strong id="videoCallUser">Patient Name</strong>
+                            <button onclick="closeVideoCall()">✖</button>
+                        </div>
+                        <div class="video-call-body">
+                            <video id="localVideo" autoplay muted></video>
+                            <video id="remoteVideo" autoplay></video>
+                        </div>
+                    </div>
 
 
 
@@ -834,6 +848,7 @@
      </div> -->
 
      <?php include "chat-script.php";?>
+     <?php include "video-call-script.php";?>
     
  
     <script>

@@ -1073,9 +1073,6 @@ function open_chat(patient_id) {
     });
 }
 
-function open_videocall(patient_id){
-
-}
 
 
 
