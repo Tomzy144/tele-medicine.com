@@ -1972,7 +1972,7 @@ input:checked + .slider:before {
     background: #111;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    display: none; /* hidden initially */
+    display: none;
     resize: both;
     overflow: hidden;
     z-index: 9999;
@@ -1987,6 +1987,15 @@ input:checked + .slider:before {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.video-call-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    margin-left: 5px;
+    cursor: pointer;
 }
 
 .video-call-body {

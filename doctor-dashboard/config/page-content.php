@@ -248,13 +248,17 @@
                     <div id="videoCallPopup" class="video-call-popup">
                         <div class="video-call-header" id="videoCallHeader">
                             <strong id="videoCallUser">Patient Name</strong>
-                            <button onclick="closeVideoCall()">✖</button>
+                            <div class="video-call-actions">
+                                <button onclick="minimizeVideoCall()">➖</button>
+                                <button onclick="closeVideoCall()">✖</button>
+                            </div>
                         </div>
-                        <div class="video-call-body">
+                        <div class="video-call-body" id="videoCallBody">
                             <video id="localVideo" autoplay muted></video>
                             <video id="remoteVideo" autoplay></video>
                         </div>
                     </div>
+
 
 
 

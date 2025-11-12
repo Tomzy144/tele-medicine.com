@@ -1,19 +1,19 @@
 <script>
-        let localStream;
+       let localStream;
         let peerConnection;
         const ICE_SERVERS = [{ urls: "stun:stun.l.google.com:19302" }];
-
-            const popup = document.getElementById("videoCallPopup");
-            const header = document.getElementById("videoCallHeader");
+        const popup = document.getElementById("videoCallPopup");
+        const header = document.getElementById("videoCallHeader");
+        const body = document.getElementById("videoCallBody");
 
         // Open video call
         function open_videocall() {
+            const patient_name = document.querySelector(".chat-user strong").textContent;
+            const patient_id = document.getElementById('patient_id').value;
 
-        
-            patient_name  = document.querySelector(".chat-user strong").textContent ;
-            patient_id = document.getElementById('patient_id').value;
             popup.style.display = "flex";
-            document.getElementById("videoCallUser").textContent = "Patient Name: " + patient_name;
+            body.style.display = "flex"; // ensure body visible
+            document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
 
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
                 .then(stream => {
@@ -53,7 +53,18 @@
             if (peerConnection) peerConnection.close();
         }
 
-        // ----- DRAG LOGIC -----
+        // Minimize / Restore
+        function minimizeVideoCall() {
+            if (body.style.display === "none") {
+                body.style.display = "flex";
+                popup.style.height = "300px";
+            } else {
+                body.style.display = "none";
+                popup.style.height = "40px"; // header only
+            }
+        }
+
+        // ----- Drag Logic -----
         header.onmousedown = function(e) {
             e.preventDefault();
             let offsetX = e.clientX - popup.offsetLeft;
@@ -72,5 +83,6 @@
             document.addEventListener("mousemove", mouseMoveHandler);
             document.addEventListener("mouseup", reset);
         };
+
 
 </script>
