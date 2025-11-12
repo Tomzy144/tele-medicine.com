@@ -49,7 +49,7 @@ function refreshChat() {
 
     function connectWebSocket() {
      const wsUrl = window.location.hostname === "localhost"
-        ? "ws://tele-medicine-serverjs"
+        ? "ws://localhost:tele-medicine-serverjs"
         : "wss://tele-medicine-chat-server.onrender.com";
 
 
