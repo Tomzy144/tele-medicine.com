@@ -245,25 +245,27 @@
 
 
 
-                    <div id="videoCallPopup" class="video-call-popup">
-                        <div class="video-call-header" id="videoCallHeader">
-                            <strong id="videoCallUser">Patient Name</strong>
-                            <div class="video-call-actions">
-                                <button onclick="toggleMic()" id="micBtn">🎤</button>
-                                <button onclick="toggleSpeaker()" id="speakerBtn">🔊</button>
-                                <button onclick="minimizeVideoCall()">➖</button>
-                                <button onclick="closeVideoCall()">✖</button>
-                            </div>
-
-                        </div>
-                       <div class="video-call-body" id="videoCallBody">
-                            <video id="remoteVideo" autoplay></video>
-
-                            <!-- Local preview overlay -->
-                            <video id="localPreview" autoplay muted></video>
+                    <div id="videoCallPopup" class="video-popup">
+    
+                        <div id="videoCallHeader" class="video-header">
+                            <span id="videoCallUser">Video Call</span>
+                            <button onclick="closeVideoCall()">✕</button>
                         </div>
 
+                        <div class="video-call-body">
+                            <video id="remoteVideo" autoplay playsinline class="remote"></video>
+                            <video id="localVideo" autoplay muted playsinline class="local"></video>
+                        </div>
+
+                        <div class="video-controls">
+                            <button id="btnToggleMic" onclick="toggleMic()">🎤</button>
+                            <button id="btnToggleSpeaker" onclick="toggleSpeaker()">🔊</button>
+                        </div>
+
+                        <div class="resize-handle"></div> <!-- ADD THIS -->
                     </div>
+
+
 
 
 
