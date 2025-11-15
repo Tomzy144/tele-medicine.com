@@ -13,76 +13,146 @@
 
 
 
+
+        // Use the correct WebSocket URL (adjust for localhost / deployed)
+            const wsUrl = window.location.hostname === "localhost"
+               ? "ws://localhost:8080"
+            //    ? "ws://localhost/tele-medicine-serverjs"
+                : "wss://tele-medicine-chat-server.onrender.com";
+
+            const socket = new WebSocket(wsUrl);
+
+            // Optional: Listen to messages
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                console.log("Received WS message:", data);
+
+                if (data.type === "incoming_call") {
+                    showIncomingCallPopup(data.from, data.name, data.picture);
+                }
+
+                // Handle ICE candidates, chat, etc...
+            };
+
+            // Handle connection open / errors
+            socket.onopen = function() {
+                console.log("✅ WebSocket connected");
+            };
+
+            socket.onerror = function(err) {
+                console.error("❌ WebSocket error:", err);
+            };
+
+            socket.onclose = function() {
+                console.log("WebSocket closed");
+            };
+
+
+
+
+
+
         // OPEN VIDEO CALL
-        function open_videocall() {
+       function open_videocall() {
+                // Show popup
+                popup.style.display = "flex";
 
-            popup.style.display = "flex";
+                const patient_name = document.querySelector(".chat-user strong").textContent;
+                const patient_id = document.getElementById('patient_id').value;
+                const called_person_picture = document.getElementById('chatUserPicture').src;
 
-            const patient_name = document.querySelector(".chat-user strong").textContent;
-            const patient_id = document.getElementById('patient_id').value;
-            const called_person_picture = document.getElementById('chatUserPicture').src; // use .src
+                // Update UI
+                document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
+                const placeholder = document.getElementById("remotePlaceholder");
+                placeholder.src = called_person_picture;
+                placeholder.style.display = "block";
 
-            document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
-            document.getElementById("remotePlaceholder").src = called_person_picture; // directly assign
+                const remoteVideo = document.getElementById("remoteVideo");
+                remoteVideo.style.display = "none";
 
+                // ---- 1. Ping the other user ----
+                socket.send(JSON.stringify({
+                    type: "call_request",
+                    to: patient_id,
+                    from: document.getElementById('doctor_id').value,
+                    name: document.getElementById('doctor_name3').textContent,
+                    picture: document.getElementById('my_passport2').src
+                }));
 
+                // ---- 2. Start local camera/mic ----
+                navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+                    .then(stream => {
+                        localStream = stream;
 
-            // Start camera immediately
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                .then(stream => {
+                        const localVideo = document.getElementById("localVideo");
+                        localVideo.srcObject = localStream;
+                        localVideo.play();
 
-                    localStream = stream;
+                        // ---- 3. Setup WebRTC peer connection ----
+                        peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 
-                    // Show local video immediately
-                    const localVideo = document.getElementById("localVideo");
-                    localVideo.srcObject = stream;
-                    localVideo.play();
+                        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-                    // Prepare peer connection
-                    peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+                        peerConnection.ontrack = event => {
+                            remoteVideo.srcObject = event.streams[0];
+                            remoteVideo.play();
 
-                    stream.getTracks().forEach(track => {
-                        peerConnection.addTrack(track, stream);
-                    });
+                            // Show remote video, hide placeholder
+                            placeholder.style.display = "none";
+                            remoteVideo.style.display = "block";
+                        };
 
-                    // When remote video arrives
-                   peerConnection.ontrack = event => {
-                    const remoteVideo = document.getElementById("remoteVideo");
-                    const placeholder = document.getElementById("remotePlaceholder");
+                        peerConnection.onicecandidate = event => {
+                            if (event.candidate) {
+                                socket.send(JSON.stringify({
+                                    type: "ice_candidate",
+                                    to: patient_id,
+                                    candidate: event.candidate
+                                }));
+                            }
+                        };
 
-                    remoteVideo.srcObject = event.streams[0];
-                    remoteVideo.play();
+                        // Notify backend to start call
+                        socket.send(JSON.stringify({ type: "start_call", to: patient_id }));
 
-                    // hide placeholder
-                    placeholder.style.display = "none";
-                    remoteVideo.style.display = "block";
-                };
+                    })
+                    .catch(err => console.error("Cannot access camera/mic:", err));
+            }
 
+            // ---- CLOSE CALL ----
+            function closeVideoCall() {
+                popup.style.display = "none";
 
-                    // ICE CANDIDATES
-                    peerConnection.onicecandidate = event => {
-                        if (event.candidate) {
-                            socket.send(JSON.stringify({
-                                type: "ice_candidate",
-                                to: patient_id,
-                                candidate: event.candidate
-                            }));
-                        }
-                    };
+                if (localStream) localStream.getTracks().forEach(track => track.stop());
+                if (peerConnection) peerConnection.close();
 
-                    // Notify backend
-                    socket.send(JSON.stringify({ type: "start_call", to: patient_id }));
-                });
-        }
+                const remoteVideo = document.getElementById("remoteVideo");
+                remoteVideo.srcObject = null;
 
+                // Show placeholder again
+                const placeholder = document.getElementById("remotePlaceholder");
+                placeholder.style.display = "block";
+            }
 
-        // CLOSE CALL
-        function closeVideoCall() {
-            popup.style.display = "none";
+            // ---- DRAG LOGIC ----
+            header.onmousedown = function(e) {
+                e.preventDefault();
+                let offsetX = e.clientX - popup.offsetLeft;
+                let offsetY = e.clientY - popup.offsetTop;
 
-            if (localStream) localStream.getTracks().forEach(t => t.stop());
-            if (peerConnection) peerConnection.close();
-        }
+                function mouseMoveHandler(e) {
+                    popup.style.top = (e.clientY - offsetY) + "px";
+                    popup.style.left = (e.clientX - offsetX) + "px";
+                }
+
+                function reset() {
+                    document.removeEventListener("mousemove", mouseMoveHandler);
+                    document.removeEventListener("mouseup", reset);
+                }
+
+                document.addEventListener("mousemove", mouseMoveHandler);
+                document.addEventListener("mouseup", reset);
+            };
 
 
         // --- MICROPHONE TOGGLE ---
