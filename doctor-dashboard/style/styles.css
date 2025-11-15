@@ -2009,4 +2009,43 @@ video {
     height: 50%;
     background: black;
     object-fit: cover;
+
+    
+}
+
+
+.video-call-actions button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 18px;
+    margin-left: 8px;
+    cursor: pointer;
+}
+.video-call-actions button:hover {
+    opacity: 0.7;
+}
+#localPreview {
+    transform: scaleX(-1);
+}
+
+#remoteVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: black;
+    display: none; /* hidden until remote stream arrives */
+}
+
+#localPreview {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 180px;
+    height: 130px;
+    border-radius: 8px;
+    object-fit: cover;
+    background: black;
+    border: 2px solid rgba(255,255,255,0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
 }

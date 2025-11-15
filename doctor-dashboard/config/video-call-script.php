@@ -7,44 +7,48 @@
         const body = document.getElementById("videoCallBody");
 
         // Open video call
-        function open_videocall() {
-            const patient_name = document.querySelector(".chat-user strong").textContent;
-            const patient_id = document.getElementById('patient_id').value;
+      function open_videocall() {
+    const patient_name = document.querySelector(".chat-user strong").textContent;
+    const patient_id = document.getElementById('patient_id').value;
 
-            popup.style.display = "flex";
-            body.style.display = "flex"; // ensure body visible
-            document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
+    popup.style.display = "flex";
+    document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
 
-            navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                .then(stream => {
-                    localStream = stream;
-                    const localVideo = document.getElementById("localVideo");
-                    localVideo.srcObject = localStream;
-                    localVideo.play();
+    const remoteVideo = document.getElementById("remoteVideo");
+    const localPreview = document.getElementById("localPreview");
 
-                    peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
-                    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+            // Show local preview immediately
+            localStream = stream;
+            localPreview.srcObject = localStream;
+            localPreview.play();
 
-                    peerConnection.ontrack = event => {
-                        const remoteVideo = document.getElementById("remoteVideo");
-                        remoteVideo.srcObject = event.streams[0];
-                        remoteVideo.play();
-                    };
+            peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 
-                    peerConnection.onicecandidate = event => {
-                        if (event.candidate) {
-                            socket.send(JSON.stringify({
-                                type: "ice_candidate",
-                                to: patient_id,
-                                candidate: event.candidate
-                            }));
-                        }
-                    };
+            localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-                    socket.send(JSON.stringify({ type: "start_call", to: patient_id }));
-                })
-                .catch(err => console.error("Cannot access camera/mic:", err));
-        }
+            // Remote video appears only when the other person connects
+            peerConnection.ontrack = event => {
+                remoteVideo.srcObject = event.streams[0];
+                remoteVideo.style.display = "block";
+                remoteVideo.play();
+            };
+
+            peerConnection.onicecandidate = event => {
+                if (event.candidate) {
+                    socket.send(JSON.stringify({
+                        type: "ice_candidate",
+                        to: patient_id,
+                        candidate: event.candidate
+                    }));
+                }
+            };
+
+            socket.send(JSON.stringify({ type: "start_call", to: patient_id }));
+        })
+        .catch(err => console.error("Camera/mic error:", err));
+}
 
         // Close video call
         function closeVideoCall() {
@@ -83,6 +87,33 @@
             document.addEventListener("mousemove", mouseMoveHandler);
             document.addEventListener("mouseup", reset);
         };
+
+
+
+        let micEnabled = true;
+        let speakerEnabled = true;
+
+        // 🔇 Toggle Microphone
+        function toggleMic() {
+            if (!localStream) return;
+
+            micEnabled = !micEnabled;
+            localStream.getAudioTracks().forEach(track => track.enabled = micEnabled);
+
+            const micBtn = document.getElementById("micBtn");
+            micBtn.textContent = micEnabled ? "🎤" : "🔇";
+        }
+
+        // 🔊 Toggle Speaker (remote audio)
+        function toggleSpeaker() {
+            const remoteVideo = document.getElementById("remoteVideo");
+
+            speakerEnabled = !speakerEnabled;
+            remoteVideo.muted = !speakerEnabled;
+
+            const speakerBtn = document.getElementById("speakerBtn");
+            speakerBtn.textContent = speakerEnabled ? "🔊" : "🔈";
+        }
 
 
 </script>

@@ -249,14 +249,20 @@
                         <div class="video-call-header" id="videoCallHeader">
                             <strong id="videoCallUser">Patient Name</strong>
                             <div class="video-call-actions">
+                                <button onclick="toggleMic()" id="micBtn">🎤</button>
+                                <button onclick="toggleSpeaker()" id="speakerBtn">🔊</button>
                                 <button onclick="minimizeVideoCall()">➖</button>
                                 <button onclick="closeVideoCall()">✖</button>
                             </div>
+
                         </div>
-                        <div class="video-call-body" id="videoCallBody">
-                            <video id="localVideo" autoplay muted></video>
+                       <div class="video-call-body" id="videoCallBody">
                             <video id="remoteVideo" autoplay></video>
+
+                            <!-- Local preview overlay -->
+                            <video id="localPreview" autoplay muted></video>
                         </div>
+
                     </div>
 
 
