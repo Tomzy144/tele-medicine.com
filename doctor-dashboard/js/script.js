@@ -1059,6 +1059,8 @@ function open_chat(patient_id) {
             if (response.success) {
                 var patient = response.data;
                 // update the chat header
+              
+                document.getElementById("chatUserPicture").src = patient.patient_passport;
                 document.querySelector(".chat-user strong").textContent =  patient.patient_name;
                 document.querySelector(".chat-user .status").textContent = patient.online_status == 1 ? "Online" : "Offline";
                 document.getElementById('patient_id').value = patient_id;

@@ -18,11 +18,14 @@
 
             popup.style.display = "flex";
 
-             const patient_name = document.querySelector(".chat-user strong").textContent;
+            const patient_name = document.querySelector(".chat-user strong").textContent;
             const patient_id = document.getElementById('patient_id').value;
+            const called_person_picture = document.getElementById('chatUserPicture').src; // use .src
 
-         
             document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
+            document.getElementById("remotePlaceholder").src = called_person_picture; // directly assign
+
+
 
             // Start camera immediately
             navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -43,17 +46,18 @@
                     });
 
                     // When remote video arrives
-                    peerConnection.ontrack = event => {
-                        const remoteVideo = document.getElementById("remoteVideo");
+                   peerConnection.ontrack = event => {
+                    const remoteVideo = document.getElementById("remoteVideo");
+                    const placeholder = document.getElementById("remotePlaceholder");
 
-                        if (!remoteStream) {
-                            remoteStream = new MediaStream();
-                            remoteVideo.srcObject = remoteStream;
-                        }
+                    remoteVideo.srcObject = event.streams[0];
+                    remoteVideo.play();
 
-                        remoteStream.addTrack(event.track);
-                        remoteVideo.play();
-                    };
+                    // hide placeholder
+                    placeholder.style.display = "none";
+                    remoteVideo.style.display = "block";
+                };
+
 
                     // ICE CANDIDATES
                     peerConnection.onicecandidate = event => {
