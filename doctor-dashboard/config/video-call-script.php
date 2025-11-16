@@ -1,228 +1,218 @@
 <script>
-        let localStream;
-        let remoteStream;
-        let peerConnection;
+const popup = document.getElementById("videoCallPopup");
+const header = document.getElementById("videoCallHeader");
+const localVideo = document.getElementById("localVideo");
+const remoteVideo = document.getElementById("remoteVideo");
+const placeholder = document.getElementById("remotePlaceholder");
 
-        let micEnabled = true;
-        let speakerEnabled = true;
+let localStream;
+let remoteStream;
+let peerConnection;
+let peerId; // current call peer
+let micEnabled = true;
+let speakerEnabled = true;
 
-        const ICE_SERVERS = [{ urls: "stun:stun.l.google.com:19302" }];
+// ====== WebSocket ======
+const wsUrl = window.location.hostname === "localhost"
+    ? "ws://localhost:8080"
+    : "wss://tele-medicine-chat-server.onrender.com";
 
-        const popup = document.getElementById("videoCallPopup");
-        const header = document.getElementById("videoCallHeader");
+const socket = new WebSocket(wsUrl);
 
+socket.onopen = () => console.log("✅ WebSocket connected");
+socket.onclose = () => console.log("WebSocket closed");
+socket.onerror = err => console.error("❌ WebSocket error:", err);
 
+socket.onmessage = async event => {
+    const data = JSON.parse(event.data);
+    console.log("📥 WS message:", data);
 
+    if (data.to !== document.getElementById('doctor_id').value) return;
 
-        // Use the correct WebSocket URL (adjust for localhost / deployed)
-            const wsUrl = window.location.hostname === "localhost"
-               ? "ws://localhost:8080"
-            //    ? "ws://localhost/tele-medicine-serverjs"
-                : "wss://tele-medicine-chat-server.onrender.com";
+    switch (data.type) {
+        case "incoming_call":
+            peerId = data.from;
+            showIncomingCallPopup(data.from, data.name, data.picture);
+            break;
 
-            const socket = new WebSocket(wsUrl);
+        case "video_offer":
+            peerId = data.from;
+            await initLocalMedia();
+            createPeerConnection(peerId);
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+            socket.send(JSON.stringify({ type: "video_answer", sdp: answer, to: peerId }));
+            openPopupUI(data.name, data.picture);
+            break;
 
-            // Optional: Listen to messages
-            socket.onmessage = function(event) {
-                const data = JSON.parse(event.data);
-                console.log("Received WS message:", data);
+        case "video_answer":
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            break;
 
-                if (data.type === "incoming_call") {
-                    showIncomingCallPopup(data.from, data.name, data.picture);
-                }
+        case "ice_candidate":
+            try { await peerConnection.addIceCandidate(data.candidate); }
+            catch (err) { console.error("❌ ICE candidate error:", err); }
+            break;
+    }
+};
 
-                // Handle ICE candidates, chat, etc...
-            };
+// ====== Metered ICE servers ======
+const ICE_SERVERS = [
+    { urls: "stun:stun.relay.metered.ca:80" },
+    { urls: "turn:global.relay.metered.ca:80", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" },
+    { urls: "turn:global.relay.metered.ca:443", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" },
+    { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" }
+];
 
-            // Handle connection open / errors
-            socket.onopen = function() {
-                console.log("✅ WebSocket connected");
-            };
-
-            socket.onerror = function(err) {
-                console.error("❌ WebSocket error:", err);
-            };
-
-            socket.onclose = function() {
-                console.log("WebSocket closed");
-            };
-
-
-
-
-
-
-        // OPEN VIDEO CALL
-       function open_videocall() {
-                // Show popup
-                popup.style.display = "flex";
-
-                const patient_name = document.querySelector(".chat-user strong").textContent;
-                const patient_id = document.getElementById('patient_id').value;
-                const called_person_picture = document.getElementById('chatUserPicture').src;
-
-                // Update UI
-                document.getElementById("videoCallUser").textContent = "Patient: " + patient_name;
-                const placeholder = document.getElementById("remotePlaceholder");
-                placeholder.src = called_person_picture;
-                placeholder.style.display = "block";
-
-                const remoteVideo = document.getElementById("remoteVideo");
-                remoteVideo.style.display = "none";
-
-                // ---- 1. Ping the other user ----
-                socket.send(JSON.stringify({
-                    type: "call_request",
-                    to: patient_id,
-                    from: document.getElementById('doctor_id').value,
-                    name: document.getElementById('doctor_name3').textContent,
-                    picture: document.getElementById('my_passport2').src
-                }));
-
-                // ---- 2. Start local camera/mic ----
-                navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-                    .then(stream => {
-                        localStream = stream;
-
-                        const localVideo = document.getElementById("localVideo");
-                        localVideo.srcObject = localStream;
-                        localVideo.play();
-
-                        // ---- 3. Setup WebRTC peer connection ----
-                        peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
-
-                        localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
-
-                        peerConnection.ontrack = event => {
-                            remoteVideo.srcObject = event.streams[0];
-                            remoteVideo.play();
-
-                            // Show remote video, hide placeholder
-                            placeholder.style.display = "none";
-                            remoteVideo.style.display = "block";
-                        };
-
-                        peerConnection.onicecandidate = event => {
-                            if (event.candidate) {
-                                socket.send(JSON.stringify({
-                                    type: "ice_candidate",
-                                    to: patient_id,
-                                    candidate: event.candidate
-                                }));
-                            }
-                        };
-
-                        // Notify backend to start call
-                        socket.send(JSON.stringify({ type: "start_call", to: patient_id }));
-
-                    })
-                    .catch(err => console.error("Cannot access camera/mic:", err));
-            }
-
-            // ---- CLOSE CALL ----
-            function closeVideoCall() {
-                popup.style.display = "none";
-
-                if (localStream) localStream.getTracks().forEach(track => track.stop());
-                if (peerConnection) peerConnection.close();
-
-                const remoteVideo = document.getElementById("remoteVideo");
-                remoteVideo.srcObject = null;
-
-                // Show placeholder again
-                const placeholder = document.getElementById("remotePlaceholder");
-                placeholder.style.display = "block";
-            }
-
-            // ---- DRAG LOGIC ----
-            header.onmousedown = function(e) {
-                e.preventDefault();
-                let offsetX = e.clientX - popup.offsetLeft;
-                let offsetY = e.clientY - popup.offsetTop;
-
-                function mouseMoveHandler(e) {
-                    popup.style.top = (e.clientY - offsetY) + "px";
-                    popup.style.left = (e.clientX - offsetX) + "px";
-                }
-
-                function reset() {
-                    document.removeEventListener("mousemove", mouseMoveHandler);
-                    document.removeEventListener("mouseup", reset);
-                }
-
-                document.addEventListener("mousemove", mouseMoveHandler);
-                document.addEventListener("mouseup", reset);
-            };
+// ====== Initialize local media ======
+async function initLocalMedia() {
+    if (localStream) return;
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        localVideo.srcObject = localStream;
+        localVideo.play();
+    } catch (err) {
+        console.error("❌ Cannot access camera/mic:", err);
+    }
+}
 
 
-        // --- MICROPHONE TOGGLE ---
-        function toggleMic() {
-            micEnabled = !micEnabled;
+// Wrapper to keep old function name
+function open_videocall() {
+    const patientId = document.getElementById('patient_id').value;
+    if (!patientId) {
+        console.error("❌ patient_id not found");
+        return;
+    }
+    startCall(patientId);
+}
 
-            localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
 
-            document.getElementById("btnToggleMic").textContent = micEnabled ? "🎤" : "🔇";
+
+
+// ====== Create peer connection ======
+function createPeerConnection(peer) {
+    peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+
+    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+
+    peerConnection.ontrack = event => {
+        remoteStream = event.streams[0];
+        remoteVideo.srcObject = remoteStream;
+        remoteVideo.play();
+        placeholder.style.display = "none";
+        remoteVideo.style.display = "block";
+    };
+
+    peerConnection.onicecandidate = event => {
+        if (event.candidate) {
+            socket.send(JSON.stringify({
+                type: "ice_candidate",
+                candidate: event.candidate,
+                to: peer
+            }));
         }
+    };
+}
 
+// ====== Doctor starts call ======
+async function startCall(targetId) {
+    peerId = targetId;
+    await initLocalMedia();
+    createPeerConnection(peerId);
 
-        // --- SPEAKER TOGGLE ---
-        function toggleSpeaker() {
-            speakerEnabled = !speakerEnabled;
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
 
-            document.getElementById("remoteVideo").muted = !speakerEnabled;
+    socket.send(JSON.stringify({
+        type: "video_offer",
+        sdp: offer,
+        to: peerId,
+        from: document.getElementById('doctor_id').value
+    }));
 
-            document.getElementById("btnToggleSpeaker").textContent = speakerEnabled ? "🔊" : "🔈";
-        }
+    const patientName = document.querySelector(".chat-user strong").textContent;
+    const patientPicture = document.getElementById('chatUserPicture').src;
+    openPopupUI(patientName, patientPicture);
+}
 
+// ====== Open popup UI ======
+function openPopupUI(name, picture) {
+    popup.style.display = "flex";
+    document.getElementById("videoCallUser").textContent = "Patient: " + name;
+    placeholder.src = picture;
+    placeholder.style.display = "block";
+    remoteVideo.style.display = "none";
+}
 
-        // --- DRAG POPUP ---
-        header.onmousedown = function (e) {
-            e.preventDefault();
+// ====== Incoming call popup ======
+function showIncomingCallPopup(fromId, name, picture) {
+    openPopupUI(name, picture);
+    alert(`Incoming call from ${name}`); // Simple popup, can be replaced with custom UI
+}
 
-            let offsetX = e.clientX - popup.offsetLeft;
-            let offsetY = e.clientY - popup.offsetTop;
+// ====== Close call ======
+function closeVideoCall() {
+    popup.style.display = "none";
+    if (localStream) localStream.getTracks().forEach(track => track.stop());
+    if (peerConnection) peerConnection.close();
+    remoteVideo.srcObject = null;
+    placeholder.style.display = "block";
+}
 
-            function move(e) {
-                popup.style.left = e.clientX - offsetX + "px";
-                popup.style.top = e.clientY - offsetY + "px";
-            }
+// ====== Mic toggle ======
+function toggleMic() {
+    micEnabled = !micEnabled;
+    if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
+    document.getElementById("btnToggleMic").textContent = micEnabled ? "🎤" : "🔇";
+}
 
-            function stop() {
-                document.removeEventListener("mousemove", move);
-                document.removeEventListener("mouseup", stop);
-            }
+// ====== Speaker toggle ======
+function toggleSpeaker() {
+    speakerEnabled = !speakerEnabled;
+    remoteVideo.muted = !speakerEnabled;
+    document.getElementById("btnToggleSpeaker").textContent = speakerEnabled ? "🔊" : "🔈";
+}
 
-            document.addEventListener("mousemove", move);
-            document.addEventListener("mouseup", stop);
-        };
+// ====== Draggable popup ======
+header.onmousedown = function (e) {
+    e.preventDefault();
+    let offsetX = e.clientX - popup.offsetLeft;
+    let offsetY = e.clientY - popup.offsetTop;
 
+    function move(e) {
+        popup.style.left = e.clientX - offsetX + "px";
+        popup.style.top = e.clientY - offsetY + "px";
+    }
+    function stop() {
+        document.removeEventListener("mousemove", move);
+        document.removeEventListener("mouseup", stop);
+    }
 
-        // ===== RESIZE LOGIC =====
-        const resizeHandle = document.querySelector(".resize-handle");
+    document.addEventListener("mousemove", move);
+    document.addEventListener("mouseup", stop);
+};
 
-        resizeHandle.addEventListener("mousedown", function (e) {
-            e.preventDefault();
+// ====== Resizable popup ======
+const resizeHandle = document.querySelector(".resize-handle");
+resizeHandle.addEventListener("mousedown", function (e) {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startY = e.clientY;
+    const startWidth = parseInt(window.getComputedStyle(popup).width, 10);
+    const startHeight = parseInt(window.getComputedStyle(popup).height, 10);
 
-            let startX = e.clientX;
-            let startY = e.clientY;
+    function resize(e) {
+        popup.style.width = startWidth + (e.clientX - startX) + "px";
+        popup.style.height = startHeight + (e.clientY - startY) + "px";
+    }
+    function stopResize() {
+        document.removeEventListener("mousemove", resize);
+        document.removeEventListener("mouseup", stopResize);
+    }
 
-            let startWidth = parseInt(window.getComputedStyle(popup).width, 10);
-            let startHeight = parseInt(window.getComputedStyle(popup).height, 10);
-
-            function resize(e) {
-                popup.style.width = startWidth + (e.clientX - startX) + "px";
-                popup.style.height = startHeight + (e.clientY - startY) + "px";
-            }
-
-            function stopResize() {
-                document.removeEventListener("mousemove", resize);
-                document.removeEventListener("mouseup", stopResize);
-            }
-
-            document.addEventListener("mousemove", resize);
-            document.addEventListener("mouseup", stopResize);
-        });
-
-
-
+    document.addEventListener("mousemove", resize);
+    document.addEventListener("mouseup", stopResize);
+});
 </script>

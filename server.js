@@ -188,6 +188,11 @@ wss.on("connection", ws => {
           sendToClient(ws, { type: "message_delivered", message_id: result.insertId, delivered_to: "patient" });
         }
         return;
+
+
+
+
+        
       }
 
       // ---------- PRESCRIPTION ----------
@@ -209,6 +214,48 @@ wss.on("connection", ws => {
         }
         return;
       }
+
+
+      // ---------- VIDEO CALL SIGNALING ----------
+          if (data.type === "video_offer") {
+            // data: { type: 'video_offer', from: 'doctor_123', to: 'patient_456', sdp: ... }
+            const recipientWs = clients.get(data.to);
+            if (recipientWs) {
+              sendToClient(recipientWs, {
+                type: "video_offer",
+                from: data.from,
+                sdp: data.sdp
+              });
+            }
+            return;
+          }
+
+          if (data.type === "video_answer") {
+            const recipientWs = clients.get(data.to);
+            if (recipientWs) {
+              sendToClient(recipientWs, {
+                type: "video_answer",
+                from: data.from,
+                sdp: data.sdp
+              });
+            }
+            return;
+          }
+
+          if (data.type === "ice_candidate") {
+            const recipientWs = clients.get(data.to);
+            if (recipientWs) {
+              sendToClient(recipientWs, {
+                type: "ice_candidate",
+                from: data.from,
+                candidate: data.candidate
+              });
+            }
+            return;
+          }
+
+
+
 
     } catch (err) {
       console.error("❌ Error handling message:", err);
