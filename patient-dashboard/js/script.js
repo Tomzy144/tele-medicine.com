@@ -524,12 +524,10 @@ function show_system_setting() {
 
 
 function open_chat(doctor_id) {
-    var activities = document.querySelector('.activities-div');
-    var chat_div = document.querySelector('.chat-div');
-    activities.style.display = 'none';
-    chat_div.style.display = 'flex';
+    document.querySelector('.activities-div').style.display = 'none';
+    document.querySelector('.chat-div').style.display = 'flex';
 
-      $.ajax({
+    $.ajax({
         type: "POST",
         url: endPoint,
         dataType: "json",
@@ -540,14 +538,20 @@ function open_chat(doctor_id) {
         cache: false,
         success: function (response) {
             if (response.success) {
-                var doctor = response.data;
-                // update the chat header
-                document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
-                document.querySelector(".chat-user .status").textContent = doctor.online_status == 1 ? "Online" : "Offline";
+                let doctor = response.data;
+
+                document.getElementById("chatUserPicture").src = doctor.doctor_passport;
+                document.querySelector(".chat-user strong").textContent =
+                    "Dr. " + doctor.firstname + " " + doctor.lastname;
+
+                document.querySelector(".chat-user .status").textContent =
+                    doctor.online_status == 1 ? "Online" : "Offline";
+
                 document.getElementById('doctor_id').value = doctor_id;
+
                 refreshChat();
             } else {
-                console.log("Doctor not found");
+                console.log(response.message);
             }
         },
         error: function (xhr, status, error) {
@@ -555,6 +559,7 @@ function open_chat(doctor_id) {
         }
     });
 }
+
 
 
 
