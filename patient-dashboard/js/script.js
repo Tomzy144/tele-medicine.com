@@ -390,6 +390,7 @@ function chat_up2(doctor_id) {
             if (response.success) {
                 var doctor = response.data;
                 // update the chat header
+                 document.getElementById("chatUserPicture").src = doctor.doctor_passport;
                 document.querySelector(".chat-user strong").textContent = "Dr. " + doctor.firstname + " " + doctor.lastname;
                 document.querySelector(".chat-user .status").textContent = doctor.online_status == 1 ? "Online" : "Offline";
                 document.getElementById('doctor_id').value = doctor_id;

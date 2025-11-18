@@ -216,43 +216,100 @@ wss.on("connection", ws => {
       }
 
 
-      // ---------- VIDEO CALL SIGNALING ----------
-          if (data.type === "video_offer") {
-            // data: { type: 'video_offer', from: 'doctor_123', to: 'patient_456', sdp: ... }
+    // ---------- VIDEO CALL SIGNALING ----------
+        if (data.type === "video_offer") {
             const recipientWs = clients.get(data.to);
             if (recipientWs) {
-              sendToClient(recipientWs, {
-                type: "video_offer",
-                from: data.from,
-                sdp: data.sdp
-              });
+                sendToClient(recipientWs, {
+                    type: "video_offer",
+                    from: data.from,
+                    sdp: data.sdp
+                });
             }
             return;
-          }
+        }
 
-          if (data.type === "video_answer") {
+        if (data.type === "video_answer") {
             const recipientWs = clients.get(data.to);
             if (recipientWs) {
-              sendToClient(recipientWs, {
-                type: "video_answer",
-                from: data.from,
-                sdp: data.sdp
-              });
+                sendToClient(recipientWs, {
+                    type: "video_answer",
+                    from: data.from,
+                    sdp: data.sdp
+                });
             }
             return;
-          }
+        }
 
-          if (data.type === "ice_candidate") {
+        if (data.type === "ice_candidate") {
             const recipientWs = clients.get(data.to);
             if (recipientWs) {
-              sendToClient(recipientWs, {
-                type: "ice_candidate",
-                from: data.from,
-                candidate: data.candidate
-              });
+                sendToClient(recipientWs, {
+                    type: "ice_candidate",
+                    from: data.from,
+                    candidate: data.candidate
+                });
             }
             return;
-          }
+        }
+
+        // ---------- VIDEO CALL REQUEST ----------
+        if (data.type === "call_request") {
+            const recipientWs = clients.get(data.to);
+
+            if (recipientWs) {
+                sendToClient(recipientWs, {
+                    type: "call_request",
+                    from: data.from,
+                    name: data.name,
+                    picture: data.picture
+                });
+            } else {
+                sendToClient(ws, {
+                    type: "call_failed",
+                    message: "Patient is offline"
+                });
+            }
+            return;
+        }
+
+        // ---------- PATIENT ACCEPT CALL ----------
+        if (data.type === "call_accept") {
+            const recipientWs = clients.get(data.to);
+            if (recipientWs) {
+                sendToClient(recipientWs, {
+                    type: "call_accept",
+                    from: data.from
+                });
+            }
+            return;
+        }
+
+        // ---------- PATIENT REJECT CALL ----------
+        if (data.type === "call_reject") {
+            const recipientWs = clients.get(data.to);
+            if (recipientWs) {
+                sendToClient(recipientWs, {
+                    type: "call_reject",
+                    from: data.from
+                });
+            }
+            return;
+        }
+
+        // ---------- END CALL ----------
+        if (data.type === "call_end") {
+            const recipientWs = clients.get(data.to);
+            if (recipientWs) {
+                sendToClient(recipientWs, {
+                    type: "call_end",
+                    from: data.from
+                });
+            }
+            return;
+        }
+
+
 
 
 

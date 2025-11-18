@@ -8,11 +8,14 @@ const placeholder = document.getElementById("remotePlaceholder");
 let localStream;
 let remoteStream;
 let peerConnection;
-let peerId; // doctor id
+let peerId;
+let pendingOffer = null; // store incoming SDP until patient accepts
 let micEnabled = true;
 let speakerEnabled = true;
 
-// ====== WebSocket ======
+//--------------------------------------
+// WEBSOCKET
+//--------------------------------------
 const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
     : "wss://tele-medicine-chat-server.onrender.com";
@@ -23,6 +26,9 @@ socket.onopen = () => console.log("✅ WebSocket connected");
 socket.onclose = () => console.log("WebSocket closed");
 socket.onerror = err => console.error("❌ WebSocket error:", err);
 
+//--------------------------------------
+// PATIENT SIDE LOGIC
+//--------------------------------------
 socket.onmessage = async event => {
     const data = JSON.parse(event.data);
     console.log("📥 WS message:", data);
@@ -30,34 +36,37 @@ socket.onmessage = async event => {
     if (data.to !== document.getElementById('patient_id').value) return;
 
     switch (data.type) {
+
+        // Doctor is calling → Patient receives request
         case "call_request":
             peerId = data.from;
             showIncomingCallPopup(data.from, data.name, data.picture);
-            // Auto-answer
-            await initLocalMedia();
-            createPeerConnection(peerId);
             break;
 
+        // Doctor sent SDP offer → store it until patient accepts
         case "video_offer":
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-            socket.send(JSON.stringify({ type: "video_answer", sdp: answer, to: peerId }));
-            openPopupUI(data.name, data.picture);
-            break;
-
-        case "video_answer":
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
+            pendingOffer = data.sdp;
             break;
 
         case "ice_candidate":
-            try { await peerConnection.addIceCandidate(data.candidate); }
-            catch (err) { console.error("❌ ICE candidate error:", err); }
+            try {
+                if (peerConnection)
+                    await peerConnection.addIceCandidate(data.candidate);
+            } catch (err) {
+                console.error("❌ ICE error:", err);
+            }
+            break;
+
+        case "call_end":
+            closeVideoCall();
+            alert("📞 Call ended by doctor");
             break;
     }
 };
 
-// ====== Metered ICE servers ======
+//--------------------------------------
+// ICE SERVERS
+//--------------------------------------
 const ICE_SERVERS = [
     { urls: "stun:stun.relay.metered.ca:80" },
     { urls: "turn:global.relay.metered.ca:80", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" },
@@ -65,7 +74,9 @@ const ICE_SERVERS = [
     { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" }
 ];
 
-// ====== Initialize local media ======
+//--------------------------------------
+// MEDIA
+//--------------------------------------
 async function initLocalMedia() {
     if (localStream) return;
     try {
@@ -77,11 +88,15 @@ async function initLocalMedia() {
     }
 }
 
-// ====== Create peer connection ======
+//--------------------------------------
+// WEBRTC PEER CONNECTION
+//--------------------------------------
 function createPeerConnection(peer) {
     peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
 
-    localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+    localStream.getTracks().forEach(track =>
+        peerConnection.addTrack(track, localStream)
+    );
 
     peerConnection.ontrack = event => {
         remoteStream = event.streams[0];
@@ -102,7 +117,9 @@ function createPeerConnection(peer) {
     };
 }
 
-// ====== Open popup UI ======
+//--------------------------------------
+// OPEN CALL POPUP
+//--------------------------------------
 function openPopupUI(name, picture) {
     popup.style.display = "flex";
     document.getElementById("videoCallUser").textContent = "Doctor: " + name;
@@ -111,36 +128,81 @@ function openPopupUI(name, picture) {
     remoteVideo.style.display = "none";
 }
 
-// ====== Incoming call popup ======
-function showIncomingCallPopup(fromId, name, picture) {
+//--------------------------------------
+// INCOMING CALL POPUP (PATIENT ONLY)
+//--------------------------------------
+async function showIncomingCallPopup(fromId, name, picture) {
+    peerId = fromId;
     openPopupUI(name, picture);
-    alert(`Incoming call from ${name}`); // Replace with better UI if needed
+
+    const accept = confirm(`📞 Incoming call from Dr. ${name}\n\nAccept call?`);
+
+    if (accept) {
+        socket.send(JSON.stringify({ type: "call_accept", to: fromId }));
+
+        // Start media and peer connection AFTER accept
+        await initLocalMedia();
+        createPeerConnection(peerId);
+
+        if (pendingOffer) {
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
+            const answer = await peerConnection.createAnswer();
+            await peerConnection.setLocalDescription(answer);
+
+            socket.send(JSON.stringify({
+                type: "video_answer",
+                sdp: answer,
+                to: peerId
+            }));
+
+            pendingOffer = null; // clear stored offer
+        }
+    } else {
+        socket.send(JSON.stringify({ type: "call_reject", to: fromId }));
+    }
 }
 
-// ====== Close call ======
+//--------------------------------------
+// END CALL
+//--------------------------------------
 function closeVideoCall() {
     popup.style.display = "none";
     if (localStream) localStream.getTracks().forEach(track => track.stop());
     if (peerConnection) peerConnection.close();
+
+    if (peerId) {
+        socket.send(JSON.stringify({
+            type: "call_end",
+            to: peerId
+        }));
+    }
+
     remoteVideo.srcObject = null;
     placeholder.style.display = "block";
 }
 
-// ====== Mic toggle ======
+//--------------------------------------
+// MIC
+//--------------------------------------
 function toggleMic() {
     micEnabled = !micEnabled;
-    if (localStream) localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
+    if (localStream)
+        localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
     document.getElementById("btnToggleMic").textContent = micEnabled ? "🎤" : "🔇";
 }
 
-// ====== Speaker toggle ======
+//--------------------------------------
+// SPEAKER
+//--------------------------------------
 function toggleSpeaker() {
     speakerEnabled = !speakerEnabled;
     remoteVideo.muted = !speakerEnabled;
     document.getElementById("btnToggleSpeaker").textContent = speakerEnabled ? "🔊" : "🔈";
 }
 
-// ====== Draggable popup ======
+//--------------------------------------
+// DRAGGABLE POPUP
+//--------------------------------------
 header.onmousedown = function (e) {
     e.preventDefault();
     let offsetX = e.clientX - popup.offsetLeft;
@@ -159,7 +221,9 @@ header.onmousedown = function (e) {
     document.addEventListener("mouseup", stop);
 };
 
-// ====== Resizable popup ======
+//--------------------------------------
+// RESIZABLE POPUP
+//--------------------------------------
 const resizeHandle = document.querySelector(".resize-handle");
 resizeHandle.addEventListener("mousedown", function (e) {
     e.preventDefault();
