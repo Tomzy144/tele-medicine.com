@@ -294,6 +294,7 @@
      </div> -->
 
      <?php include "chat-script.php";?>
+         <!-- ?php include "video-call-script.php";?> -->
     
  
     <script>

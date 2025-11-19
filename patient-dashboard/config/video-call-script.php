@@ -4,56 +4,71 @@ const header = document.getElementById("videoCallHeader");
 const localVideo = document.getElementById("localVideo");
 const remoteVideo = document.getElementById("remoteVideo");
 const placeholder = document.getElementById("remotePlaceholder");
+const btnAccept = document.getElementById("btnAcceptCall");
+const btnReject = document.getElementById("btnRejectCall");
 
-let localStream;
-let remoteStream;
-let peerConnection;
-let peerId;
-let pendingOffer = null; // store incoming SDP until patient accepts
-let micEnabled = true;
-let speakerEnabled = true;
+let localStream, remoteStream, peerConnection, peerId, pendingOffer;
+let micEnabled = true, speakerEnabled = true;
 
-//--------------------------------------
-// WEBSOCKET
-//--------------------------------------
 const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
     : "wss://tele-medicine-chat-server.onrender.com";
-
 const socket = new WebSocket(wsUrl);
 
-socket.onopen = () => console.log("✅ WebSocket connected");
-socket.onclose = () => console.log("WebSocket closed");
-socket.onerror = err => console.error("❌ WebSocket error:", err);
+socket.onopen = () => {
+    const patientId = document.getElementById("patient_id").value;
+    socket.send(JSON.stringify({ type:"patient_login", patient_id: patientId }));
+    console.log("✅ WS connected as patient", patientId);
+};
 
-//--------------------------------------
-// PATIENT SIDE LOGIC
-//--------------------------------------
 socket.onmessage = async event => {
     const data = JSON.parse(event.data);
-    console.log("📥 WS message:", data);
+    const patientId = document.getElementById("patient_id").value;
 
-    if (data.to !== document.getElementById('patient_id').value) return;
+    // Ignore messages for other patients
+    if (data.to && data.to !== "patient_" + patientId) return;
 
-    switch (data.type) {
+    console.log("📩 WS message:", data);
 
-        // Doctor is calling → Patient receives request
-        case "call_request":
-            peerId = data.from;
-            showIncomingCallPopup(data.from, data.name, data.picture);
+    // --------- CALL REQUEST ----------
+    if (data.type === "call_request") {
+        peerId = data.from_key || data.from;
+        showIncomingCallPopup(data.name, data.picture);
+        return; // important
+    }
+
+    switch(data.type) {
+        case "video_offer":
+            peerId = data.from_key || data.from;
+            pendingOffer = data.sdp;
+            await initLocalMedia();
+            createPeerConnection(peerId);
+
+            if (pendingOffer) {
+                await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
+                const answer = await peerConnection.createAnswer();
+                await peerConnection.setLocalDescription(answer);
+
+                socket.send(JSON.stringify({
+                    type:"video_answer",
+                    sdp: answer,
+                    to: peerId,
+                    from: patientId
+                }));
+                pendingOffer = null;
+            }
+            popup.style.display = "flex";
             break;
 
-        // Doctor sent SDP offer → store it until patient accepts
-        case "video_offer":
-            pendingOffer = data.sdp;
+        case "video_answer":
+            if (!peerConnection) return;
+            await peerConnection.setRemoteDescription(new RTCSessionDescription(data.sdp));
             break;
 
         case "ice_candidate":
-            try {
-                if (peerConnection)
-                    await peerConnection.addIceCandidate(data.candidate);
-            } catch (err) {
-                console.error("❌ ICE error:", err);
+            if(peerConnection && data.candidate) {
+                try { await peerConnection.addIceCandidate(data.candidate); }
+                catch(err){ console.error("❌ ICE error:", err); }
             }
             break;
 
@@ -61,66 +76,45 @@ socket.onmessage = async event => {
             closeVideoCall();
             alert("📞 Call ended by doctor");
             break;
+
+        default:
+            console.warn("📩 Unhandled message type:", data.type);
     }
 };
 
-//--------------------------------------
-// ICE SERVERS
-//--------------------------------------
-const ICE_SERVERS = [
-    { urls: "stun:stun.relay.metered.ca:80" },
-    { urls: "turn:global.relay.metered.ca:80", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" },
-    { urls: "turn:global.relay.metered.ca:443", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" },
-    { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "ec4e996df1b54e5300c955bf", credential: "mElLDNWaGsNkqVSK" }
-];
-
-//--------------------------------------
-// MEDIA
-//--------------------------------------
 async function initLocalMedia() {
-    if (localStream) return;
-    try {
-        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-        localVideo.srcObject = localStream;
-        localVideo.play();
-    } catch (err) {
-        console.error("❌ Cannot access camera/mic:", err);
-    }
+    if(localStream) return;
+    localStream = await navigator.mediaDevices.getUserMedia({ video:true, audio:true });
+    localVideo.srcObject = localStream;
+    localVideo.style.display = "block";
 }
 
-//--------------------------------------
-// WEBRTC PEER CONNECTION
-//--------------------------------------
 function createPeerConnection(peer) {
-    peerConnection = new RTCPeerConnection({ iceServers: ICE_SERVERS });
+    peerConnection = new RTCPeerConnection({
+        iceServers: [
+            { urls: "stun:stun.relay.metered.ca:80" },
+            { urls:"turn:global.relay.metered.ca:443", username:"ec4e996df1b54e5300c955bf", credential:"mElLDNWaGsNkqVSK" }
+        ]
+    });
 
-    localStream.getTracks().forEach(track =>
-        peerConnection.addTrack(track, localStream)
-    );
+    if(localStream) localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
 
-    peerConnection.ontrack = event => {
-        remoteStream = event.streams[0];
+    peerConnection.ontrack = e => {
+        remoteStream = e.streams[0];
         remoteVideo.srcObject = remoteStream;
-        remoteVideo.play();
-        placeholder.style.display = "none";
         remoteVideo.style.display = "block";
+        placeholder.style.display = "none";
     };
 
-    peerConnection.onicecandidate = event => {
-        if (event.candidate) {
-            socket.send(JSON.stringify({
-                type: "ice_candidate",
-                candidate: event.candidate,
-                to: peer
-            }));
+    peerConnection.onicecandidate = e => {
+        if(e.candidate) {
+            const patientId = document.getElementById("patient_id").value;
+            socket.send(JSON.stringify({ type:"ice_candidate", candidate:e.candidate, to:peer, from:patientId }));
         }
     };
 }
 
-//--------------------------------------
-// OPEN CALL POPUP
-//--------------------------------------
-function openPopupUI(name, picture) {
+function showIncomingCallPopup(name, picture) {
     popup.style.display = "flex";
     document.getElementById("videoCallUser").textContent = "Doctor: " + name;
     placeholder.src = picture;
@@ -128,90 +122,69 @@ function openPopupUI(name, picture) {
     remoteVideo.style.display = "none";
 }
 
-//--------------------------------------
-// INCOMING CALL POPUP (PATIENT ONLY)
-//--------------------------------------
-async function showIncomingCallPopup(fromId, name, picture) {
-    peerId = fromId;
-    openPopupUI(name, picture);
+btnAccept.onclick = async () => {
+    const patientId = document.getElementById("patient_id").value;
+    socket.send(JSON.stringify({ type:"call_accept", to:peerId, from:patientId }));
 
-    const accept = confirm(`📞 Incoming call from Dr. ${name}\n\nAccept call?`);
+    await initLocalMedia();
+    createPeerConnection(peerId);
 
-    if (accept) {
-        socket.send(JSON.stringify({ type: "call_accept", to: fromId }));
-
-        // Start media and peer connection AFTER accept
-        await initLocalMedia();
-        createPeerConnection(peerId);
-
-        if (pendingOffer) {
-            await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
-            const answer = await peerConnection.createAnswer();
-            await peerConnection.setLocalDescription(answer);
-
-            socket.send(JSON.stringify({
-                type: "video_answer",
-                sdp: answer,
-                to: peerId
-            }));
-
-            pendingOffer = null; // clear stored offer
-        }
-    } else {
-        socket.send(JSON.stringify({ type: "call_reject", to: fromId }));
+    if(pendingOffer) {
+        await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
+        const answer = await peerConnection.createAnswer();
+        await peerConnection.setLocalDescription(answer);
+        socket.send(JSON.stringify({ type:"video_answer", sdp: answer, to:peerId, from:patientId }));
+        pendingOffer = null;
     }
-}
 
-//--------------------------------------
-// END CALL
-//--------------------------------------
+    popup.style.display = "none";
+};
+
+btnReject.onclick = () => {
+    const patientId = document.getElementById("patient_id").value;
+    socket.send(JSON.stringify({ type:"call_reject", to:peerId, from:patientId }));
+    popup.style.display = "none";
+};
+
 function closeVideoCall() {
     popup.style.display = "none";
-    if (localStream) localStream.getTracks().forEach(track => track.stop());
-    if (peerConnection) peerConnection.close();
-
-    if (peerId) {
-        socket.send(JSON.stringify({
-            type: "call_end",
-            to: peerId
-        }));
-    }
-
+    if(localStream) localStream.getTracks().forEach(t=>t.stop());
+    if(peerConnection) peerConnection.close();
+    peerConnection = null;
     remoteVideo.srcObject = null;
     placeholder.style.display = "block";
+
+    if(peerId) {
+        const patientId = document.getElementById("patient_id").value;
+        socket.send(JSON.stringify({ type:"call_end", to:peerId, from:patientId }));
+        peerId = null;
+    }
 }
 
-//--------------------------------------
-// MIC
-//--------------------------------------
+// ===== Mic & Speaker =====
 function toggleMic() {
     micEnabled = !micEnabled;
-    if (localStream)
-        localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
+    if(localStream) localStream.getAudioTracks().forEach(t => t.enabled = micEnabled);
     document.getElementById("btnToggleMic").textContent = micEnabled ? "🎤" : "🔇";
 }
 
-//--------------------------------------
-// SPEAKER
-//--------------------------------------
 function toggleSpeaker() {
     speakerEnabled = !speakerEnabled;
     remoteVideo.muted = !speakerEnabled;
     document.getElementById("btnToggleSpeaker").textContent = speakerEnabled ? "🔊" : "🔈";
 }
 
-//--------------------------------------
-// DRAGGABLE POPUP
-//--------------------------------------
-header.onmousedown = function (e) {
+// ===== Draggable Popup =====
+header.onmousedown = function(e) {
     e.preventDefault();
     let offsetX = e.clientX - popup.offsetLeft;
     let offsetY = e.clientY - popup.offsetTop;
 
     function move(e) {
-        popup.style.left = e.clientX - offsetX + "px";
-        popup.style.top = e.clientY - offsetY + "px";
+        popup.style.left = `${e.clientX - offsetX}px`;
+        popup.style.top = `${e.clientY - offsetY}px`;
     }
+
     function stop() {
         document.removeEventListener("mousemove", move);
         document.removeEventListener("mouseup", stop);
@@ -221,27 +194,26 @@ header.onmousedown = function (e) {
     document.addEventListener("mouseup", stop);
 };
 
-//--------------------------------------
-// RESIZABLE POPUP
-//--------------------------------------
+// ===== Resizable Popup =====
 const resizeHandle = document.querySelector(".resize-handle");
-resizeHandle.addEventListener("mousedown", function (e) {
+resizeHandle.addEventListener("mousedown", e => {
     e.preventDefault();
+    const startWidth = parseInt(getComputedStyle(popup).width,10);
+    const startHeight = parseInt(getComputedStyle(popup).height,10);
     const startX = e.clientX;
     const startY = e.clientY;
-    const startWidth = parseInt(window.getComputedStyle(popup).width, 10);
-    const startHeight = parseInt(window.getComputedStyle(popup).height, 10);
 
     function resize(e) {
-        popup.style.width = startWidth + (e.clientX - startX) + "px";
-        popup.style.height = startHeight + (e.clientY - startY) + "px";
+        popup.style.width = `${startWidth + (e.clientX - startX)}px`;
+        popup.style.height = `${startHeight + (e.clientY - startY)}px`;
     }
-    function stopResize() {
+
+    function stop() {
         document.removeEventListener("mousemove", resize);
-        document.removeEventListener("mouseup", stopResize);
+        document.removeEventListener("mouseup", stop);
     }
 
     document.addEventListener("mousemove", resize);
-    document.addEventListener("mouseup", stopResize);
+    document.addEventListener("mouseup", stop);
 });
 </script>

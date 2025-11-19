@@ -32,9 +32,85 @@ app.get('/', (req, res) => res.send('WebSocket server running'));
   }
 })();
 
-// Helper to send JSON
+// Helper to send JSON safely
 function sendToClient(ws, data) {
   if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify(data));
+}
+
+// Resolve a raw id to a client map key if possible (prefer doctor_, then patient_)
+function resolveClientKey(rawId) {
+  if (!rawId) return null;
+  const d = "doctor_" + rawId;
+  const p = "patient_" + rawId;
+  if (clients.has(d)) return d;
+  if (clients.has(p)) return p;
+  return null; // not connected
+}
+
+// ======================= SERVER SIDE FIXED CALL HANDLERS =======================
+function handleCallMessage(ws, data, clients) {
+  const fromKey = resolveClientKey(data.from) || data.from;
+  let targetKey = data.to?.trim();
+  if (!targetKey) {
+    sendToClient(ws, { type: "call_failed", message: "Target ID missing" });
+    return;
+  }
+
+  const doctorKey = "doctor_" + targetKey;
+  const patientKey = "patient_" + targetKey;
+
+  // Auto-detect full key
+  if (clients.has(doctorKey)) targetKey = doctorKey;
+  else if (clients.has(patientKey)) targetKey = patientKey;
+  else targetKey = data.to_type === "doctor" ? doctorKey : patientKey;
+
+  const recipientWs = clients.get(targetKey);
+  const isDev = process.env.NODE_ENV !== "production";
+
+  if (!recipientWs && ["call_request", "call_accept", "call_reject", "call_end", "video_offer", "video_answer", "ice_candidate"].includes(data.type)) {
+    const devMessage = `Recipient '${targetKey}' not found in WebSocket clients`;
+    const prodMessage = "The person you are trying to call is offline";
+    console.error("[CALL ERROR] =>", devMessage);
+    sendToClient(ws, { type: "call_failed", message: isDev ? devMessage : prodMessage });
+    return;
+  }
+
+  switch (data.type) {
+    case "call_request":
+      sendToClient(recipientWs, {
+        type: "call_request",
+        from: data.from,
+        from_key: fromKey,
+        name: data.name,
+        picture: data.picture
+      });
+      break;
+
+    case "call_accept":
+    case "call_reject":
+    case "call_end":
+      sendToClient(recipientWs, { type: data.type, from: data.from });
+      break;
+
+    case "video_offer":
+    case "video_answer":
+      sendToClient(recipientWs, {
+        type: data.type,
+        from: data.from,
+        from_key: fromKey,
+        sdp: data.sdp
+      });
+      break;
+
+    case "ice_candidate":
+      sendToClient(recipientWs, {
+        type: "ice_candidate",
+        from: data.from,
+        from_key: fromKey,
+        candidate: data.candidate
+      });
+      break;
+  }
 }
 
 // WebSocket connection
@@ -50,25 +126,13 @@ wss.on("connection", ws => {
       if (data.type === "doctor_login") {
         const doctorId = data.doctor_id?.trim();
         if (!doctorId) return sendToClient(ws, { type: "error", message: "doctor_id required" });
-
-        // Track doctor connection
         clients.set("doctor_" + doctorId, ws);
-
-        // Update online status
         await db.query("UPDATE doctor_tab SET online_status='1' WHERE doctor_id=?", [doctorId]);
-
-        // Broadcast online status to all
         wss.clients.forEach(client => {
           sendToClient(client, { type: "doctor_status_update", doctor_id: doctorId, status: "online" });
         });
-
-        // Send missed messages to doctor
-        const [missed] = await db.query(
-          `SELECT * FROM chat_messages WHERE doctor_id=? AND status IN ('sent','delivered')`,
-          [doctorId]
-        );
+        const [missed] = await db.query(`SELECT * FROM chat_messages WHERE doctor_id=? AND status IN ('sent','delivered')`, [doctorId]);
         if (missed.length) sendToClient(ws, { type: "missed_messages", data: missed });
-
         return;
       }
 
@@ -76,7 +140,6 @@ wss.on("connection", ws => {
       if (data.type === "get_status") {
         const doctorId = data.doctor_id?.trim();
         if (!doctorId) return sendToClient(ws, { type: "error", message: "doctor_id required" });
-
         const [rows] = await db.query("SELECT online_status FROM doctor_tab WHERE doctor_id=?", [doctorId]);
         const status = rows.length ? (rows[0].online_status == 1 ? "online" : "offline") : "unknown";
         sendToClient(ws, { type: "doctor_status_update", doctor_id: doctorId, status });
@@ -100,11 +163,7 @@ wss.on("connection", ws => {
         const patientId = data.patient_id?.trim();
         if (!patientId) return;
         clients.set("patient_" + patientId, ws);
-
-        const [missed] = await db.query(
-          `SELECT * FROM chat_messages WHERE patient_id=? AND status IN ('sent','delivered')`,
-          [patientId]
-        );
+        const [missed] = await db.query(`SELECT * FROM chat_messages WHERE patient_id=? AND status IN ('sent','delivered')`, [patientId]);
         if (missed.length) sendToClient(ws, { type: "missed_messages", data: missed });
         return;
       }
@@ -114,7 +173,6 @@ wss.on("connection", ws => {
         const doctorId = data.doctor_id?.trim();
         const patientId = data.patient_id?.trim();
         if (!doctorId || !patientId) return;
-
         const [rows] = await db.query(
           `SELECT sn, doctor_id, patient_id, sender, message, message_type, status, created_at 
            FROM chat_messages 
@@ -129,11 +187,7 @@ wss.on("connection", ws => {
       // ---------- MARK SEEN ----------
       if (data.type === "mark_seen") {
         const { doctor_id, patient_id } = data;
-        await db.query(
-          "UPDATE chat_messages SET status='seen' WHERE doctor_id=? AND patient_id=?",
-          [doctor_id, patient_id]
-        );
-
+        await db.query("UPDATE chat_messages SET status='seen' WHERE doctor_id=? AND patient_id=?", [doctor_id, patient_id]);
         const patientWs = clients.get("patient_" + patient_id);
         if (patientWs) sendToClient(patientWs, { type: "messages_seen", doctor_id, patient_id });
         return;
@@ -142,14 +196,11 @@ wss.on("connection", ws => {
       // ---------- SEND CHAT ----------
       if (data.type === "chat") {
         const { doctor_id, patient_id, sender, message: msg, message_type } = data;
-
         const [result] = await db.query(
           `INSERT INTO chat_messages (doctor_id, patient_id, sender, message, message_type, status) 
            VALUES (?, ?, ?, ?, ?, 'sent')`,
           [doctor_id, patient_id, sender, msg, message_type || "text"]
         );
-
-        // Update recent_chat_tab
         await db.query(
           `INSERT INTO recent_chat_tab (doctor_id, patient_id, last_time_contacted)
            VALUES (?, ?, NOW()) ON DUPLICATE KEY UPDATE last_time_contacted = NOW()`,
@@ -168,7 +219,6 @@ wss.on("connection", ws => {
           created_at: new Date().toISOString()
         };
 
-        // Deliver to doctor
         const doctorWs = clients.get("doctor_" + doctor_id);
         if (doctorWs) {
           await db.query("UPDATE chat_messages SET status='delivered' WHERE sn=?", [result.insertId]);
@@ -177,7 +227,6 @@ wss.on("connection", ws => {
           sendToClient(ws, { type: "message_delivered", message_id: result.insertId, delivered_to: "doctor" });
         }
 
-        // Deliver to patient
         const patientWs = clients.get("patient_" + patient_id);
         if (patientWs) {
           if (sender === "doctor") {
@@ -188,11 +237,6 @@ wss.on("connection", ws => {
           sendToClient(ws, { type: "message_delivered", message_id: result.insertId, delivered_to: "patient" });
         }
         return;
-
-
-
-
-        
       }
 
       // ---------- PRESCRIPTION ----------
@@ -215,104 +259,11 @@ wss.on("connection", ws => {
         return;
       }
 
-
-    // ---------- VIDEO CALL SIGNALING ----------
-        if (data.type === "video_offer") {
-            const recipientWs = clients.get(data.to);
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "video_offer",
-                    from: data.from,
-                    sdp: data.sdp
-                });
-            }
-            return;
-        }
-
-        if (data.type === "video_answer") {
-            const recipientWs = clients.get(data.to);
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "video_answer",
-                    from: data.from,
-                    sdp: data.sdp
-                });
-            }
-            return;
-        }
-
-        if (data.type === "ice_candidate") {
-            const recipientWs = clients.get(data.to);
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "ice_candidate",
-                    from: data.from,
-                    candidate: data.candidate
-                });
-            }
-            return;
-        }
-
-        // ---------- VIDEO CALL REQUEST ----------
-        if (data.type === "call_request") {
-            const recipientWs = clients.get(data.to);
-
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "call_request",
-                    from: data.from,
-                    name: data.name,
-                    picture: data.picture
-                });
-            } else {
-                sendToClient(ws, {
-                    type: "call_failed",
-                    message: "Patient is offline"
-                });
-            }
-            return;
-        }
-
-        // ---------- PATIENT ACCEPT CALL ----------
-        if (data.type === "call_accept") {
-            const recipientWs = clients.get(data.to);
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "call_accept",
-                    from: data.from
-                });
-            }
-            return;
-        }
-
-        // ---------- PATIENT REJECT CALL ----------
-        if (data.type === "call_reject") {
-            const recipientWs = clients.get(data.to);
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "call_reject",
-                    from: data.from
-                });
-            }
-            return;
-        }
-
-        // ---------- END CALL ----------
-        if (data.type === "call_end") {
-            const recipientWs = clients.get(data.to);
-            if (recipientWs) {
-                sendToClient(recipientWs, {
-                    type: "call_end",
-                    from: data.from
-                });
-            }
-            return;
-        }
-
-
-
-
-
+      // ---------- CALL / VIDEO SIGNALING ----------
+      if (["call_request","call_accept","call_reject","call_end","video_offer","video_answer","ice_candidate"].includes(data.type)) {
+        handleCallMessage(ws, data, clients);
+        return;
+      }
 
     } catch (err) {
       console.error("❌ Error handling message:", err);
