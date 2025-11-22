@@ -1590,3 +1590,9 @@ header .header-inner-div ul{
     background: transparent;
 }
 
+.call-action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}

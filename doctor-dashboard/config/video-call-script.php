@@ -142,7 +142,7 @@ async function open_videocall() {
         from: doctorId,
         to: patientId,
         name: document.querySelector(".chat-user strong").textContent,
-        picture: document.getElementById('chatUserPicture').src
+        picture: document.getElementById('my_passport2').src
     }));
 
     // Prepare doctor media and UI

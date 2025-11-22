@@ -114,30 +114,36 @@
                 </div>
             </div>
 
+            <div id="videoCallPopup" class="video-popup" style="display:none">
 
-              <div id="videoCallPopup" class="video-popup">
-    
-                        <div id="videoCallHeader" class="video-header">
-                            <span id="videoCallUser">Video Call</span>
-                            <button onclick="closeVideoCall()">✕</button>
-                        </div>
+                <div id="videoCallHeader" class="video-header">
+                    <span id="videoCallUser">Video Call</span>
+                    <button onclick="closeVideoCall()">✕</button>
+                </div>
 
-                        <div class="video-call-body">
-                           <div class="remote-wrapper">
-                                <img src="default-user.jpg" id="remotePlaceholder" class="placeholder">
-                                <video id="remoteVideo" autoplay playsinline class="remote"></video>
-                            </div>
-
-                            <video id="localVideo" autoplay muted playsinline class="local"></video>
-                        </div>
-
-                        <div class="video-controls">
-                            <button id="btnToggleMic" onclick="toggleMic()">🎤</button>
-                            <button id="btnToggleSpeaker" onclick="toggleSpeaker()">🔊</button>
-                        </div>
-
-                        <div class="resize-handle"></div> <!-- ADD THIS -->
+                <div class="video-call-body">
+                    <div class="remote-wrapper">
+                        <img src="default-user.jpg" id="remotePlaceholder" class="placeholder">
+                        <video id="remoteVideo" autoplay playsinline class="remote"></video>
                     </div>
+
+                    <video id="localVideo" autoplay muted playsinline class="local"></video>
+                </div>
+
+                <div class="video-controls">
+                    <button id="btnToggleMic" onclick="toggleMic()">🎤</button>
+                    <button id="btnToggleSpeaker" onclick="toggleSpeaker()">🔊</button>
+                </div>
+
+                <!-- ACCEPT / REJECT BUTTONS -->
+                <div class="call-action-buttons" id="callActionButtons" style="display:none;">
+                    <button id="btnAcceptCall">✅ Accept</button>
+                    <button id="btnRejectCall">❌ Reject</button>
+                </div>
+
+                <div class="resize-handle"></div>
+            </div>
+
 
 
 
