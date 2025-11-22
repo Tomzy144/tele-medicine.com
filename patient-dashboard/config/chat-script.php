@@ -191,37 +191,79 @@ let localStream = null, remoteStream = null, peerConnection = null;
 let peerId = null, pendingOffer = null;
 let micEnabled = true, speakerEnabled = true;
 
-/* ---------- Video / signaling handler ---------- */
+// ---------- Video / signaling handler ----------
 function handleVideoMessage(data, patientId) {
     try {
-        if (data.type === 'call_request') { peerId = data.from_key || data.from; showIncomingCallPopup(data.name, data.picture); return; }
-        if (data.type === 'video_offer') {
-            peerId = data.from_key || data.from; pendingOffer = data.sdp;
-            (async () => { await initLocalMedia(); createPeerConnection(peerId);
-                if (pendingOffer) {
-                    await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
-                    const answer = await peerConnection.createAnswer();
-                    await peerConnection.setLocalDescription(answer);
-                    if (ws && ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'video_answer', sdp: answer, to: peerId, from: patientId }));
-                    pendingOffer = null;
-                }
-                popup.style.display = 'flex';
-            })(); return;
+        if (data.type === 'call_request') {
+            peerId = data.from_key || data.from;
+            showIncomingCallPopup(data.name, data.picture);
+            
+            // play ringing
+            const audio = new Audio('/assets/ring.mp3');
+            audio.loop = true;
+            audio.play();
+            
+            return;
         }
-        if (data.type === 'video_answer') { peerConnection?.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(console.error); return; }
-        if (data.type === 'ice_candidate') { peerConnection?.addIceCandidate(data.candidate).catch(console.error); return; }
-        if (data.type === 'call_end') { closeVideoCall(); alert('📞 Call ended by doctor'); return; }
-        if (data.type === 'call_reject') { popup.style.display = 'none'; return; }
-    } catch (err) { console.error('❌ Error in handleVideoMessage:', err); }
+
+        if (data.type === 'video_offer') {
+            peerId = data.from_key || data.from;
+            pendingOffer = data.sdp;
+
+            // Show popup with caller info
+            showIncomingCallPopup(data.name, data.picture);
+
+            // play ringing
+            const audio = new Audio('/assets/ring.mp3');
+            audio.loop = true;
+            audio.play();
+
+            // DO NOT start camera yet — wait for Accept button
+        }
+
+        if (data.type === 'video_answer') {
+            peerConnection?.setRemoteDescription(new RTCSessionDescription(data.sdp)).catch(console.error);
+            return;
+        }
+
+        if (data.type === 'ice_candidate') {
+            peerConnection?.addIceCandidate(data.candidate).catch(console.error);
+            return;
+        }
+
+        if (data.type === 'call_end') {
+            closeVideoCall();
+            alert('📞 Call ended by doctor');
+            return;
+        }
+
+        if (data.type === 'call_reject') {
+            popup.style.display = 'none';
+            return;
+        }
+    } catch (err) {
+        console.error('❌ Error in handleVideoMessage:', err);
+    }
 }
 
 /* ---------- Local media & PeerConnection ---------- */
 async function initLocalMedia() {
-    if (localStream) return;
-    try { localStream = await navigator.mediaDevices.getUserMedia({ video:true, audio:true });
-        if (localVideo) { localVideo.srcObject = localStream; localVideo.style.display = "block"; }
-    } catch (err) { console.error("❌ Camera/Mic error:", err); }
+    if (localStream) return localStream; // already initialized
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+        if (localVideo && localStream) {
+            localVideo.srcObject = localStream;
+            localVideo.play().catch(err => console.error("❌ Video play error:", err));
+            localVideo.style.display = "block";
+        }
+    } catch (err) {
+        console.error("❌ Camera/Mic error:", err);
+        localStream = null;
+    }
+    return localStream;
 }
+
+
 
 function createPeerConnection(peer) {
     peerConnection = new RTCPeerConnection({
@@ -243,58 +285,66 @@ function createPeerConnection(peer) {
 /* ---------- Incoming call UI ---------- */
 function showIncomingCallPopup(name, picture) {
     if (!popup) return;
-    
-    // Show popup
-    popup.style.display = "flex";
 
-    // Update caller info
+    popup.style.display = "flex";
     document.getElementById("videoCallUser").textContent = "Doctor: " + name;
+    
     if (placeholder) { 
         placeholder.src = picture; 
         placeholder.style.display = "block"; 
     }
-    if (remoteVideo) remoteVideo.style.display = "none";
 
-    // Show Accept / Reject buttons
+    // Show accept/reject buttons
     const buttonsDiv = document.getElementById("callActionButtons");
     if (buttonsDiv) buttonsDiv.style.display = "flex";
 }
 
+
 // Accept button
+// ---------- Accept button ----------
 btnAccept && (btnAccept.onclick = async () => {
+    // stop ringing
+    document.querySelectorAll('audio').forEach(a => a.pause());
+
     const patientId = document.getElementById("patient_id").value;
-    if (ws && ws.readyState === WebSocket.OPEN) 
+    if (ws && ws.readyState === WebSocket.OPEN)
         ws.send(JSON.stringify({ type: "call_accept", to: peerId, from: patientId }));
 
+    // START camera after user accepts
     await initLocalMedia();
     createPeerConnection(peerId);
 
+    // attach remote stream via pending offer
     if (pendingOffer) {
         await peerConnection.setRemoteDescription(new RTCSessionDescription(pendingOffer));
         const answer = await peerConnection.createAnswer();
         await peerConnection.setLocalDescription(answer);
-        if (ws && ws.readyState === WebSocket.OPEN) 
+        if (ws && ws.readyState === WebSocket.OPEN)
             ws.send(JSON.stringify({ type: "video_answer", sdp: answer, to: peerId, from: patientId }));
         pendingOffer = null;
     }
 
-    // Hide Accept / Reject after starting the call
-    const buttonsDiv = document.getElementById("callActionButtons");
-    if (buttonsDiv) buttonsDiv.style.display = "none";
+    // show remote video
+    remoteVideo.style.display = "block";
+    placeholder.style.display = "none";
+
+    // hide accept/reject buttons
+    document.getElementById("callActionButtons").style.display = "none";
 });
+
 
 // Reject button
 btnReject && (btnReject.onclick = () => {
+    document.querySelectorAll('audio').forEach(a => a.pause());
+
     const patientId = document.getElementById("patient_id").value;
-    if (ws && ws.readyState === WebSocket.OPEN) 
+    if (ws && ws.readyState === WebSocket.OPEN)
         ws.send(JSON.stringify({ type: "call_reject", to: peerId, from: patientId }));
 
     popup.style.display = "none";
-
-    // Hide buttons
-    const buttonsDiv = document.getElementById("callActionButtons");
-    if (buttonsDiv) buttonsDiv.style.display = "none";
+    document.getElementById("callActionButtons").style.display = "none";
 });
+
 
 // Close video call (also hides buttons)
 function closeVideoCall() {

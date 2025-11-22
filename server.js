@@ -46,8 +46,6 @@ function resolveClientKey(rawId) {
   if (clients.has(p)) return p;
   return null; // not connected
 }
-
-// ======================= SERVER SIDE FIXED CALL HANDLERS =======================
 function handleCallMessage(ws, data, clients) {
   const fromKey = resolveClientKey(data.from) || data.from;
   let targetKey = data.to?.trim();
@@ -56,13 +54,10 @@ function handleCallMessage(ws, data, clients) {
     return;
   }
 
-  const doctorKey = "doctor_" + targetKey;
-  const patientKey = "patient_" + targetKey;
-
-  // Auto-detect full key
-  if (clients.has(doctorKey)) targetKey = doctorKey;
-  else if (clients.has(patientKey)) targetKey = patientKey;
-  else targetKey = data.to_type === "doctor" ? doctorKey : patientKey;
+  // Only prepend if not already prefixed
+  if (!targetKey.startsWith("doctor_") && !targetKey.startsWith("patient_")) {
+    targetKey = data.to_type === "doctor" ? "doctor_" + targetKey : "patient_" + targetKey;
+  }
 
   const recipientWs = clients.get(targetKey);
   const isDev = process.env.NODE_ENV !== "production";
@@ -75,6 +70,7 @@ function handleCallMessage(ws, data, clients) {
     return;
   }
 
+  // Forward call message to recipient
   switch (data.type) {
     case "call_request":
       sendToClient(recipientWs, {
@@ -112,6 +108,7 @@ function handleCallMessage(ws, data, clients) {
       break;
   }
 }
+
 
 // WebSocket connection
 wss.on("connection", ws => {
