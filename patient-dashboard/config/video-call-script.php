@@ -10,9 +10,11 @@ const btnReject = document.getElementById("btnRejectCall");
 let localStream, remoteStream, peerConnection, peerId, pendingOffer;
 let micEnabled = true, speakerEnabled = true;
 
- const wsUrl = window.location.hostname === "localhost"
+
+const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
-    : "wss://yemasconsults.co.uk";
+    : "wss://yemasconsults.co.uk:8443";
+
 
 const socket = new WebSocket(wsUrl);
 
