@@ -4,11 +4,11 @@
 ========================= */
 
 /* ---------- Shared globals for chat ---------- */
-let ws = null;
-
-const wsUrl = window.location.hostname === "localhost"
+ const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
     : "wss://yemasconsults.co.uk";
+
+const socket = new WebSocket(wsUrl);
 
 const chatMessages = $("#chatMessages");
 const chatInput = $("#chatInput");
