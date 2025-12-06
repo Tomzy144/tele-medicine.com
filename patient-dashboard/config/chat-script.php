@@ -5,9 +5,10 @@
 
 /* ---------- Shared globals for chat ---------- */
 let ws = null;
+
 const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
-    : "wss://tele-medicine-chat-server.onrender.com";
+    : "wss://yemasconsults.co.uk";
 
 const chatMessages = $("#chatMessages");
 const chatInput = $("#chatInput");
