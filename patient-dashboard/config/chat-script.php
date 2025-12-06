@@ -8,7 +8,7 @@ let ws = null;
 
 const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
-    : "wss://yemasconsults.co.uk:8443";
+    : "wss://yemasconsults.co.uk/tele-medicine-chat-server";
 
 
 const chatMessages = $("#chatMessages");
