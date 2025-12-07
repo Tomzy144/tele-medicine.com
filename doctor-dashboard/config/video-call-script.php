@@ -14,11 +14,12 @@ let speakerEnabled = true;
 
 // ====== WebSocket ======
 
- const wsUrl = window.location.hostname === "localhost"
+const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
     : "wss://yemasconsults.co.uk/tele-medicine-chat-server";
 
 const socket = new WebSocket(wsUrl);
+
 
 socket.onopen = () => console.log("✅ WebSocket connected");
 socket.onerror = err => console.error("❌ WebSocket error:", err);
