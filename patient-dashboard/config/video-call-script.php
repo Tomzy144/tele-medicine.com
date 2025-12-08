@@ -13,7 +13,7 @@ let micEnabled = true, speakerEnabled = true;
 
 const wsUrl = window.location.hostname === "localhost"
     ? "ws://localhost:8080"
-    : "wss://yemasconsults.co.uk/tele-medicine-chat-server";
+    : "wss://tele-medicine-serverjs--main.autogen.nodeops.network/tele-medicine-chat-server";
 
 
 const socket = new WebSocket(wsUrl);
